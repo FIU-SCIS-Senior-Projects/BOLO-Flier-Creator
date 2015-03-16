@@ -1,0 +1,540 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Erident\n"
+"POT-Creation-Date: 2014-10-29 16:50+0530\n"
+"PO-Revision-Date: 2014-11-30 14:10+0100\n"
+"Last-Translator: Peter Kaulfuß <info@peter-kaulfuss.eu>\n"
+"Language-Team: Peter Kaulfuß\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.9\n"
+"X-Poedit-Basepath: ../\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: er-custom-login.php:44
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: er-custom-login.php:223
+msgid "Please upload a valid .json file"
+msgstr "Bitte wählen Sie eine gültige .json Datei zum Hochladen aus"
+
+#: er-custom-login.php:229
+msgid "Please upload a file to import"
+msgstr "Bitte laden Sie eine Datei zum Importieren hoch"
+
+#: er-custom-login.php:236
+msgid "New settings imported successfully!"
+msgstr "Die neuen Einstellungen wurden erfolgreich importiert!"
+
+#: er-custom-login.php:325
+msgid "Custom Login and Dashboard"
+msgstr "Persönliches Login und Dashboard"
+
+#: er-custom-login.php:346
+msgid "Erident Custom Login and Dashboard Settings"
+msgstr "Erident Custom Login and Dashboard Einstellungen"
+
+#: er-custom-login.php:347
+msgid ""
+"Plugin Loads default values for all below entries. Please change the values "
+"to yours."
+msgstr ""
+"Das Plugin lädt die Standard Einstellungen für die unten stehenden Optionen. "
+"Bitte ändern Sie die Einstellungen wie von Ihnen benötigt."
+
+#: er-custom-login.php:347
+msgid "Click on the header of each block to open it."
+msgstr ""
+"Klicken Sie auf die Überschriften der Blöcke, um die möglichen Einstellungen "
+"anzuzeigen."
+
+#: er-custom-login.php:354
+msgid "Settings saved."
+msgstr "Einstellungen gespeichert."
+
+#: er-custom-login.php:361
+msgid "Dashboard Settings"
+msgstr "Dashboard Einstellungen"
+
+#: er-custom-login.php:362
+msgid ""
+"(These settings will be reflected when a user/admin logins to the WordPress "
+"Dashboard)"
+msgstr ""
+"(Diese Einstellungen werden wirksam, wenn sich ein Nutzer/Administrator an "
+"dem Dashboard von WordPress anmeldet)"
+
+#: er-custom-login.php:367
+msgid "Enter the text for dashboard left side footer:"
+msgstr ""
+"Geben Sie den Text für die linke Seite des Fußbereiches am DashBoard ein:"
+
+#: er-custom-login.php:372
+msgid ""
+"This will replace the default \"Thank you for creating with WordPress\" on "
+"the bottom left side of dashboard"
+msgstr ""
+"Diese Einstellung wird den Standardtext \"Danke für das Vertrauen in "
+"WordPress.\" unten links auf dem Dashboard ersetzen"
+
+#: er-custom-login.php:376
+msgid "Enter the text for dashboard right side footer:"
+msgstr ""
+"Geben Sie den Text für die rechte Seite des Fußbereiches am DashBoard ein:"
+
+#: er-custom-login.php:380
+msgid ""
+"This will replace the default \"WordPress Version\" on the bottom right side "
+"of dashboard"
+msgstr ""
+"Diese Einstellung wird den Standardtext \"Version ...\" unten rechts auf dem "
+"Dashboard ersetzen"
+
+#: er-custom-login.php:389
+msgid "Login Screen Background"
+msgstr "Login Seite Hintergrund"
+
+#: er-custom-login.php:390
+msgid "(The following settings will be reflected on the \"wp-login.php\" page)"
+msgstr ""
+"(Die folgenden Einstellungen werden auf der Seite \"wp-login.php\" wirksam)"
+
+#: er-custom-login.php:395
+msgid "Login Screen Background Color:"
+msgstr "Login Seite Hintergrundfarbe:"
+
+#: er-custom-login.php:400 er-custom-login.php:610 er-custom-login.php:722
+#: er-custom-login.php:750 er-custom-login.php:779 er-custom-login.php:791
+msgid "Click the box to select a color."
+msgstr "Klicken Sie die Box an, um eine Farbe auszuwählen."
+
+#: er-custom-login.php:405
+msgid "Login Screen Background Image:"
+msgstr "Login Seite Hintergrund Bild:"
+
+#: er-custom-login.php:409
+msgid ""
+"Add your own pattern/image url for the screen background. Leave blank if you "
+"don't need any images."
+msgstr ""
+"Fügen Sie hier die URL zu Ihrem eigenen Muster / eigenen Bild für den "
+"Hintergrund ein. Frei lassen, falls Sie kein Bild in den Hintergrund "
+"einfügen wollen."
+
+#: er-custom-login.php:413
+msgid "Login Screen Background Repeat"
+msgstr "Login Seite Hintergrund Wiederholung"
+
+#: er-custom-login.php:451 er-custom-login.php:669
+msgid "Select an image repeat option from dropdown."
+msgstr ""
+"Wählen Sie eine Option zur Wiederholung des Hintergrundbildes aus dem "
+"Auswahlmenü aus."
+
+#: er-custom-login.php:455 er-custom-login.php:674
+msgid "Background Position:"
+msgstr "Hintergrund Position:"
+
+#: er-custom-login.php:456 er-custom-login.php:675
+msgid "Horizontal Position: "
+msgstr "Horizontale Position:"
+
+#: er-custom-login.php:461 er-custom-login.php:680
+msgid ""
+"The background-position property sets the starting position of a background "
+"image. If you entering the value in \"pixels\" or \"percentage\", add \"px\" "
+"or \"%\" at the end of value. This will not show any changes if you set the "
+"Background Repeat option as \"Repeat\". <a href=\"http://www.w3schools.com/"
+"cssref/pr_background-position.asp\" target=\"_blank\">More Info</a>"
+msgstr ""
+"Die Option Hintergrund-Position gibt die Start-Position des "
+"Hintergrundbildes an. Wenn Sie die Werte in \"Pixel\" oder  \"Prozent\" "
+"eingeben, fügen Sie bitte \"px\" oder \"%\" am Ende des Wertes an, zum "
+"Beispiel \"100px\" oder \"80%\". Diese Änderungen haben keine Auswirkungen, "
+"wenn Sie die Option Hintergrund-Wiederholung auf \"Repeat\" gesetzt haben. "
+"<a href=\"http://www.w3schools.com/cssref/pr_background-position.asp\" "
+"target=\"_blank\">Weitere Informationen</a>"
+
+#: er-custom-login.php:466
+msgid "Background Size:"
+msgstr "Hintergund Größe:"
+
+#: er-custom-login.php:470
+msgid ""
+"The background-size property specifies the size of a background image. If "
+"you entering the value in \"pixels\" or \"percentage\", add \"px\" or \"%\" "
+"at the end of value. Possible values: auto, length, percentage, cover, "
+"contain. <a href=\"http://www.w3schools.com/cssref/css3_pr_background-size."
+"asp\" target=\"_blank\">More Info</a>"
+msgstr ""
+"Die Option Hintergrund-Größe definiert die Größe eines Hintergrundbildes. "
+"Wenn Sie die Werte in \"Pixel\" oder  \"Prozent\" eingeben, fügen Sie bitte "
+"\"px\" oder \"%\" am Ende des Wertes an, zum Beispiel \"100px\" oder \"80%"
+"\". Mögliche Werte sind: auto, lenght, percentage, cover, contain. <a href="
+"\"http://www.w3schools.com/cssref/css3_pr_background-size.asp\" target="
+"\"_blank\">Weitere Informationen</a>"
+
+#: er-custom-login.php:481
+msgid "Login Screen Logo"
+msgstr "Login Seite Logo"
+
+#: er-custom-login.php:482
+msgid "(Change the default WordPress logo and powered by text)"
+msgstr "(Ändert das Standard-Logo und den powered by Text von WordPress)"
+
+#: er-custom-login.php:487
+msgid "Logo Url:"
+msgstr "URL der Logo-Datei:"
+
+#: er-custom-login.php:489
+msgid "Default Logo Size 274px × 63px"
+msgstr "Standard Größe des Logos ist 274px x 63px"
+
+#: er-custom-login.php:491
+msgid ""
+"(URL path to image to replace default WordPress Logo. (You can upload your "
+"image with the WordPress media uploader)"
+msgstr ""
+"(Die URL der Logo-Datei, mit welcher das Standard-Logo von Wordpress ersetzt "
+"werden soll. (Sie können ihre Logo-Datei mit dem Medien-Uploader von "
+"Wordpress hochladen, und die URL zum Bild dann hier einfügen))"
+
+#: er-custom-login.php:496
+msgid "Logo Width:"
+msgstr "Logo Breite:"
+
+#: er-custom-login.php:500
+msgid "Your Logo width(Enter in pixels). Default: 274px"
+msgstr "Die Breite Ihres Logos (Wert in Pixel eingeben). Standard: 271px"
+
+#: er-custom-login.php:504
+msgid "Logo Height:"
+msgstr "Logo Höhe:"
+
+#: er-custom-login.php:508
+msgid "Your Logo Height(Enter in pixels). Default: 63px"
+msgstr "Die Höhe Ihres Logos (Wert in Pixel eingeben). Standard: 63px"
+
+#: er-custom-login.php:513
+msgid "Powered by Text:"
+msgstr "Powered by Text:"
+
+#: er-custom-login.php:517
+msgid "Show when mouse hover over custom Login logo"
+msgstr "Wird angezeigt, wenn die Maus über dem Logo schwebt"
+
+#: er-custom-login.php:527
+msgid "Login Form Settings"
+msgstr "Login-Formular Einstellungen"
+
+#: er-custom-login.php:528
+msgid "(The following settings will change the Login Form style)"
+msgstr ""
+"(Die folgenden Einstellungen werden das Aussehen des Login-Formulars "
+"verändern)"
+
+#: er-custom-login.php:533
+msgid "Login form width:"
+msgstr "Login-Formular Breite:"
+
+#: er-custom-login.php:537
+msgid "Total Form width(Enter in pixels). Default: 350px"
+msgstr ""
+"Die gesamte Breite des Login-Formulars (Wert in Pixel eingeben). Standard: "
+"350px"
+
+#: er-custom-login.php:541
+msgid "Login Form Border Radius:"
+msgstr "Login-Formular Rahmen-Radius:"
+
+#: er-custom-login.php:545
+msgid ""
+"Border Radius of Login Form. This is the option to make the corners rounded."
+"(Enter in pixels)"
+msgstr ""
+"Der Rahmen-Radius des Login-Formulars. Diese Einstellung bewirkt das die "
+"Ecken des Rahmens rund werden. (In Pixel eingeben)"
+
+#: er-custom-login.php:549
+msgid "Login Border Style"
+msgstr "Login-Formular Rahmen-Linienart"
+
+#: er-custom-login.php:593
+msgid "Select a Border Style option from dropdown."
+msgstr "Wählen Sie eine Rahmen-Linienart aus dem Auswahlmenü aus."
+
+#: er-custom-login.php:597
+msgid "Login Border Thickness:"
+msgstr "Login-Formular Rahmen Liniendicke"
+
+#: er-custom-login.php:601
+msgid "Thickness of Border (Enter value in pixels)"
+msgstr "Die Dicke der Rahmen-Linie (Einen Wert in Pixel eingeben)"
+
+#: er-custom-login.php:605
+msgid "Login Border Color:"
+msgstr "Login-Formular Rahmen Linienfarbe"
+
+#: er-custom-login.php:614
+msgid "Login Form Background Color:"
+msgstr "Login-Formular Hintergrund Farbe:"
+
+#: er-custom-login.php:618
+msgid "Background Opacity: "
+msgstr "Hintergund Transparenz:"
+
+#: er-custom-login.php:620
+msgid ""
+"Click the box to select a color. Background Opacity will helps you to put "
+"transparent color over a background image. Possible values 0 to 1. Example: "
+"0.5 means 50% transparency. Default: 1 <a href=\"https://wordpress.org/"
+"plugins/erident-custom-login-and-dashboard/faq/\" target=\"_blank\">More "
+"Info</a>"
+msgstr ""
+"Klicken Sie auf die Box um eine Farbe auszuwählen. Mit der Funktion "
+"\"Background Opacity\" können Sie transparente Farben über Ihr "
+"Hintergrundbild legen. Mögliche Werte von 0 bis 1, wobei zB 0.5 = 50% "
+"Transparenz bedeutet. Standard: 1 <a href=\"https://wordpress.org/plugins/"
+"erident-custom-login-and-dashboard/faq/\" target=\"_blank\">Mehr "
+"Informationen</a>"
+
+#: er-custom-login.php:624
+msgid "Login Form Background Image:"
+msgstr "Login-Formular Hintergrund Bild:"
+
+#: er-custom-login.php:627
+msgid ""
+"Add your own pattern/image url to the form background. Leave blank if you "
+"don't need any images."
+msgstr ""
+"Fügen Sie hier die URL zu Ihrem eigenen Muster / eigenen Bild für den Login-"
+"Formular Hintergrund ein. Frei lassen, falls Sie kein Bild in den "
+"Hintergrund einfügen wollen."
+
+#: er-custom-login.php:631
+msgid "Login Form Background Repeat"
+msgstr "Login-Formular Hnitergrundbild Wiederholungen"
+
+#: er-custom-login.php:677
+msgid "Vertical Position: "
+msgstr "Vertikale Position:"
+
+#: er-custom-login.php:685
+msgid "Login Form Label Text Color"
+msgstr "Login-Formular Beschriftung Text-Farbe"
+
+#: er-custom-login.php:690
+msgid ""
+"Click the box to select a color. This will change the color of label "
+"Username/Password"
+msgstr ""
+"Klicken Sie die Box an, um eine Farbe auszuwählen. Diese Option verändert "
+"die Farbe des Beschriftungstextes Benutzername / Passwort"
+
+#: er-custom-login.php:694
+msgid "Login Form Label Text Size:"
+msgstr "Login-Formular Beschriftung Text-Größe"
+
+#: er-custom-login.php:697
+msgid "Font Size of Label Username/Password(Enter value in pixels)"
+msgstr ""
+"Schriftgröße des Beschriftungstextes der Formularfelder Benutzername / "
+"Passwort (Wert in Pixel eingeben)"
+
+#: er-custom-login.php:701
+msgid "Login Form Input Text Color"
+msgstr "Login-Formular Texteingabe Text-Farbe"
+
+#: er-custom-login.php:706
+msgid ""
+"Click the box to select a color. This will change the color of text inside "
+"text box."
+msgstr ""
+"Klicken Sie die Box an, um eine Farbe auszuwählen. Diese Option verändert "
+"die Farbe des Eingabetextes in den Formularfeldern."
+
+#: er-custom-login.php:710
+msgid "Login Form Input Text Size:"
+msgstr "Login-Formular Texteingabe Text-Größe"
+
+#: er-custom-login.php:713
+msgid "Font Size of text inside text box(Enter value in pixels)"
+msgstr ""
+"Schriftgröße des Textes der in die Formularfelder eingegeben wird (Wert in "
+"Pixel eingeben)"
+
+#: er-custom-login.php:717
+msgid "Login Form Link Color"
+msgstr "Login-Formular Link-Farbe"
+
+#: er-custom-login.php:727
+msgid "Enable link shadow?"
+msgstr "Schatten am Link aktivieren?"
+
+#: er-custom-login.php:735 er-custom-login.php:764 er-custom-login.php:815
+msgid "Yes"
+msgstr "Ja"
+
+#: er-custom-login.php:739 er-custom-login.php:768 er-custom-login.php:819
+msgid "No"
+msgstr "Nein"
+
+#: er-custom-login.php:741 er-custom-login.php:770
+msgid "(Check an option)"
+msgstr "(eine Option auswählen)"
+
+#: er-custom-login.php:745
+msgid "Login Form Link Shadow Color"
+msgstr "Login-Forumlar Link-Schatten Farbe"
+
+#: er-custom-login.php:756
+msgid "Enable form shadow?"
+msgstr "Schatten des Formularfeldes aktivieren?"
+
+#: er-custom-login.php:774
+msgid "Login Form Shadow Color"
+msgstr "Login-Formular Formular-Schatten Farbe"
+
+#: er-custom-login.php:786
+msgid "Login Button Color"
+msgstr "Login-Knopf Farbe"
+
+#: er-custom-login.php:802
+msgid "Plugin Un-install Settings"
+msgstr "Plugin De-Installation Einstellungen"
+
+#: er-custom-login.php:807
+msgid "Delete custom settings upon plugin deactivation?"
+msgstr ""
+"Benutzerspezifische Einstellungen bei der Deaktivierung des Plugins löschen?"
+
+#: er-custom-login.php:821
+msgid ""
+"(If you set \"Yes\" all custom settings will be deleted from database upon "
+"plugin deactivation)"
+msgstr ""
+"(Wenn Sie \"Ja\" auswählen, werden alle benutzerspezifischen Einstellungen "
+"bei der Deaktivierung des Plugins aus der Datenbank gelöscht! NUTZEN SIE "
+"DIESE FUNKTION NUR WENN SIE DAS PLUGIN WIRKLICH DE-INSTALLIEREN WOLLEN, MIT "
+"DER OPTION \"JA\" WERDEN BEI DER NÄCHSTEN DEAKTIVIERUNG ALLE "
+"BENUTZERSPEZIFISCHEN EINSTELLUNGEN AUS DER DATENBANK GELÖSCHT!)"
+
+#: er-custom-login.php:829
+msgid "Save Changes"
+msgstr "Änderungen speichern"
+
+#: er-custom-login.php:836
+msgid "Export Settings"
+msgstr "Einstellungen exportieren"
+
+#: er-custom-login.php:838
+msgid ""
+"Export the plugin settings for this site as a .json file. This allows you to "
+"easily import the configuration into another site."
+msgstr ""
+"Diese Funktion exportiert die Plugin Einstellungen als eine *.json Datei. "
+"Mit dieser Funktion können Sie die hier vorgenommenen Einstellungen einfach "
+"in eine andere WordPress-Seite übernehmen."
+
+#: er-custom-login.php:843
+msgid "Export"
+msgstr "Exportieren"
+
+#: er-custom-login.php:851
+msgid "Import Settings"
+msgstr "Einstellungen importieren"
+
+#: er-custom-login.php:853
+msgid ""
+"Import the plugin settings from a .json file. This file can be obtained by "
+"exporting the settings on another site using the form above."
+msgstr ""
+"Diese Funktion importiert Einstellungen des Plugins aus einer *.json Datein. "
+"Diese Datei kann man mit der Exportfunktion dieses Plugins einer anderen "
+"WordPress-Seite erzeugen, und damit diese Einstellungen einfach in die "
+"aktuelle WordPress-Seite übernehmen."
+
+#: er-custom-login.php:861
+msgid "Import"
+msgstr "Importieren"
+
+#: er-custom-login.php:869
+msgid "Quick Links"
+msgstr "Schnelle Hilfe - Quick Links"
+
+#: er-custom-login.php:871
+msgid "Open Your WP Login Page in a New Tab"
+msgstr "Die WP Login-Seite in einem neuen Tab öffnen"
+
+#: er-custom-login.php:872
+msgid "Plugin Documentation"
+msgstr "Dokumentation des Plugins"
+
+#: er-custom-login.php:873
+msgid "Plugin Support Page"
+msgstr "Support-Seite des Plugins"
+
+#: er-custom-login.php:874
+msgid "Feature Request/Suggestions?"
+msgstr "Neue Funktion gewünscht? Ideen ?"
+
+#: er-custom-login.php:875
+msgid "Got some Love? Give us a 5 star rating!"
+msgstr "Etwas Liebe geben? Geben Sie uns eine 5 Sterne Bewertung"
+
+#: er-custom-login.php:879
+msgid "Hire Me"
+msgstr "Engagieren Sie mich"
+
+#: er-custom-login.php:880
+msgid ""
+"Hey, I'm Libin, a professional Front End Engineer/WordPress Developer. You "
+"can hire me for freelancing projects.<br/><br/>Email me: <a href=\"mailto:"
+"libin@libin.in\">libin@libin.in</a> <br/>Online Portfolio: <a href=\"http://"
+"www.libin.in\" target=\"_blank\">www.libin.in</a>"
+msgstr ""
+"Hallo, ich bin Libin, ein professioneller Webseitengestalter und Wordpress "
+"Entwickler. Sie können mich engagieren, um Ihre Projekte zu realisieren.<br/"
+"><br/>Email an mich: <a href=\"mailto:libin@libin.in\">libin@libin.in</a> "
+"<br/>Online Portfolio: <a href=\"http://www.libin.in\" target=\"_blank\">www."
+"libin.in</a>"
+
+#: er-custom-login.php:882
+msgid "Translation Credits"
+msgstr "Vielen Dank für die Übersetzungen an: "
+
+#: er-custom-login.php:884
+msgid ""
+"Spanish by <a href=\"http://www.linkedin.com/in/adrifolio\" target=\"_blank"
+"\">Adriana De La Cuadra</a>"
+msgstr ""
+"Spanisch von <a href=\"http://www.linkedin.com/in/adrifolio\" target=\"_blank"
+"\">Adriana De La Cuadra</a>"
+
+#: er-custom-login.php:885
+msgid ""
+"French by <a href=\"https://www.linkedin.com/pub/vaslin-guillaume/38/35a/5aa"
+"\" target=\"_blank\">Guillaume Vaslin</a>"
+msgstr ""
+"Französisch von <a href=\"https://www.linkedin.com/pub/vaslin-"
+"guillaume/38/35a/5aa\" target=\"_blank\">Guillaume Vaslin</a>"
+
+#: er-custom-login.php:886
+msgid ""
+"German by <a href=\"http://www.starsofvietnam.net/\" target=\"_blank\">Peter "
+"Kaulfuss</a>"
+msgstr ""
+"Deutsch von <a href=\"http://www.starsofvietnam.net/\" target=\"_blank"
+"\">Peter Kaulfuss</a>"
+
+#: er-custom-login.php:888
+msgid "Do you wants to translate this plugin to your language? Email me!"
+msgstr ""
+"Sie möchten eine Übersetzung dieses Plugins in Ihrer Sprache beisteuern? "
+"Senden Sie eine <a href=\"mailto:libin@libin.in\">Email</a> an mich!"
