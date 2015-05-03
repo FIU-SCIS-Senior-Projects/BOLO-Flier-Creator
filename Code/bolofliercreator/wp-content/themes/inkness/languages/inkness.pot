@@ -1,0 +1,754 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: InkNess WordPress Theme\n"
+"POT-Creation-Date: 2014-03-17 19:24+0530\n"
+"PO-Revision-Date: 2014-03-17 19:25+0530\n"
+"Last-Translator: Rohit Tripathi <rohit@rohitink.com>\n"
+"Language-Team: InkHive.com <rohit@rohitink.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.4\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e;esc_attr_e;esc_attr_x;"
+"_x\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /Users/mac/Documents/Developer/Theme-Development/wp-"
+"content/themes/inkness\n"
+"X-Poedit-SearchPath-1: /Users/mac/Documents/Developer/Theme-Development/wp-"
+"content/themes/inkness/inc\n"
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/404.php:15
+msgid "Oops! That page can&rsquo;t be found."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/404.php:19
+msgid ""
+"It looks like nothing was found at this location. Maybe try one of the links "
+"below or a search?"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/404.php:27
+msgid "Most Used Categories"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/404.php:44
+#, php-format
+msgid "Try looking in the monthly archives. %1$s"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:31
+#, php-format
+msgid "Author: %s"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:39
+#, php-format
+msgid "Day: %s"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:42
+#, php-format
+msgid "Month: %s"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:45
+#, php-format
+msgid "Year: %s"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:48
+msgid "Asides"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:51
+msgid "Images"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:54
+msgid "Videos"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:57
+msgid "Quotes"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:60
+msgid "Links"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/archive.php:63
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/sidebar.php:17
+msgid "Archives"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:36
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:56
+msgid "Comment navigation"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:37
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:57
+msgid "&larr; Older Comments"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:38
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:58
+msgid "Newer Comments &rarr;"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:68
+msgid "Comments are closed."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:82
+msgid "Comment"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:89
+msgid "Name"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:95
+msgid "Email"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/comments.php:102
+msgid "Website"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-page.php:18
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-single.php:26
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/image.php:58
+msgid "Pages:"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-page.php:23
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-single.php:67
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/image.php:32
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/image.php:64
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:71
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:89
+msgid "Edit"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-single.php:36
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-single.php:39
+msgid ", "
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-single.php:44
+#, php-format
+msgid ""
+"This entry was tagged %2$s. Bookmark the <a href=\"%3$s\" rel=\"bookmark"
+"\">permalink</a>."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-single.php:46
+#, php-format
+msgid "Bookmark the <a href=\"%3$s\" rel=\"bookmark\">permalink</a>."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-single.php:52
+#, php-format
+msgid ""
+"This entry was posted in %1$s and tagged %2$s. Bookmark the <a href=\"%3$s\" "
+"rel=\"bookmark\">permalink</a>."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content-single.php:54
+#, php-format
+msgid ""
+"This entry was posted in %1$s. Bookmark the <a href=\"%3$s\" rel=\"bookmark"
+"\">permalink</a>."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content.php:37
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/content.php:40
+msgid "Pages: "
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/footer.php:18
+#, php-format
+msgid "Inkness Theme by %1$s."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/functions.php:33
+msgid "Primary Menu"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/functions.php:48
+msgid "Sidebar"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/functions.php:56
+msgid "Footer Left"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/functions.php:64
+msgid "Footer Center"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/functions.php:72
+msgid "Footer Right"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/header.php:80
+msgid "Skip to content"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/image.php:22
+#, php-format
+msgid ""
+"Published <span class=\"entry-date\"><time class=\"entry-date\" datetime="
+"\"%1$s\">%2$s</time></span> at <a href=\"%3$s\">%4$s &times; %5$s</a> in <a "
+"href=\"%6$s\" rel=\"gallery\">%7$s</a>"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/image.php:37
+msgid "<span class=\"meta-nav\">&larr;</span> Previous"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/image.php:38
+msgid "Next <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/extras.php:66
+#, php-format
+msgid "Page %s"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:147
+msgid "Inkness Theme Options"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:148
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:377
+msgid "Inkness Settings"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:193
+msgid "Clear"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:194
+msgid "Default"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:195
+msgid "Select Color"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:240
+msgid "Save Options"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:241
+msgid "Restore Defaults"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:241
+msgid "Click OK to reset. Any theme settings will be lost!"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:273
+msgid "Default options restored."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-framework.php:327
+msgid "Options saved."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-media-uploader.php:51
+msgid "No file chosen"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-media-uploader.php:54
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-media-uploader.php:113
+msgid "Upload"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-media-uploader.php:56
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-media-uploader.php:114
+msgid "Remove"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-media-uploader.php:59
+msgid "Upgrade your version of WordPress for full media support."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-media-uploader.php:83
+msgid "View File"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:237
+msgid "No Repeat"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:238
+msgid "Repeat Horizontally"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:239
+msgid "Repeat Vertically"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:240
+msgid "Repeat All"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:253
+msgid "Top Left"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:254
+msgid "Top Center"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:255
+msgid "Top Right"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:256
+msgid "Middle Left"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:257
+msgid "Middle Center"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:258
+msgid "Middle Right"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:259
+msgid "Bottom Left"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:260
+msgid "Bottom Center"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:261
+msgid "Bottom Right"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:274
+msgid "Scroll Normally"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:275
+msgid "Fixed in Place"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:349
+msgid "Normal"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:350
+msgid "Italic"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:351
+msgid "Bold"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/options-sanitize.php:352
+msgid "Bold Italic"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:34
+msgid "Post navigation"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:38
+msgid "&larr;"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:39
+msgid "&rarr;"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:44
+msgid "<span class=\"meta-nav\">&larr;</span> Older posts"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:48
+msgid "Newer posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:71
+msgid "Pingback:"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:86
+#, php-format
+msgid "%1$s"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:93
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/inc/template-tags.php:183
+#, php-format
+msgid ""
+"<span class=\"posted-on\"><i class=\"fa fa-clock-o\"> </i> %1$s</span> <span "
+"class=\"byline\"> <i class=\"fa fa-user\"> </i> %2$s</span>"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/no-results.php:13
+msgid "Nothing Found"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/no-results.php:19
+#, php-format
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/no-results.php:23
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/no-results.php:28
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:36
+msgid "Basic Settings"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:40
+msgid "Site Logo"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:41
+msgid "Leave Blank to use text Heading."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:47
+msgid "Copyright Text"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:48
+msgid ""
+"Some Text regarding copyright of your site, you would like to display in the "
+"footer."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:54
+msgid ""
+"To have more customization options including Analytics, Custom Header/Footer "
+"Scripts <a href=\"http://inkhive.com/product/inkness-plus/\" target=\"_blank"
+"\">Upgrade to Pro</a> at Just $25.95"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:61
+msgid "Layout Settings"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:65
+msgid ""
+"With <a href=\"http://inkhive.com/product/inkness-plus/\" target=\"_blank"
+"\">Pro Version</a> You also have the option to Remove Search Bar from "
+"header, and move to a full width menu. Upgrade at Just $25.95"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:80
+msgid ""
+"<a href=\"http://inkhive.com/product/inkness-plus/\" target=\"_blank\">Pro "
+"Version</a> supports the option to add custom skins, styles & Layouts. "
+"Upgrade at Just $25.95."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:86
+msgid "Custom CSS"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:87
+msgid ""
+"Some Custom Styling for your site. Place any css codes here instead of the "
+"style.css file."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:95
+msgid "Slider Settings"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:99
+msgid "Enable Slider"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:100
+msgid "Check this to Enable Slider."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:106
+msgid ""
+"In the <a href=\"http://inkhive.com/product/inkness-plus/\" target=\"_blank"
+"\">Pro Version (InkNess Plus)</a> there are options to customize slider by "
+"choosing form over 16 animation effects, ability to set transition time and "
+"speed and more. You Can Also Choose Full-Width/Fixed-Width Slider. Upgrade "
+"at Just $25.95"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:111
+msgid "Using the Slider"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:112
+msgid ""
+"This Slider supports upto 5 Images. To show only 3 Slides in the slider, "
+"upload only 3 images. Leave the rest Blank. For best results, upload images "
+"of same dimensions."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:116
+msgid "Slider Image 1"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:117
+msgid "First Slide"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:123
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:148
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:173
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:198
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:223
+msgid "Title"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:129
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:154
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:179
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:204
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:229
+msgid "Description or Tagline"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:135
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:160
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:185
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:210
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:235
+msgid "Url"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:141
+msgid "Slider Image 2"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:142
+msgid "Second Slide"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:166
+msgid "Slider Image 3"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:167
+msgid "Third Slide"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:191
+msgid "Slider Image 4"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:192
+msgid "Fourth Slide"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:216
+msgid "Slider Image 5"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:217
+msgid "Fifth Slide"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:243
+msgid "Social Settings"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:247
+msgid ""
+"To Add your Own icons, and Choose different image styles for Social Icons, "
+"purchase <a href=\"http://inkhive.com/product/inkness-plus/\" target=\"_blank"
+"\">Pro Version (InkNess Plus)</a>. Upgrade at Just $25.95"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:252
+msgid "Facebook"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:253
+msgid "Facebook Profile or Page URL i.e. http://facebook.com/username/ "
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:260
+msgid "Twitter"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:261
+msgid "Twitter Username"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:268
+msgid "Google Plus"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:269
+msgid "Google Plus profile url, including \"http://\""
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:276
+msgid "Feeburner"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:277
+msgid "URL for your RSS Feeds"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:284
+msgid "Pinterest"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:285
+msgid "Your Pinterest Profile URL"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:292
+msgid "Instagram"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:293
+msgid "Your Instagram Profile URL"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:300
+msgid "Linked In"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:301
+msgid "Your Linked In Profile URL"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:308
+msgid "Youtube"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:309
+msgid "Your Youtube Channel URL"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:316
+msgid "Flickr"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:317
+msgid "Your Flickr Profile URL"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:324
+msgid ""
+"More social Icons are available in the <a href=\"http://inkhive.com/product/"
+"inkness-plus/\" target=\"_blank\">Pro Version (InkNess Plus)</a>. Upgrade at "
+"Just $25.95"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:329
+msgid "Support"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:333
+msgid ""
+"Inkness WordPress theme has been Designed and Created by <a href=\"http://"
+"InkHive.com\" target=\"_blank\">Rohit Tripathi</a>. For any Queries or help "
+"regarding this theme, <a href=\"http://wordpress.org/support/theme/inkness/"
+"\" target=\"_blank\">use the support forums.</a>"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:337
+msgid ""
+"<a href=\"http://twitter.com/rohitinked\" target=\"_blank\">Follow Me on "
+"Twitter</a> to know about my upcoming themes."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:341
+msgid "Live Demo Blog"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:342
+msgid ""
+"For your convenience, we have created a <a href=\"http://demo.inkhive.com/"
+"inkness/\" target=\"_blank\">Live Demo Blog</a> of the theme Inkness. You "
+"can take a look at and find out how your site would look once complete."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:346
+msgid ""
+"We Offer Dedicated Personal Support to all our <a href=\"http://inkhive.com/"
+"product/inkness-plus/\" target=\"_blank\">Pro Version Customers</a>. Upgrade "
+"at Just $25.95"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:351
+msgid "Regenerating Post Thumbnails"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:352
+msgid ""
+"If you are using inkness Theme on a New Wordpress Installation, then you can "
+"skip this section.<br />But if you have just switched to this theme from "
+"some other theme, then you are requested regenerate all the post thumbnails. "
+"It will fix all the issues you are facing with distorted & ugly homepage "
+"thumbnail Images. "
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:356
+msgid ""
+"To Regenerate all Thumbnail images, Install and Activate the <a href="
+"\"http://wordpress.org/plugins/regenerate-thumbnails/\" target=\"_blank"
+"\">Regenerate Thumbnails</a> WP Plugin. Then from <strong>Tools &gt; Regen. "
+"Thumbnails</strong>, re-create thumbnails for all your existing images. And "
+"your blog will look even more stylish with Inkness theme.<br /> "
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:361
+msgid ""
+"<strong>Note:</strong> Regenerating the thumbnails, will not affect your "
+"original images. It will just generate a separate image file for those "
+"images."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:366
+msgid "Remove Credit Links in Footer"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/options.php:367
+msgid ""
+"Check this if you want to you do not want to give us credit in your site "
+"footer."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/search.php:16
+#, php-format
+msgid "Search Results for: %s"
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/searchform.php:12
+msgid "Search for anything on this site..."
+msgstr ""
+
+#: /Users/mac/Documents/Developer/Theme-Development/wp-content/themes/inkness/sidebar.php:24
+msgid "Meta"
+msgstr ""
