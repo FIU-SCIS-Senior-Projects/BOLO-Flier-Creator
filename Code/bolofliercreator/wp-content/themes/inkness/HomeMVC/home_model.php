@@ -81,7 +81,9 @@ SQL;
 		return $result;
 	}
 	
-
+    public function get_user(){
+        
+    }
 
 
 

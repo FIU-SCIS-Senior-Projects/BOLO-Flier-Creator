@@ -10,7 +10,7 @@ class home_view{
 	 * @param $current_agency a string with the name of the agency by which the bolos are filtered
 	 * @param $offset for the current offset
 	 */
-	public function update_view($result, $agencies, $current_agency, $offset){
+	public function update_view($result, $data, $agencies, $current_agency, $offset){
 		get_header();
 		$flag=true;
 		?>
@@ -60,7 +60,14 @@ class home_view{
 									echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
 									//echo ' <a href="/bolofliercreator/wp-content/themes/inkness/BoloSelected.php?idBolo=' . "$id" . '">
 									//	Details</a>';	
-									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a>';																	
+									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a>';
+                                    //Code to show edit link if appropriate below
+                                    while($row = $data->fetch_assoc()){
+                                        if ($row['bolo_id']==$id){
+                                            echo ' <a href="?page_id=1502&idBolo=' . $row['bolo_id'] . '">Edit</a>';
+                                            break;
+                                        }
+                                    }																
 								echo '</div>'; //end of individual thumbnail		
 							}
 							else {
