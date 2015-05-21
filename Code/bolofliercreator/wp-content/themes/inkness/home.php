@@ -9,15 +9,12 @@
 <?php
 include_once("HomeMVC/home_model.php");
 include_once("HomeMVC/home_view.php");
-//User edit link inclusions
 include_once("EditPage/edit_model.php");
 include_once("EditPage/edit.php");
 include_once("EditPage/editor_controller.php");
 include_once("editor_view.php");
 
-//TODO: Find where user edit data is queried
 $editmodel = new edit_model();
-//store which bolos user can edit
 $data = $editmodel->get_user_bolos();
 
 
