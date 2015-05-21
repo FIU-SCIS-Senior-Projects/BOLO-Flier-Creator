@@ -10,7 +10,6 @@
 include_once("HomeMVC/home_model.php");
 include_once("HomeMVC/home_view.php");
 include_once("EditPage/edit_model.php");
-include_once("EditPage/edit.php");
 
 $editmodel = new edit_model();
 $data = $editmodel->get_user_bolos();
