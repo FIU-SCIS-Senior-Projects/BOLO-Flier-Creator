@@ -62,12 +62,29 @@ class home_view{
 									//	Details</a>';	
 									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a>';
                                     //Code to show edit link if appropriate below
-                                    while($row = $data->fetch_assoc()){
-                                        if ($row['bolo_id']==$id){
-                                            echo ' <a href="?page_id=1502&idBolo=' . $row['bolo_id'] . '">Edit</a>';
-                                            break;
-                                        }
-                                    }																
+                                    //if current user is admin, show edit on all BOLOS
+                                    if(current_user_can( 'activate_plugins' )){
+                                        echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
+                                    }
+                                    //but if tier 2, show edit only on agency bolos
+                                    elseif(current_user_can( 'edit_other_pages' )){
+                                         $ag_name = get_user_meta(get_current_user_id(), "agency", true);
+                                         if($ag_name == $row['agency'])
+                                         {
+                                             echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
+                                         }
+                                        
+                                    }
+                                    //other wise, it is a normal user, so check to see if they can edit
+                                    else{
+                                        while($row = $data->fetch_assoc()){
+                                            if ($row['bolo_id']==$id){
+                                                echo ' <a href="?page_id=1502&idBolo=' . $row['bolo_id'] . '">Edit</a>';
+                                                break;
+                                            }
+                                        }   
+                                    }
+                                    															
 								echo '</div>'; //end of individual thumbnail		
 							}
 							else {
