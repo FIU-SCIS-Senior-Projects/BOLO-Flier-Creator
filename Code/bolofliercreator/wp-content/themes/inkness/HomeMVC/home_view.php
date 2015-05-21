@@ -77,9 +77,9 @@ class home_view{
                                     }
                                     //other wise, it is a normal user, so check to see if they can edit
                                     else{
-                                        while($row = $data->fetch_assoc()){
-                                            if ($row['bolo_id']==$id){
-                                                echo ' <a href="?page_id=1502&idBolo=' . $row['bolo_id'] . '">Edit</a>';
+                                        while($dataRow = $data->fetch_assoc()){
+                                            if ($dataRow['bolo_id']==$id){
+                                                echo ' <a href="?page_id=1502&idBolo=' . $dataRow['bolo_id'] . '">Edit</a>';
                                                 break;
                                             }
                                         }   
