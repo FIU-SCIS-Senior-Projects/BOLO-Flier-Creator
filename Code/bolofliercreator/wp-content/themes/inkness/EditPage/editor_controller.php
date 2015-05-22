@@ -115,9 +115,9 @@ function update(){
 	if ($queryResult == true){
 	   header('Location: /bolofliercreator/');    
 	}
-    else{
-        header('Location: /bolofliercreator/edit.php');
-    }
+    // else{
+        // header('Location: /bolofliercreator/edit.php');
+    // }
 }
 ?>
 
