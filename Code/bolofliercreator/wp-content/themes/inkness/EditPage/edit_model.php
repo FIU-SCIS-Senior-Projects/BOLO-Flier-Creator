@@ -125,6 +125,7 @@ SQL;
 		SET edit_author="$author_id"
 		WHERE bolo_id="$boloid"
 SQL;
+        $result = $conn->query($sql2);
 		// if(!$result = $conn->query($sql2)){
 		    // die('There was an error running the query [' . $db->error . ']');
 		// }
@@ -135,6 +136,7 @@ SQL;
 		FROM `wp_flierform`
 		WHERE bolo_id="$boloid"
 SQL;
+        $result = $conn->query($sql1);
 		// if(!$result = $conn->query($sql1)){
 		    // die('There was an error running the query [' . $db->error . ']');
 		// }
@@ -144,6 +146,7 @@ SQL;
 		SET selectcat="$selectcat", myName="$myName", lastName="$lastName", dob="$dob",license="$DLnumber",race="$race", sex="$sex", height="$height",weight="$weight", haircolor="$haircolor", address="$address", tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary", image="$newfilename", validity="$val", reliability="$rel", classification="$clas", update_status="$update", edit_author="$author_id", edit_date=CURRENT_TIMESTAMP(), link = "$link"
 		WHERE bolo_id = "$boloid"
 SQL;
+        $result = $conn->query($sql);
 		// if(!$result = $conn->query($sql)){
 		    // die('There was an error running the query [' . $db->error . ']');
 		// }
@@ -169,9 +172,9 @@ SQL;
 		// Create connection
 		$conn = new mysqli($servername, $username, $password, $dbname);
 		// Check connection
-		// if ($conn->connect_error) {
-		    // die("Connection failed: " . $conn->connect_error);
-		// }		
+		if ($conn->connect_error) {
+		    die("Connection failed: " . $conn->connect_error);
+		}		
 		
 		//mark bolo as archived
 		$sql2 = <<<SQL
@@ -179,6 +182,7 @@ SQL;
 	    SET archive = TRUE
 	    WHERE bolo_id = "$boloid"
 SQL;
+        $result = $conn->query($sql2);
 		
 		// if(!$result = $conn->query($sql2)){
 		    // die('There was an error running the query1 [' . $db->error . ']');
@@ -192,7 +196,8 @@ SQL;
 	    FROM wp_flierform	    
 	    WHERE bolo_id = "$boloid"
 SQL;
-		
+		$result = $conn->query($sql);
+        
 		// if(!$result = $conn->query($sql)){
 		    // die('There was an error running the query2 [' . $db->error . ']');
 		// }			
