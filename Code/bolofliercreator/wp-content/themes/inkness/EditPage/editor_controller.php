@@ -56,7 +56,10 @@ if(isset($_GET['function']))
 /*
  * This method request an update of the bolo
  */
-function update(){	
+function update(){
+    include_once("edit_model.php");
+    $model = new edit_model();
+    	
 	$selectcat=$_POST ['selectcat'];
 	$myName=$_POST ['myName'];
 	$lastName=$_POST ['lastName'];
@@ -77,8 +80,7 @@ function update(){
 	$editor_id = $_POST['editor_id'];
 	$update = $_POST['update'];
 	$link = $_POST['link'];
-	include_once("edit_model.php");
-	$model = new edit_model();
+	$queryResult = false;
 		
 	//case a new picture is uploaded. becasue uploading pics is weird
 	if ($_FILES["picture"]["name"] !== '' ){
@@ -96,7 +98,7 @@ function update(){
 				endif; //move uploaded file
 		}
 		//
-		$model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
+		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
 			$adtnlinfo, $summary, $filename_for_sql, $val, $rel, $clas, $update, $editor_id, $link);			
 	}
 	//case old picture is kept. because uploading pics is weird
@@ -104,13 +106,18 @@ function update(){
 		$result = $model->get_bolo($_POST['bolo_id']);
 		$row = $result->fetch_assoc();
 		$old_pic = $row['image'];
-		$model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
+		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
 			$adtnlinfo, $summary, $old_pic, $val, $rel, $clas, $update, $editor_id,$link);
 	}
 	//delete old bolo
 	//$model->delete($_POST['bolo_id']);
 	//go back to home page after all is said and done
-	header('Location: /bolofliercreator/');
+	if ($queryResult == true){
+	   header('Location: /bolofliercreator/');    
+	}
+    else{
+        header('Location: /bolofliercreator/edit.php');
+    }
 }
 ?>
 

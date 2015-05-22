@@ -56,9 +56,11 @@ SQL;
 SQL;
 		}
 		
-		if(!$result = $conn->query($sql)){
-		    die('There was an error running the query [' . $db->error . ']');
-		}
+        $result = $conn->query($sql);
+        
+		// if(!$result = $conn->query($sql)){
+		    // die('There was an error running the query [' . $db->error . ']');
+		// }
 		
 		mysqli_close($conn); 
 		return $result;
@@ -87,9 +89,10 @@ SQL;
 	    FROM `wp_flierform`
 	    WHERE bolo_id = "$boloid"
 SQL;
-		if(!$result = $conn->query($sql)){
-		    die('There was an error running the query [' . $db->error . ']');
-		}
+        $result = $conn->query($sql);
+		// if(!$result = $conn->query($sql)){
+		    // die('There was an error running the query [' . $db->error . ']');
+		// }
 		
 		mysqli_close($conn); 
 		return $result;
@@ -106,6 +109,7 @@ SQL;
 		$password = "";
 		$dbname = "bolo_creator";
 				
+        $queryResults = true;
 		// Create connection
 		$conn = new mysqli($servername, $username, $password, $dbname);
 		// Check connection
@@ -125,10 +129,10 @@ SQL;
 		SET edit_author="$author_id"
 		WHERE bolo_id="$boloid"
 SQL;
-        $result = $conn->query($sql2);
-		// if(!$result = $conn->query($sql2)){
-		    // die('There was an error running the query [' . $db->error . ']');
-		// }
+        //$result = $conn->query($sql2);
+		if(!$result = $conn->query($sql2)){
+		    $queryResults = false;
+		}
 		
 		$sql1 = <<<SQL
 		INSERT INTO `edit_history`
@@ -136,21 +140,37 @@ SQL;
 		FROM `wp_flierform`
 		WHERE bolo_id="$boloid"
 SQL;
-        $result = $conn->query($sql1);
-		// if(!$result = $conn->query($sql1)){
-		    // die('There was an error running the query [' . $db->error . ']');
-		// }
+        //$result = $conn->query($sql1);
+		if(!$result = $conn->query($sql1)){
+		    $queryResults = false;
+		}
 		
 		$sql = <<<SQL
 		UPDATE `wp_flierform`
-		SET selectcat="$selectcat", myName="$myName", lastName="$lastName", dob="$dob",license="$DLnumber",race="$race", sex="$sex", height="$height",weight="$weight", haircolor="$haircolor", address="$address", tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary", image="$newfilename", validity="$val", reliability="$rel", classification="$clas", update_status="$update", edit_author="$author_id", edit_date=CURRENT_TIMESTAMP(), link = "$link"
+		SET selectcat="$selectcat", myName="$myName", lastName="$lastName", dob="$dob",license="$DLnumber",race="$race", sex="$sex", height="$height",weight="$weight", haircolor="$haircolor", address="$address"
 		WHERE bolo_id = "$boloid"
 SQL;
         $result = $conn->query($sql);
-		// if(!$result = $conn->query($sql)){
-		    // die('There was an error running the query [' . $db->error . ']');
-		// }
+        
+        $sql3 = <<<SQL
+        UPDATE `wp_flierform`
+        SET tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary", image="$newfilename", validity="$val", reliability="$rel"
+        WHERE bolo_id = "$boloid"
+SQL;
+        $result = $conn->query($sql3);
+        
+        $sql4 = <<<SQL
+        UPDATE `wp_flierform`
+        SET classification="$clas", update_status="$update", edit_author="$author_id", edit_date=CURRENT_TIMESTAMP(), link = "$link"
+        WHERE bolo_id = "$boloid"
+SQL;
+        //$result = $conn->query($sql4);
+		if(!$result = $conn->query($sql)){
+		    $queryResults = false;
+		}
 		mysqli_close($conn);
+        
+        return $queryResults;
 	}//end new_bolo
 	
 	/**

@@ -8,5 +8,6 @@
 ?>
 
 <?php
-echo "Page under construction";
+echo "Error while updating BOLO. Please contact administrator";
+sleep(10);
 ?>
