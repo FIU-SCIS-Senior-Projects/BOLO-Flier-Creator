@@ -5,9 +5,9 @@
     //$email=new emailModel();
     //$resultIds = $email->loadIds();
     //$resultEmails = $email->loadEmail();
-    $to = "danaetillan@gmail.com";
+    $to = "bolo.flyer@gmail.com";
 	$subject = "BOLO Alert";
-    $message = "Please login in the BOLo website.  There are new Fliers Created";
+    $message = "Please login in the BOLO website.  There are new Fliers Created";
   
 	
   # Send email now
