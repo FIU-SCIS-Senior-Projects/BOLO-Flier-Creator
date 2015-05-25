@@ -145,27 +145,35 @@ SQL;
 		    $queryResults = false;
 		}
 		
-		$sql = <<<SQL
+        /* These next three sql queries are for updating an already created BOLO.
+         * After all the queries execute, a boolean value is returned; this acts
+         * as a check to make sure that all the queries in this class execute
+         * correctly so one can inform the admin of errors.*/
+        
+		$updateSQL = <<<SQL
 		UPDATE `wp_flierform`
-		SET selectcat="$selectcat", myName="$myName", lastName="$lastName", dob="$dob",license="$DLnumber",race="$race", sex="$sex", height="$height",weight="$weight", haircolor="$haircolor", address="$address"
+		SET selectcat="$selectcat", edit_date=CURRENT_TIMESTAMP(), myName="$myName", lastName="$lastName", dob="$dob",license="$DLnumber",race="$race", sex="$sex", height="$height"
 		WHERE bolo_id = "$boloid"
 SQL;
-        $result = $conn->query($sql);
+        if(!$updateResult = $conn->query($updateSQL)){
+            $queryResults = false;
+        }
         
-        $sql3 = <<<SQL
+        $updateSQL2 = <<<SQL
         UPDATE `wp_flierform`
-        SET tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary", image="$newfilename", validity="$val", reliability="$rel"
+        SET weight="$weight", haircolor="$haircolor", address="$address", tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary", image="$newfilename"
         WHERE bolo_id = "$boloid"
 SQL;
-        $result = $conn->query($sql3);
+        if(!$updateResult2 = $conn->query($updateSQL2)){
+            $queryResults = false;
+        }
         
-        $sql4 = <<<SQL
+        $updateSQL3 = <<<SQL
         UPDATE `wp_flierform`
-        SET classification="$clas", update_status="$update", edit_author="$author_id", edit_date=CURRENT_TIMESTAMP(), link = "$link"
+        SET validity="$val", reliability="$rel", classification="$clas", update_status="$update", edit_author="$author_id", link = "$link"
         WHERE bolo_id = "$boloid"
 SQL;
-        //$result = $conn->query($sql4);
-		if(!$result = $conn->query($sql)){
+		if(!$updateResult3 = $conn->query($updateSQL3)){
 		    $queryResults = false;
 		}
 		mysqli_close($conn);
