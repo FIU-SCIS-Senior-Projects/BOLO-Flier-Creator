@@ -1,8 +1,7 @@
-<?php get_header(); ?>
 <?php
 /**
  * Template Name: Edit Error
- *
+ * Gives the user and error message if a BOLO update fails
  * @package Inkness
  */
 ?>
