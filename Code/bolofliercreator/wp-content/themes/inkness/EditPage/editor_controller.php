@@ -82,26 +82,24 @@ function update(){
 	$link = $_POST['link'];
 	$queryResult = false;
 		
-	//case a new picture is uploaded. becasue uploading pics is weird
+	//if a new photo is uploaded, save it and send it for updating
 	if ($_FILES["picture"]["name"] !== '' ){
 		
-		if( $_FILES["picture"]["name"] !== ''){
-			$tmp_name = $_FILES["picture"]["tmp_name"];
-				$uploadfilename = $_FILES["picture"]["name"];
-				$saveddate = date("mdy-Hms");
-				$newfilename = "../uploads/".$saveddate."_".$uploadfilename;
-				$filename_for_sql = "uploads/".$saveddate."_".$uploadfilename;
-		     	$uploadurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
-		
-				if (move_uploaded_file($tmp_name, $newfilename)):
-					$msg = "File uploaded";
-				endif; //move uploaded file
-		}
-		//
-		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
-			$adtnlinfo, $summary, $filename_for_sql, $val, $rel, $clas, $update, $editor_id, $link);			
+		$tmp_name = $_FILES["picture"]["tmp_name"];
+		$uploadfilename = $_FILES["picture"]["name"];
+		$saveddate = date("mdy-Hms");
+		$newfilename = "../uploads/".$saveddate."_".$uploadfilename;
+		$filename_for_sql = "uploads/".$saveddate."_".$uploadfilename;
+     	$uploadurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
+
+		if (move_uploaded_file($tmp_name, $newfilename)){
+		    $msg = "File uploaded";
+		}//move uploaded file
+				
+		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
+        $adtnlinfo, $summary, $newfilename, $val, $rel, $clas, $update, $editor_id,$link);
 	}
-	//case old picture is kept. because uploading pics is weird
+	//otherwise, just keep the old picture
 	else{
 		$result = $model->get_bolo($_POST['bolo_id']);
 		$row = $result->fetch_assoc();
