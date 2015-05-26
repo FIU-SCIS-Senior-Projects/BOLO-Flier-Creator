@@ -97,7 +97,7 @@ function update(){
 		}//move uploaded file
 				
 		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
-        $adtnlinfo, $summary, $newfilename, $val, $rel, $clas, $update, $editor_id,$link);
+        $adtnlinfo, $summary, filename_for_sql, $val, $rel, $clas, $update, $editor_id,$link);
 	}
 	//otherwise, just keep the old picture
 	else{
