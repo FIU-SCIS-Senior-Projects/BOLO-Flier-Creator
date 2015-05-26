@@ -145,7 +145,7 @@ SQL;
 		    $queryResults = false;
 		}
 		
-        /* These next three sql queries are for updating an already created BOLO.
+        /* These next four sql queries are for updating an already created BOLO.
          * After all the queries execute, a boolean value is returned; this acts
          * as a check to make sure that all the queries in this class execute
          * correctly so one can inform the admin of errors.*/
@@ -161,7 +161,7 @@ SQL;
         
         $updateSQL2 = <<<SQL
         UPDATE `wp_flierform`
-        SET weight="$weight", haircolor="$haircolor", address="$address", tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary", image="$newfilename"
+        SET weight="$weight", haircolor="$haircolor", address="$address", tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary", 
         WHERE bolo_id = "$boloid"
 SQL;
         if(!$updateResult2 = $conn->query($updateSQL2)){
@@ -176,6 +176,15 @@ SQL;
 		if(!$updateResult3 = $conn->query($updateSQL3)){
 		    $queryResults = false;
 		}
+        
+        $updateSQL4 = <<<SQL
+        UPDATE `wp_flierform`
+        SET image="$newfilename"
+        WHERE bolo_id = "$boloid"
+SQL;
+        if(!$updateResult4 = $conn->query($updateSQL4)){
+            $queryResults = false;
+        }
 		mysqli_close($conn);
         
         return $queryResults;

@@ -88,7 +88,7 @@ function update(){
 		$tmp_name = $_FILES["picture"]["tmp_name"];
 		$uploadfilename = $_FILES["picture"]["name"];
 		$saveddate = date("mdy-Hms");
-		$newfilename = "../uploads/".$saveddate."_".$uploadfilename;
+		$newfilename = "uploads/".$saveddate."_".$uploadfilename;
 		$filename_for_sql = "uploads/".$saveddate."_".$uploadfilename;
      	$uploadurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
 
