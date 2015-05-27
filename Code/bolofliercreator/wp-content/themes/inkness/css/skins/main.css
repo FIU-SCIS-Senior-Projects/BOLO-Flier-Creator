@@ -201,7 +201,7 @@ a {
 a:hover,
 a:focus,
 a:active {
-  color: #00d2de;
+  color: #FFF;
 }
 /* 5. Carousel Wrapper
 ------------------------------------------------------- */
@@ -227,7 +227,7 @@ a:active {
   clear: both;
   display: block;
   display: inline-block;
-  background: #728f3f;
+  background: #00003D;
   padding-bottom: 0px;
   border: none;
   margin-top: -15px;
