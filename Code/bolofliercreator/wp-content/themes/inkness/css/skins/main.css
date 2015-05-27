@@ -21,7 +21,7 @@
 /* 0. Bootstrap Fixes
 -------------------------------------------------------	*/
 body {
-  background: #0000ff; 
+  background: #FFFFFF; 
 }
 .container {
   margin: auto;
@@ -135,7 +135,7 @@ a:hover .social-icon {
 #header-2 {
   padding-top: 15px;
   width: 100%;
-  background: #8ba36a;
+  background: #00003D;
 }
 #top-search {
  display:none;
@@ -196,7 +196,7 @@ a:hover .social-icon {
 /* 4. Links
 ------------------------------------------------------- */
 a {
-  color: #6f8551;
+  color: #FFFFFF;
 }
 a:hover,
 a:focus,
