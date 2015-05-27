@@ -121,6 +121,9 @@ body {
   left: 0px;
   transition: ease 0.4s all;
 }
+
+
+/* */
 .social-icon:hover {
   color: #FFF;
   text-shadow: 3px 3px 1px #818181;
@@ -201,7 +204,7 @@ a {
 a:hover,
 a:focus,
 a:active {
-  color: #FFF;
+  color: #2F2929;
 }
 /* 5. Carousel Wrapper
 ------------------------------------------------------- */
