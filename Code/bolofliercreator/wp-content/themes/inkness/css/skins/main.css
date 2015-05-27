@@ -63,7 +63,7 @@ body {
   z-index: 888;
 }
 #page ::selection {
-  background: #00bac4;
+  background: #FFF;
   color: white;
 }
 /* 2. Header-top
@@ -83,7 +83,7 @@ body {
   position: relative;
 }
 .site-title a {
-  color: #00bac4;
+  color: #FFF;
   font-size: 29px;
   font-weight: 200;
 }
@@ -315,12 +315,12 @@ a:active {
   background: none;
 }
 #site-navigation li:hover > a {
-  border-bottom: #00bac4 solid 2px;
+  border-bottom: #FFF solid 2px;
   padding-bottom: 23px;
-  color: #00bac4;
+  color: #FFF;
 }
 #site-navigation ul ul li:hover > a {
-  background: #51652d;
+  background: #FFF;
   border-bottom: none;
   padding: 8px 20px;
   color: black;
@@ -354,7 +354,7 @@ a:active {
     display: none !important;
   }
   #site-navigation .navbar-default .navbar-collapse {
-    border-color: #00bac4;
+    border-color: #FFF;
   }
   .menu-toggle,
   .main-navigation.toggled .nav-menu {
@@ -483,7 +483,7 @@ div.slide-description {
 }
 .single .fa-clock-o:before,
 .single .fa-user:before {
-  color: #00bac4 !important;
+  color: #FFF !important;
 }
 article.archive .article-rest {
   margin: auto;
@@ -550,7 +550,7 @@ article.archive .article-rest {
   display: block;
   font-size: 26px;
   color: #000000;
-  color: #00bac4;
+  color: #FFF;
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
 }
 .archive .entry-title a:hover {
