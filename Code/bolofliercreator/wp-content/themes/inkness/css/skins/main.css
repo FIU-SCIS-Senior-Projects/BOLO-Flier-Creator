@@ -21,7 +21,7 @@
 /* 0. Bootstrap Fixes
 -------------------------------------------------------	*/
 body {
-  background: #00003D; 
+  background: #FFF; 
 }
 .container {
   margin: auto;
@@ -122,7 +122,7 @@ body {
   transition: ease 0.4s all;
 }
 .social-icon:hover {
-  color: #00d2de;
+  color: #FFF;
   text-shadow: 3px 3px 1px #818181;
   top: -1px;
   left: -1px;
