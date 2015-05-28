@@ -20,8 +20,9 @@ class home_view{
 			
 			function archiveJS(boloid)
 			{
-				jQuery.get("?page_id=1532&idBolo=" + boloid);
-				return true;
+				jQuery.get("?page_id=1532&idBolo=" + boloid,function(){
+					location.reload();
+				});
 			}
 			
 		</script>
