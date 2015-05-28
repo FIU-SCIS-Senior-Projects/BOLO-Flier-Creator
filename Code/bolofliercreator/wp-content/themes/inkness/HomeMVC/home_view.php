@@ -21,7 +21,7 @@ class home_view{
 			function archiveJS(boloid)
 			{
 				jQuery.get("?page_id=1532&idBolo=" + boloid);
-				return true;
+				location.reload();
 			}
 			
 		</script>
@@ -71,11 +71,14 @@ class home_view{
 									//	Details</a>';	
 									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a>';
                                     //Code to show edit link if appropriate below
-                                    //if current user is admin, show edit on all BOLOS
+                                    //if current user is admin, show edit and archive link on all BOLOS
                                     if(current_user_can( 'activate_plugins' )){
                                         echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
+                                        
+                                        
+                                        
                                         //Archive link
-                                       // echo '<td> <a href="?page_id=1532&idBolo=' . "$id" . '">Archive</a></td>';
+                                       
                                        echo '<td> <a href="#" onclick="javascript: archiveJS(\'' . "$id" . '\')">Archive</a></td>';
                                     }
                                     //but if tier 2, show edit only on agency bolos
