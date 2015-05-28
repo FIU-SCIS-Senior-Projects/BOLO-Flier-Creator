@@ -21,7 +21,7 @@ class home_view{
 			function archiveJS(boloid)
 			{
 				jQuery.get("?page_id=1532&idBolo=" + boloid);
-				return false;
+				return true;
 			}
 			
 		</script>
@@ -76,7 +76,7 @@ class home_view{
                                         echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
                                         //Archive link
                                        // echo '<td> <a href="?page_id=1532&idBolo=' . "$id" . '">Archive</a></td>';
-                                       echo '<td> <a href="javascript: archiveJS(\'' . "$id" . '\')">Archive</a></td>';
+                                       echo '<td> <a href="#" onclick="javascript: archiveJS(\'' . "$id" . '\')">Archive</a></td>';
                                     }
                                     //but if tier 2, show edit only on agency bolos
                                     elseif(current_user_can( 'edit_other_pages' )){
