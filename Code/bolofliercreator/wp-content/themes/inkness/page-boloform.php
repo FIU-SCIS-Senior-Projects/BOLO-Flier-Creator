@@ -324,7 +324,7 @@ get_header(); ?>
 
 <!-- Button --> 
 <div class="control-group">
-    <div class="col-md-6">
+    <div class="col-md-4">
  <br/><br/>
   <button  type="submit" value="save" name="save" class="btn btn-primary" align = "right">Submit</button>
 
@@ -332,7 +332,7 @@ get_header(); ?>
   </div>
   
   <div class="control-group">
-    <div class="col-md-6">
+    <div class="col-md-4">
  <br/><br/>
   <button  type="submit" value="priview" name="preview" class="btn btn-primary" align = "center">Preview</button>
 
@@ -341,7 +341,7 @@ get_header(); ?>
   
   
   <div class="control-group">
-    <div class="col-md-6">
+    <div class="col-md-4">
  <br/><br/>
   <button  type="submit" value="pdf" name"pdf" class="btn btn-primary" align = "right">Save as PDF</button>
      </div>
