@@ -334,6 +334,15 @@ get_header(); ?>
   <div class="control-group">
     <div class="col-md-6">
  <br/><br/>
+  <button  type="submit" value="priview" name="preview" class="btn btn-primary" align = "center">Preview</button>
+
+   </div>
+  </div>
+  
+  
+  <div class="control-group">
+    <div class="col-md-6">
+ <br/><br/>
   <button  type="submit" value="pdf" name"pdf" class="btn btn-primary" align = "right">Save as PDF</button>
      </div>
   </div>
