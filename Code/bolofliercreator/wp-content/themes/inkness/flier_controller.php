@@ -80,6 +80,20 @@ if(isset($_POST["save"]) && $_POST["save"]) {
 //	include_once'emailController.php';
    	//die();
 }
+
+elseif(isset($_POST["preview"]) && $_POST["preview"]) {
+    
+    $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);    
+    
+    $result = $flier->get_bolo();
+    include"BoloPDF/bolo_pdf.php";
+    
+    //TODO: remove created BOLO from DATABASE after creation
+    $doc = new bolo_pdf();
+    //INSTEAD OF SAVING THE PDF, DISPLAY IT IN A NEW WINDOW WITHOUT DOWNLOADING IT DIRECTLY TO THE HARDDRIVE
+    $link = "<script>window.open($result)</script>";
+    echo $link;
+}
 //case the user clicks on Save as PDF (the flier will be saved on a diff table only for the PDFs, completely
 //independent from the regular bolos)
 else{	
