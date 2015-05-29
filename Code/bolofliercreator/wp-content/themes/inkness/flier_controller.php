@@ -90,8 +90,11 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     
     //TODO: remove created BOLO from DATABASE after creation
     $doc = new bolo_pdf();
-    //INSTEAD OF SAVING THE PDF, DISPLAY IT IN A NEW WINDOW WITHOUT DOWNLOADING IT DIRECTLY TO THE HARDDRIVE
-    $link = "<script>window.open($result)</script>";
+    //TODO: New method that just creates a pdf without giving it back to the user to save onto harddrive. Need place to save pdf and delete it immediately after.
+    $doc->save_pdf($result);
+    //Display in new window using:
+    //$link = "<script>window.open($doc)</script>"; 
+    //or @readfile($file)
     echo $link;
 }
 //case the user clicks on Save as PDF (the flier will be saved on a diff table only for the PDFs, completely
