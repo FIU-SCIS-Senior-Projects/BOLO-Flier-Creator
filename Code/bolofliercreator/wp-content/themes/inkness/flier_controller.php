@@ -25,6 +25,7 @@ include_once'flier_view.php';
 
     $flier = new FlierModel();
 	$view  =  new Flier_View();
+    $showModal = false;
 	
 $selectcat=$_POST ['selectcat'];
 $myName=$_POST ['myName']; 
@@ -80,9 +81,10 @@ if(isset($_POST["save"]) && $_POST["save"]) {
 //	include_once'emailController.php';
    	//die();
 }
-
+//if preview button was clicked
 elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     
+    $showModal = true;
     $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);    
     
     $result = $flier->get_bolo();
@@ -96,6 +98,7 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     //$link = "<script>window.open($doc)</script>"; 
     //or @readfile($file)
     echo $link;
+    $showModal = true;
 }
 //case the user clicks on Save as PDF (the flier will be saved on a diff table only for the PDFs, completely
 //independent from the regular bolos)

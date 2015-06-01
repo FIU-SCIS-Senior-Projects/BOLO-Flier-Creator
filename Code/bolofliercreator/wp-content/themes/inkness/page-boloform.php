@@ -19,6 +19,12 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
+<!--Shows modal when previw is clicked -->
+<?php if($show_modal):?>
+  <script> $('#myModal').modal('show');</script>
+<?php endif;?>
+
+
 </head>
 
 
@@ -39,6 +45,32 @@ get_header(); ?>
 <!--<form action="?page_id=1481" method="POST" enctype="multipart/form-data">-->
 	
 <form action="<?php echo get_template_directory_uri();?>../flier_controller.php" method="POST" enctype="multipart/form-data">
+ 
+ 
+ <!-- MODAL BELOW FOR BOLO PREVIEW!!! -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+          
+        <!--TODO: modify this code to better suit BOLOs, add PDF to body. -->
+        
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+        <button  type="submit" value="pdf" name"pdf" class="btn btn-primary" align = "right">Save as PDF</button>
+        <button  type="submit" value="save" name="save" class="btn btn-primary" align = "right">Submit</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div
+ 
+ <!-- end of modal -->
  
 <div class="controls">
 	<div class="col-md-6">
