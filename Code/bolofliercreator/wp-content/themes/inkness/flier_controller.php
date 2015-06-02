@@ -84,7 +84,6 @@ if(isset($_POST["save"]) && $_POST["save"]) {
 //if preview button was clicked
 elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     
-    $showModal = true;
     $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);    
     
     $result = $flier->get_bolo();
@@ -93,12 +92,11 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     //TODO: remove created BOLO from DATABASE after creation
     $doc = new bolo_pdf();
     //TODO: New method that just creates a pdf without giving it back to the user to save onto harddrive. Need place to save pdf and delete it immediately after.
-    $doc->save_pdf($result);
-    //Display in new window using:
-    //$link = "<script>window.open($doc)</script>"; 
-    //or @readfile($file)
+    $doc->save_pdf($result, TRUE);
     echo $link;
-    $showModal = true;
+    //$showModal = true;
+    
+    $flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
 }
 //case the user clicks on Save as PDF (the flier will be saved on a diff table only for the PDFs, completely
 //independent from the regular bolos)
@@ -108,7 +106,7 @@ else{
 	$result = $flier->get_bolo();
 	include"BoloPDF/bolo_pdf.php";
 	$doc = new bolo_pdf();
-	$doc->save_pdf($result);	
+	$doc->save_pdf($result, FALSE);	
 }
  
 

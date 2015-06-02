@@ -13,8 +13,10 @@ class bolo_pdf{
 	 * 
 	 * @param $bolo this must be a mysqli_result object containing the bolo
 	 * you want to create a pdf of
+     * 
+     * @param $display indicates whether to simply display the PDF or download it
 	 */
-	public function save_pdf($bolo){
+	public function save_pdf($bolo, $display){
 		
 		include("mpdf60/mpdf.php");
 
@@ -174,9 +176,16 @@ SQL;
 		
 		$mpdf->WriteHTML($html.$html2.$html3.$html4,2);
 		
-		$mpdf->Output('mpdf.pdf','D');
+        if($display=TRUE)
+        {
+            //simply display the PDF in a new window
+            $mpdf->Output();
+        }else{
+            $mpdf->Output('mpdf.pdf','D');
+        
+            echo $html.$html2;
+        }
 		
-		echo $html.$html2;
 	}//end function save pdf
 	
 	

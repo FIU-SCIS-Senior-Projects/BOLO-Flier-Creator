@@ -60,6 +60,23 @@ SQL;
 	    }
     }//end function submit_pdf
     
+    
+        /**
+     * insert query for the bolo_pdf table
+     */
+    public function remove_pdf($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $rcheckboxes, $vcheckboxes, $clacheckboxes, $adtnlinfo,$newfilename,$author,$agency,$link){
+        
+        $conn=new data_access();
+    
+        $delete = "DELETE FROM bolo_pdf
+        WHERE selectcat='$selectcat' , myName='$myName' , lastName='$lastName', dob='$dob', license='$DLnumber', race='$race', sex='$sex', 
+        height='$height', weight='$weight', haircolor='$haircolor',address='$address',tattoos='$tattoos',summary='$summary',
+        reliability='$rcheckboxes', validity='$vcheckboxes', classification='$clacheckboxes',
+        adtnlinfo='$adtnlinfo',image='$newfilename',author='$author',agency='$agency',link='$link'";
+    
+        $conn->execute_query($delete);
+    }//end function remove_pdf
+    
     /**
 	 * This fuction resturns the bolo that's gonna be converted to a pdf
 	 */
