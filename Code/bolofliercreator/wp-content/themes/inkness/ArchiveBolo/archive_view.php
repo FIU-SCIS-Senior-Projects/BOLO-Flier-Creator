@@ -101,8 +101,9 @@ class archive_view{
 									   echo '</td>';
                                     }
 									
-                                    //but if user is tier 2, show restore only on agency bolos
-                                    else(current_user_can( 'edit_other_pages' )){
+                          //but if user is tier 2, show restore only on agency bolos
+                                    else(current_user_can( 'edit_other_pages' ))
+									{
                                          $ag_name = get_user_meta(get_current_user_id(), "agency", true);
 										 
                                          if($ag_name == $row['agency'])
