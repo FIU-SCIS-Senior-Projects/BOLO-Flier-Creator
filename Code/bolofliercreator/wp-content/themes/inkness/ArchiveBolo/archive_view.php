@@ -89,43 +89,37 @@ class archive_view{
 									
                                     //if current user is admin, show restore and delete on all BOLOS
                                     if(current_user_can( 'activate_plugins' ))
-					{
+									{
                                        
-						 echo '<td>';
-							//restore link
-							echo '<a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a>';
-							echo '&nbsp;&nbsp;&nbsp;';
+									   echo '<td>';
+											//restore link
+											echo '<a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a>';
+											echo '&nbsp;&nbsp;&nbsp;';
 											
-							//delete link
-							echo '<a href="#" onclick="javascript: purgeJS(\'' . "$id" . '\')">Delete</a>';
-						echo '</td>';
-                                	}
-									
-                          //but if user is tier 2, show restore only on agency bolos
-                                    else(current_user_can( 'edit_other_pages' ))
-                                    {
-                                    	  $ag_name = get_user_meta(get_current_user_id(), "agency", true);
-										 
-                                         if($ag_name == $row['agency'])
-                                         {
-						 //restore link
-                                             echo '<a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a>';
-                                         }
+											//delete link
+											echo '<a href="#" onclick="javascript: purgeJS(\'' . "$id" . '\')">Delete</a>';
+									   echo '</td>';
                                     }
 									
-                                       
+                                    //but if tier 2, show restore only on agency bolos
+                                    else(current_user_can( 'edit_other_pages' )){
+                                         $ag_name = get_user_meta(get_current_user_id(), "agency", true);
+                                         if($ag_name == $row['agency'])
+                                         {
+                                             echo '<td><a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a></td>';
+                                         }
                                         
-                                    
-                                    
+                                    }
+ 
                                     															
-				echo '</div>'; //end of individual thumbnail		
-				}
-				else {
-					$flag=false;
-					echo '</div>';
-					break 2;
-					}
-				}
+								echo '</div>'; //end of individual thumbnail		
+							}
+							else {
+								$flag=false;
+								echo '</div>';
+								break 2;
+							}
+						}
 					echo '</div>';
 				}
 			?>
@@ -175,6 +169,5 @@ class archive_view{
 		
 		get_footer();
 	}//end uptade_view
-	
 }//end class
 ?>
