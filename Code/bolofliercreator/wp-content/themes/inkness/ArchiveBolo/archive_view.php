@@ -84,33 +84,35 @@ class archive_view{
 									echo $id . '<br />';
 									echo $row['datecreated'];
 									echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-							
-                                    //Code to show restore and delete link if appropriate below
-									
-                                    //if current user is admin, show restore and delete on all BOLOS
-                                    if(current_user_can( 'activate_plugins' ))
-									{
-                                       
-									   echo '<td>';
-											//restore link
-											echo '<a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a>';
-											echo '&nbsp;&nbsp;&nbsp;';
-											
-											//delete link
-											echo '<a href="#" onclick="javascript: purgeJS(\'' . "$id" . '\')">Delete</a>';
-									   echo '</td>';
+									//echo ' <a href="/bolofliercreator/wp-content/themes/inkness/BoloSelected.php?idBolo=' . "$id" . '">
+									//	Details</a>';	
+									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a>';
+                                    //Code to show edit link if appropriate below
+                                    //if current user is admin, show edit on all BOLOS
+                                    if(current_user_can( 'activate_plugins' )){
+                                        echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
+                                        //Archive link
+                                       // echo '<td> <a href="?page_id=1532&idBolo=' . "$id" . '">Archive</a></td>';
+                                       echo '<td> <a href="#" onclick="javascript: archiveJS(\'' . "$id" . '\')">Archive</a></td>';
                                     }
-									
-                                    //but if tier 2, show restore only on agency bolos
-                                    else(current_user_can( 'edit_other_pages' )){
+                                    //but if tier 2, show edit only on agency bolos
+                                    elseif(current_user_can( 'edit_other_pages' )){
                                          $ag_name = get_user_meta(get_current_user_id(), "agency", true);
                                          if($ag_name == $row['agency'])
                                          {
-                                             echo '<td><a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a></td>';
+                                             echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
                                          }
                                         
                                     }
- 
+                                    //other wise, it is a normal user, so check to see if they can edit
+                                    else{
+                                        while($dataRow = $data->fetch_assoc()){
+                                            if ($dataRow['bolo_id']==$id){
+                                                echo ' <a href="?page_id=1502&idBolo=' . $dataRow['bolo_id'] . '">Edit</a>';
+                                                break;
+                                            }
+                                        }   
+                                    }
                                     															
 								echo '</div>'; //end of individual thumbnail		
 							}
