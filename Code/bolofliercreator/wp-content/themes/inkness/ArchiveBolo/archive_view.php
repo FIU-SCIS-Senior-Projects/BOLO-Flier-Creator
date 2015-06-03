@@ -175,5 +175,6 @@ class archive_view{
 		
 		get_footer();
 	}//end uptade_view
+	
 }//end class
 ?>
