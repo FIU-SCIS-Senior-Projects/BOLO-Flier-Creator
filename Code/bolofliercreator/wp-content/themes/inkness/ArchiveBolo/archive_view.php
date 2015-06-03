@@ -88,8 +88,8 @@ class archive_view{
                                     //Code to show restore and delete link if appropriate below
 									
                                     //if current user is admin, show restore and delete on all BOLOS
-                                    if(current_user_can( 'activate_plugins' )){
-                                       
+                                    if(current_user_can( 'activate_plugins' ))
+									{
                                        
 									   echo '<td>';
 											//restore link
@@ -102,8 +102,10 @@ class archive_view{
                                     }
 									
                                     //but if tier 2, show restore only on agency bolos
-                                    else(current_user_can( 'edit_other_pages' )){
+                                    else(current_user_can( 'edit_other_pages' ))
+									{
                                          $ag_name = get_user_meta(get_current_user_id(), "agency", true);
+										 
                                          if($ag_name == $row['agency'])
                                          {
 											 //restore link
