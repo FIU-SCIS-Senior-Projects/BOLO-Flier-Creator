@@ -89,17 +89,17 @@ class archive_view{
 									
                                     //if current user is admin, show restore and delete on all BOLOS
                                     if(current_user_can( 'activate_plugins' ))
-									{
+					{
                                        
-									   echo '<td>';
-											//restore link
-											echo '<a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a>';
-											echo '&nbsp;&nbsp;&nbsp;';
+						 echo '<td>';
+							//restore link
+							echo '<a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a>';
+							echo '&nbsp;&nbsp;&nbsp;';
 											
-											//delete link
-											echo '<a href="#" onclick="javascript: purgeJS(\'' . "$id" . '\')">Delete</a>';
-									   echo '</td>';
-                                    }
+							//delete link
+							echo '<a href="#" onclick="javascript: purgeJS(\'' . "$id" . '\')">Delete</a>';
+						echo '</td>';
+                                	}
 									
                           //but if user is tier 2, show restore only on agency bolos
                                     else(current_user_can( 'edit_other_pages' ))
@@ -108,7 +108,7 @@ class archive_view{
 										 
                                          if($ag_name == $row['agency'])
                                          {
-											 //restore link
+						 //restore link
                                              echo '<a href="#" onclick="javascript: restoreJS(\'' . "$id" . '\')">Restore</a>';
                                          }
                                     }
@@ -118,14 +118,14 @@ class archive_view{
                                     
                                     
                                     															
-								echo '</div>'; //end of individual thumbnail		
+				echo '</div>'; //end of individual thumbnail		
 				}
-							else {
-								$flag=false;
-								echo '</div>';
-								break 2;
-							}
-						}
+				else {
+					$flag=false;
+					echo '</div>';
+					break 2;
+					}
+				}
 					echo '</div>';
 				}
 			?>
