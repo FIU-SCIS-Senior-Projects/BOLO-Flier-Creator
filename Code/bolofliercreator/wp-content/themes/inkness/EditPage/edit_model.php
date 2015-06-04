@@ -145,47 +145,40 @@ SQL;
 		    $queryResults = false;
 		}
 		
-        /* These next four sql queries are for updating an already created BOLO.
+/* These next three sql queries are for updating an already created BOLO.
          * After all the queries execute, a boolean value is returned; this acts
          * as a check to make sure that all the queries in this class execute
          * correctly so one can inform the admin of errors.*/
         
-		$updateSQL = <<<SQL
-		UPDATE `wp_flierform`
-		SET selectcat="$selectcat", edit_date=CURRENT_TIMESTAMP(), myName="$myName", lastName="$lastName", dob="$dob",license="$DLnumber",race="$race", sex="$sex", height="$height"
-		WHERE bolo_id = "$boloid"
+        $updateSQL = <<<SQL
+        UPDATE `wp_flierform`
+        SET selectcat="$selectcat", edit_date=CURRENT_TIMESTAMP(), myName="$myName", lastName="$lastName", dob="$dob"
+        WHERE bolo_id = "$boloid"
 SQL;
         if(!$updateResult = $conn->query($updateSQL)){
-            $queryResults = false;
+            return false;
+            //$queryResults = false;
         }
         
         $updateSQL2 = <<<SQL
         UPDATE `wp_flierform`
-        SET weight="$weight", haircolor="$haircolor", address="$address", tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary", 
+        SET license="$DLnumber", weight="$weight", haircolor="$haircolor", address="$address", tattoos="$tattoos", adtnlinfo="$adtnlinfo", summary="$summary"
         WHERE bolo_id = "$boloid"
 SQL;
         if(!$updateResult2 = $conn->query($updateSQL2)){
-            $queryResults = false;
+            return false;
+            //$queryResults = false;
         }
         
         $updateSQL3 = <<<SQL
         UPDATE `wp_flierform`
-        SET validity="$val", reliability="$rel", classification="$clas", update_status="$update", edit_author="$author_id", link = "$link"
+        SET race="$race", sex="$sex", height="$height", validity="$val", reliability="$rel", classification="$clas", update_status="$update", edit_author="$author_id", link = "$link", image="$newfilename"
         WHERE bolo_id = "$boloid"
 SQL;
-		if(!$updateResult3 = $conn->query($updateSQL3)){
-		    $queryResults = false;
-		}
-        
-        $updateSQL4 = <<<SQL
-        UPDATE `wp_flierform`
-        SET image="$newfilename"
-        WHERE bolo_id = "$boloid"
-SQL;
-        if(!$updateResult4 = $conn->query($updateSQL4)){
-            $queryResults = false;
+        if(!$updateResult3 = $conn->query($updateSQL3)){
+            return false;
         }
-		mysqli_close($conn);
+        mysqli_close($conn);
         
         return $queryResults;
 	}//end new_bolo
