@@ -16,7 +16,7 @@ class bolo_pdf{
      * 
      * @param $display indicates whether to simply display the PDF or download it
 	 */
-	public function save_pdf($bolo, $display){
+	public function save_pdf($bolo, $display, $author){
 		
 		include("mpdf60/mpdf.php");
 
@@ -179,7 +179,9 @@ SQL;
         if($display=TRUE)
         {
             //simply display the PDF in a new window
-            $mpdf->Output();
+            //$mpdf->Output();
+            //save on the server for retrieval
+            $mpdf->Output('uploads/preview'.$author, F);
         }else{
             $mpdf->Output('mpdf.pdf','D');
         

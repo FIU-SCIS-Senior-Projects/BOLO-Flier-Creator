@@ -19,7 +19,7 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-<!--Shows modal when previw is clicked -->
+<!--Shows modal when preview is clicked -->
 <?php if($show_modal):?>
   <script> $('#myModal').modal('show');</script>
 <?php endif;?>
@@ -53,12 +53,27 @@ get_header(); ?>
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        <h4 class="modal-title" id="myModalLabel">Preview</h4>
       </div>
       <div class="modal-body">
-          
-        <!--TODO: modify this code to better suit BOLOs, add PDF to body. -->
-        
+          <!-- I get the user id and concat it with the default preview location on the database -->
+          <div id="pdfauthor" style="display: none;">
+            <?php 
+                echo wp_get_current_user()->ID; 
+            ?>
+          </div>
+          <script>
+              var div = document.getElementById("pdfauthor");
+              var authorName = div.textContent;
+              var pdf = "uploads/preview";
+              var previewLocation = pdf.concat(authorName);
+              var location = document.getElementById('pdfPreview').value = previewLocation;
+          </script>
+          <!-- After concatenation I use the variable to retrieve it and display it in the modal -->
+          <input type="text" id="pdfPreview" name="pdfPreview"/>
+          < object data="pdfPreview" type='application/pdf'>
+               < embed src="pdfPreview" type='application/pdf'></embed>
+          </object>
       </div>
       <div class="modal-footer">
         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -366,7 +381,7 @@ get_header(); ?>
   <div class="control-group">
     <div class="col-md-4">
  <br/><br/>
-  <button  type="submit" value="priview" name="preview" class="btn btn-primary" align = "center">Preview</button>
+  <button  type="submit" value="preview" name="preview" class="btn btn-primary" align = "center">Preview</button>
 
    </div>
   </div>
