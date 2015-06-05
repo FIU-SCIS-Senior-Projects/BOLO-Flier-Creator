@@ -89,7 +89,7 @@ class archive_view{
 						echo $row['datecreated'];
 						echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
 						//Code to show restore and delete link if appropriate below
-						
+						/*
 	            				//if current user is admin, show restore and delete on all BOLOS
 	            				if(current_user_can( 'activate_plugins' ))
 						{
@@ -111,7 +111,8 @@ class archive_view{
 		                                        }
 			                                        
 			                        }
-	 					echo '</div>'; //end of individual thumbnail		
+	 					echo '</div>'; //end of individual thumbnail	
+	 					*/
 					}
 					else 
 					{
