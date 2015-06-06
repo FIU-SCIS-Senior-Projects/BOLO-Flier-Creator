@@ -46,8 +46,6 @@ SQL;
 		    die('There was an error running the query [' . $db->error . ']');
 		}	
 	}
-}//end class archive_model
-
 
 /**
 	 * gets 24 bolos for the specified agency
@@ -121,5 +119,8 @@ SQL;
 		
 		mysqli_close($conn);
 		return $result;
-	}
+	}// end get_agencies
+
+	
+}//end class archive_model
 ?>
