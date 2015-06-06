@@ -23,7 +23,7 @@ class archive_view{
 			{
 				if(confirm("Are you sure you want to delete this BOLO?"))
 				{
-					jQuery.get("?page_id=1492&idBolo=" + boloid,function()
+					jQuery.post( "?page_id=1492", { idBolo: boloid },function()
 					{
 						location.reload();
 					});
