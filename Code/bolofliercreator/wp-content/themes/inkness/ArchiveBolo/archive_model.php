@@ -46,8 +46,6 @@ SQL;
 		    die('There was an error running the query [' . $db->error . ']');
 		}	
 	}
-}//end class archive_model
-
 
 /**
 	 * gets 24 bolos for the specified agency
@@ -94,5 +92,35 @@ SQL;
 	return $result;
 	}//end get_data
 	
+	/**
+	 * gets the list of all the agencies enrolled
+	 * @return a mysqli_result object with all the agencies
+	 */
+	public function get_agencies(){
+		$servername = "localhost";
+		$username = "root";
+		$password = "";
+		$dbname = "bolo_creator";
+				
+		// Create connection
+		$conn = new mysqli($servername, $username, $password, $dbname);
+		// Check connection
+		if ($conn->connect_error) {
+		    die("Connection failed: " . $conn->connect_error);
+		}
+		
+		$sql = <<<SQL
+	    SELECT name
+	    FROM agencies	    
+SQL;
+		if(!$result = $conn->query($sql)){
+		    die('There was an error running the query [' . $db->error . ']');
+		}
+		
+		mysqli_close($conn);
+		return $result;
+	}// end get_agencies
 
+	
+}//end class archive_model
 ?>
