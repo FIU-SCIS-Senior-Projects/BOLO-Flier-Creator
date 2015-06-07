@@ -70,7 +70,7 @@ if ($_POST['classification'] == null){
 //case the user clicks on save
 if(isset($_POST["save"]) && $_POST["save"]) {
  	
-	$flier->submit ($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
+	$flier->submit ($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link, FALSE);
 	$data = $flier->getlast();
 
 	$result = $data->fetch_assoc(); 
@@ -91,7 +91,7 @@ if(isset($_POST["save"]) && $_POST["save"]) {
 //if preview button was clicked
 elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     
-    $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);    
+    $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link, TRUE);    
     
     $result = $flier->get_bolo();
     include"BoloPDF/bolo_pdf.php";
@@ -105,7 +105,7 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
 //case the user clicks on Save as PDF (the flier will be saved on a diff table only for the PDFs, completely
 //independent from the regular bolos)
 else{	
-	$flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);	
+	$flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link, FALSE);	
 	
 	$result = $flier->get_bolo();
 	include"BoloPDF/bolo_pdf.php";

@@ -45,19 +45,23 @@ SQL;
     /**
 	 * insert query for the bolo_pdf table
 	 */
-    public function submit_pdf($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $rcheckboxes, $vcheckboxes, $clacheckboxes, $adtnlinfo,$newfilename,$author,$agency,$link){
+    public function submit_pdf($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $rcheckboxes, $vcheckboxes, $clacheckboxes, $adtnlinfo,$newfilename,$author,$agency,$link, $preview){
     	
     	$conn=new data_access();
        	
 		$res = "INSERT INTO bolo_pdf (selectcat, myName, lastName, dob, license, race, sex, height, weight, haircolor,address,tattoos,summary,reliability, validity, classification,adtnlinfo,image,author,agency,link) 
 	    VALUES ('$selectcat', '$myName','$lastName','$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address','$tattoos', '$summary', '$rcheckboxes','$vcheckboxes','$clacheckboxes' ,'$adtnlinfo','$newfilename','$author', '$agency', '$link')";
 	
-	    if ($conn->execute_query($res) === TRUE){
-	    	echo "Bolo flier created successfully";				    	
-	    }
-	    else{
-	    	echo "Error:" .$res . "<br> . $conn->error";
-	    }
+        if($preview == FALSE)
+        {
+            if ($conn->execute_query($res) === TRUE){
+            echo "Bolo flier created successfully";                     
+            }
+            else{
+                echo "Error:" .$res . "<br> . $conn->error";
+            }
+        }
+	    
     }//end function submit_pdf
     
     
