@@ -178,10 +178,8 @@ SQL;
 		
         if($display=TRUE)
         {
-            //simply display the PDF in a new window
-            //$mpdf->Output();
             //save on the server for retrieval
-            $mpdf->Output('uploads/preview' . $author, F);
+            $mpdf->Output('uploads/preview' . $author . '.pdf', 'F');
         }else{
             $mpdf->Output('mpdf.pdf','D');
         

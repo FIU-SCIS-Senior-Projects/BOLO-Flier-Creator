@@ -19,7 +19,8 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-
+<!-- JQuery for Preview Submittal -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 
 </head>
@@ -38,10 +39,30 @@ get_header(); ?>
 		<div class="col-md-9">
 			<div class="form-group">
 				
+ <!-- If preview is selected, prevents page refresh to allow Modal to load -->
+ <script>
+     $("#preview").click(function() {
+         
+         var url = "flier_controller.php";
+         
+         $.ajax({
+             type: "POST",
+             url: url,
+             data: $("#boloCreate").serialize(),
+             success: function(data)
+             {
+                 //alert();
+                 ;
+             }
+         });
+         
+         return false;//keep the page from refreshing
+     })
+ </script>
 
 <!--<form action="?page_id=1481" method="POST" enctype="multipart/form-data">-->
 	
-<form action="<?php echo get_template_directory_uri();?>../flier_controller.php" method="POST" enctype="multipart/form-data">
+<form action="<?php echo get_template_directory_uri();?>../flier_controller.php" method="POST" enctype="multipart/form-data" name="boloCreate">
  
  
  <!--Shows modal when preview is clicked -->
@@ -49,7 +70,7 @@ get_header(); ?>
   <script> $('#myModal').modal();</script>
 <?php endif;?>
  
- <!-- MODAL BELOW FOR BOLO PREVIEW!!! -->
+ <!-- MODAL BELOW FOR BOLO PREVIEW -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -71,7 +92,8 @@ get_header(); ?>
                   var div = document.getElementById("pdfauthor");
                   var authorName = div.textContent;
                   var pdf = "uploads/preview";
-                  var previewLocation = pdf.concat(authorName);
+                  var preLocation = pdf.concat(authorName);
+                  var previewLocation = pdf.concat('.pdf');
                   var location = document.getElementById('pdfPreview').value = previewLocation;
               </script>
                   <!-- After concatenation I use the variable to retrieve it and display it in the modal -->
@@ -398,7 +420,7 @@ get_header(); ?>
   <div class="control-group">
     <div class="col-md-4">
  <br/><br/>
-  <button  type="submit" value="pdf" name"pdf" class="btn btn-primary" align = "right">Save as PDF</button>
+  <button  type="submit" value="pdf" name="pdf" class="btn btn-primary" align = "right">Save as PDF</button>
      </div>
   </div>
 

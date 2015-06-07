@@ -26,7 +26,6 @@ include_once'flier_view.php';
     $flier = new FlierModel();
 	$view  =  new Flier_View();
     $showModal = false;
-    $previewShown = false;
 	
 $selectcat=$_POST ['selectcat'];
 $myName=$_POST ['myName']; 
@@ -91,15 +90,22 @@ if(isset($_POST["save"]) && $_POST["save"]) {
 //if preview button was clicked
 elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     
+    //submit information for pdf creation
     $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link, TRUE);    
     
     $result = $flier->get_bolo();
+    
     include"BoloPDF/bolo_pdf.php";
     $doc = new bolo_pdf();
+    //created pdf using submitted information
     $doc->save_pdf($result, TRUE, $author);
+    //set to true to display modal
     $showModal = true;
-    $previewShown = true;
+    
+    //remove PDF infor after it has been displayed
     $flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
+    
+    //set to false so another BOLO may be shown
     $showModal = false;
 }
 //case the user clicks on Save as PDF (the flier will be saved on a diff table only for the PDFs, completely
@@ -113,10 +119,10 @@ else{
 	$doc->save_pdf($result, FALSE, $author);
     
     //delete the preview BOLO if it exists
-    if (realpath('uploads/preview' . $author))
+    if (realpath('uploads/preview' . $author . '.pdf'))
    {
        //delete the preview file
-       unlink('uploads/preview' . $author);
+       unlink('uploads/preview' . $author . 'pdf');
    } 
     	
 }
