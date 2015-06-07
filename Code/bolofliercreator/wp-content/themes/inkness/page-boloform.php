@@ -19,11 +19,7 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-<!--Shows modal when preview is clicked -->
-<?php if($show_modal):?>
- <!-- <script> $('#myModal').modal('show');</script> -->
-  <script> $('#myModal').modal();</script>
-<?php endif;?>
+
 
 
 </head>
@@ -47,6 +43,11 @@ get_header(); ?>
 	
 <form action="<?php echo get_template_directory_uri();?>../flier_controller.php" method="POST" enctype="multipart/form-data">
  
+ 
+ <!--Shows modal when preview is clicked -->
+<?php if($show_modal):?>
+  <script> $('#myModal').modal();</script>
+<?php endif;?>
  
  <!-- MODAL BELOW FOR BOLO PREVIEW!!! -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -92,7 +93,6 @@ get_header(); ?>
     </div>
   </div>
 </div
- 
  <!-- end of modal -->
  
 <div class="controls">

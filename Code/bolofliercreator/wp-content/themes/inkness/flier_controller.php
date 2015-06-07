@@ -96,9 +96,7 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     $result = $flier->get_bolo();
     include"BoloPDF/bolo_pdf.php";
     $doc = new bolo_pdf();
-    //$pdf = $doc->save_pdf($result, TRUE);
     $doc->save_pdf($result, TRUE, $author);
-    //TODO: Use preview.$author to access the created PDF from the HTML
     $showModal = true;
     $previewShown = true;
     $flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
