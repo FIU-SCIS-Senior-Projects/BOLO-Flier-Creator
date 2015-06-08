@@ -6,122 +6,77 @@
  */
 ?>
 
-<head>
-<meta charset="UTF-8">
-<title>Bolo Form</title>
-<link rel="stylesheet" href="custom-styles.css">
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-<!-- JQuery for Preview Submittal -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
-
-</head>
-
+<?php session_start(); ?>
 
 <?php
 get_header(); ?>
               
-			
+            
  <?php include ('inc/headers.php'); ?>
 
+<head>
+<meta charset="UTF-8">
+<title>Bolo Form</title>
 
-	
+<!-- JQuery for Preview Submittal -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+</head>
+    
 <div class="container">
-	<div class="row">
-		<div class="col-md-9">
-			<div class="form-group">
-				
- <!-- If preview is selected, prevents page refresh to allow Modal to load -->
- <script>
-     $("#preview").click(function() {
-         
-         var url = "flier_controller.php";
-         
-         $.ajax({
-             type: "POST",
-             url: url,
-             data: $("#boloCreate").serialize(),
-             success: function(data)
-             {
-                 //alert();
-                 ;
-             }
-         });
-         
-         return false;//keep the page from refreshing
-     })
- </script>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="form-group">
+                
+
 
 <!--<form action="?page_id=1481" method="POST" enctype="multipart/form-data">-->
-	
+    
 <form action="<?php echo get_template_directory_uri();?>../flier_controller.php" method="POST" enctype="multipart/form-data" name="boloCreate">
  
- 
+  <!-- If preview is selected, prevents page refresh to allow Modal to load -->
+     <script type="text/javascript">
+         $("#preview").click(function() {
+             
+             var url = "flier_controller.php";
+             
+             $.ajax({
+                 type: "POST",
+                 url: url,
+                 data: $("#boloCreate").serialize(),
+                 success: function(data)
+                 {
+                     console.log(data);
+                     ;
+                 }
+             });
+             
+             return false;//keep the page from refreshing
+         });
+     </script>
+     
  <!--Shows modal when preview is clicked -->
-<?php if($show_modal):?>
-  <script> $('#myModal').modal();</script>
+<?php if(TRUE):?>
+  <?php $_SESSION['showmodal'] = false; ?>
+  <script>
+  $( document ).ready(function() {
+    $('#myModal').modal();
+  });
+  </script>
 <?php endif;?>
  
- <!-- MODAL BELOW FOR BOLO PREVIEW -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Preview</h4>
-      </div>
-      <div class="modal-body">
-          
-          <!-- I get the user id and concat it with the default preview location on the database, but only after the modal has loaded -->
-          $('#myModal').on('shown.bs.modal', function()) {
-              
-              <div id="pdfauthor" style="display: none;">
-                <?php 
-                    echo wp_get_current_user()->ID; 
-                ?>
-              </div>
-              <script>
-                  var div = document.getElementById("pdfauthor");
-                  var authorName = div.textContent;
-                  var pdf = "uploads/preview";
-                  var preLocation = pdf.concat(authorName);
-                  var previewLocation = pdf.concat('.pdf');
-                  var location = document.getElementById('pdfPreview').value = previewLocation;
-              </script>
-                  <!-- After concatenation I use the variable to retrieve it and display it in the modal -->
-              <!-- <input type="text" id="pdfPreview" name="pdfPreview"/> -->
-              < object data="pdfPreview" type='application/pdf'>
-                   < embed src="pdfPreview" type='application/pdf'></embed>
-              </object>
-          
-          }
-          
-      </div>
-      <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button  type="submit" value="pdf" name"pdf" class="btn btn-primary" align = "right">Save as PDF</button>
-        <button  type="submit" value="save" name="save" class="btn btn-primary" align = "right">Submit</button>
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-      </div>
-    </div>
-  </div>
-</div
- <!-- end of modal -->
+ 
+
  
 <div class="controls">
-	<div class="col-md-6">
-	 <label class="control-label" for="selectbasic">Category</label>
-	 <br />
-   	  <select id="selectcat" name="selectcat" class="input-xlarge">
+    <div class="col-md-6">
+     <label class="control-label" for="selectbasic">Category</label>
+     <br />
+      <select id="selectcat" name="selectcat" class="input-xlarge">
       <option value =""></option>
       <option>ARSON</option>
       <option>BURGLARY</option>
@@ -203,7 +158,7 @@ get_header(); ?>
 
 <input id="author" name="author" value="<?php echo wp_get_current_user()->ID; ?>" type="hidden"/>
 <input id="agency" name="agency" value="<?php echo get_user_meta(get_current_user_id(), "agency", true); ?>" type="hidden"/>
-		 
+         
 
 
 
@@ -357,7 +312,7 @@ get_header(); ?>
   <label class="control-label" for="source">Source Reliability</label>
   <div class="controls">
   <label class="checkbox-inline"></label>
-  	<label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Reliable">Reliable</label>
+    <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Reliable">Reliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Usually Reliable">Usually Reliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Unreliable">Unreliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Unknown">Unknown</label>
@@ -423,13 +378,8 @@ get_header(); ?>
   <button  type="submit" value="pdf" name="pdf" class="btn btn-primary" align = "right">Save as PDF</button>
      </div>
   </div>
-
-
   
   </form>
-  
-  
-
 
 </div>
 </div>
@@ -437,12 +387,65 @@ get_header(); ?>
 </div>
   
 </div>
+
+<style>
+
+.modal-backdrop{
+    z-index:0;
+}
+
+</style>
+
+ <!-- MODAL BELOW FOR BOLO PREVIEW -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Preview</h4>
+      </div>
+      <div class="modal-body">
+          
+          <!-- I get the user id and concat it with the default preview location on the database, but only after the modal has loaded -->
+          
+              <div id="pdfauthor" style="display: none">
+                <?php 
+                    echo wp_get_current_user()->ID; 
+                ?>
+              </div>
+              <script>
+                  var div = document.getElementById("pdfauthor");
+                  var authorName = div.textContent;
+                  var pdf = "uploads/preview";
+                  var preLocation = pdf.concat(authorName);
+                  var previewLocation = pdf.concat('.pdf');
+                  var location = document.getElementById('pdfPreview').value = previewLocation;
+              </script>
+                  <!-- After concatenation I use the variable to retrieve it and display it in the modal -->
+              <!-- <input type="text" id="pdfPreview" name="pdfPreview"/> -->
+              < object data="pdfPreview" type='application/pdf'>
+                   < embed src="pdfPreview" type='application/pdf'></embed>
+              </object>
+          
+          
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button  type="submit" value="pdf" name"pdf" class="btn btn-primary" align = "right">Save as PDF</button>
+        <button  type="submit" value="save" name="save" class="btn btn-primary" align = "right">Submit</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div
+ <!-- end of modal -->
 
 
 </html>
-					 
-				
-	 
+                     
+                
+     
   
   
 

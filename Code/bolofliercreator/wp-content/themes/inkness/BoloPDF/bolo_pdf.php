@@ -176,7 +176,7 @@ SQL;
 		
 		$mpdf->WriteHTML($html.$html2.$html3.$html4,2);
 		
-        if($display=TRUE)
+        if($display===TRUE)
         {
             //save on the server for retrieval
             $mpdf->Output('uploads/preview' . $author . '.pdf', 'F');
