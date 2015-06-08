@@ -102,9 +102,9 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     //set to true to display modal
     $showModal = true;
     
-    //session_start();
+    session_start();
     $_SESSION['showModal'] = TRUE;
-    session_write_close();
+    //session_write_close();
     header("Location: http://bolo.cs.fiu.edu/bolofliercreator/?page_id=6");
     //remove PDF infor after it has been displayed
     $flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);

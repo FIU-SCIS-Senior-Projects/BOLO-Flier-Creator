@@ -6,15 +6,6 @@
  */
 ?>
 
-
-<?php session_start(); ?>
-
-<?php
-get_header(); ?>
-              
-            
- <?php include ('inc/headers.php'); ?>
-
 <head>
 <meta charset="UTF-8">
 <title>Bolo Form</title>
@@ -26,6 +17,16 @@ get_header(); ?>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 </head>
+
+<?php session_start(); ?>
+
+<?php
+get_header(); ?>
+              
+            
+ <?php include ('inc/headers.php'); ?>
+
+
     
 <div class="container">
     <div class="row">
@@ -60,8 +61,8 @@ get_header(); ?>
      </script>
      
  <!--Shows modal when preview is clicked -->
-<?php if(TRUE):?>
-  <?php $_SESSION['showmodal'] = false; ?>
+<?php if($_SESSION['showModal']):?>
+  <?php $_SESSION['showModal'] = false; ?>
   <script>
   $( document ).ready(function() {
     $('#myModal').modal();
