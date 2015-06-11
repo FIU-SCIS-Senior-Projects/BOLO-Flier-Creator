@@ -506,14 +506,11 @@ SQL;
 	
 	public function unarchive($bolo_id){
 		
-	  //mark bolo as archived
-		$sql2 = <<<SQL
-	    UPDATE wp_flierform
-	    SET archive = FALSE
-	    WHERE bolo_id = "$boloid"
-SQL;
-		
-		if(!$result = $conn->query($sql2)){
+	    //mark bolo as archived
+	    $conn = new data_access();
+		$sql  = "UPDATE wp_flierform SET archive = FALSE WHERE bolo_id = '" .$bolo_id. "'";
+        
+		if(!$result = $conn->execute_query($sql)){
 		    die('There was an error running the query [' . $db->error . ']');
 		}
 	}// end unarchive
