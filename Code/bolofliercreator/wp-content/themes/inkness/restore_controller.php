@@ -1,4 +1,12 @@
+/**
+ * Template Name: Restore Bolo
+ *
+ * @package Inkness
+ */
+?>
+
 <?php
+
 
 include_once("HomeMVC/Bolo_Model.php");
 
