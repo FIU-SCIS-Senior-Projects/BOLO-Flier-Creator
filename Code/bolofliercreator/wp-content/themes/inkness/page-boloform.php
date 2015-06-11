@@ -12,97 +12,97 @@
 
 <!-- JQuery for Preview Submittal -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 </head>
 
+<?php session_start(); ?>
 
-<?php get_header(); ?>
-	
+<?php
+get_header(); ?>
+              
+            
  <?php include ('inc/headers.php'); ?>
- 
- <script>
- $(document).ready(function() {
-	$('#preview').click(function() {
-		var data = new FormData($('#boloForm').get(0));
-		data.append('picture', $('#picture').get(0).files[0]);
-		$.ajax({
-		  url: 'wp-content/themes/inkness/flier_preview.php',
-		  data: data,
-		  type: 'POST',
-		  processData: false,
-		  contentType: false,
-		  success: function(data) {
-			  console.log(data);			// data.preview_url
-			if (data.mobile) {
-				// TODO: unhide #mobilePreview
-				setTimeout(function() {
-					window.open(data.preview_url);
-				}, 2000);
-			} else {
-				$('#objectPrev').attr("data", data.preview_url);
-				$('#embedPrev').attr("src", data.preview_url);
-			}
-			
-			$('#myModal').modal();
-
-		  },
-		  error: function() {
-			console.log("Error with form.");
-		  }
-		});
-	}) 
- });
- </script>
 
 
-	
+    
 <div class="container">
-	<div class="row">
-		<div class="col-md-9">
-			<div class="form-group">
-				
+    <div class="row">
+        <div class="col-md-9">
+            <div class="form-group">
+                
 
 
 <!--<form action="?page_id=1481" method="POST" enctype="multipart/form-data">-->
-	
-<form id="boloForm" action="<?php echo get_template_directory_uri();?>../flier_controller.php" method="POST" enctype="multipart/form-data" name="boloCreate">
+    
+<form action="<?php echo get_template_directory_uri();?>../flier_controller.php" method="POST" enctype="multipart/form-data" name="boloCreate">
  
+  <!-- If preview is selected, prevents page refresh to allow Modal to load -->
+     <script type="text/javascript">
+         $("#preview").click(function() {
+             
+             var url = "flier_controller.php";
+             
+             $.ajax({
+                 type: "POST",
+                 url: url,
+                 data: $("#boloCreate").serialize(),
+                 success: function(data)
+                 {
+                     console.log(data);
+                     ;
+                 }
+             });
+             
+             return false;//keep the page from refreshing
+         });
+     </script>
+     
+ <!--Shows modal when preview is clicked -->
+<?php if($_SESSION['showModal']):?>
+  <?php $_SESSION['showModal'] = false; ?>
+  <script>
+  $( document ).ready(function() {
+    $('#myModal').modal();
+  });
+  </script>
+<?php endif;?>
+ 
+ 
+
  
 <div class="controls">
-	<div class="col-md-6">
-	 <label class="control-label" for="selectbasic">Category</label>
-	 <br />
-   	  <select id="selectcat" name="selectcat" class="input-xlarge">
-      <option value=""></option>
-      <option value="ARSON">ARSON</option>
-      <option value="BURGLARY">BURGLARY</option>
-      <option value="DOMESTIC SECURITY">DOMESTIC SECURITY</option>
-      <option value="ESCAPE">ESCAPE</option>
-      <option value="FRAUD">FRAUD</option>
-      <option value="HOME INVASION">HOME INVASION</option>
-      <option value="HOMICIDE">HOMICIDE</option>
-      <option value="MISSING JUVENILE">MISSING JUVENILE</option>
-      <option value="MISSING PERSON">MISSING PERSON</option>
-      <option value="NARCOTICS">NARCOTICS</option>
-      <option value="NEED TO IDENTIFY">NEED TO IDENTIFY</option>
-      <option value="OFFICER SAFETY">OFFICER SAFETY</option>
-      <option value="PC TO ARREST">PC TO ARREST</option>
-      <option value="ROBBERY">ROBBERY</option>
-      <option value="RUNAWAY">RUNAWAY</option>
-      <option value="SEX OFFENSE">SEX OFFENSE</option>
-      <option value="SITUATIONAL AWARENESS">SITUATIONAL AWARENESS</option>
-      <option value="THEFT _ AUTO">THEFT - AUTO</option>
-      <option value="THEFT - BOAT">THEFT - BOAT</option>
-      <option value="THEFT - GRAND">THEFT - GRAND</option>
-      <option value="THEFT - PETIT">THEFT - PETIT</option>
-      <option value="WANTED">WANTED</option>
-      <option value="FIELD INTERVIEW">FIELD INTERVIEW</option>
-      <option value="INFORMATION">INFORMATION</option>
+    <div class="col-md-6">
+     <label class="control-label" for="selectbasic">Category</label>
+     <br />
+      <select id="selectcat" name="selectcat" class="input-xlarge">
+      <option value =""></option>
+      <option>ARSON</option>
+      <option>BURGLARY</option>
+      <option>DOMESTIC SECURITY</option>
+      <option>ESCAPE</option>
+      <option>FRAUD</option>
+      <option>HOME INVASION</option>
+      <option>HOMICIDE</option>
+      <option>MISSING JUVENILE</option>
+      <option>MISSING PERSON</option>
+      <option>NARCOTICS</option>
+      <option>NEED TO IDENTIFY</option>
+      <option>OFFICER SAFETY</option>
+      <option>PC TO ARREST</option>
+      <option>ROBBERY</option>
+      <option>RUNAWAY</option>
+      <option>SEX OFFENSE</option>
+      <option>SITUATIONAL AWARENESS</option>
+      <option>THEFT - AUTO</option>
+      <option>THEFT - BOAT</option>
+      <option>THEFT - GRAND</option>
+      <option>THEFT - PETIT</option>
+      <option>WANTED</option>
+      <option>FIELD INTERVIEW</option>
+      <option>INFORMATION</option>
     </select>
    </div>
   </div>
@@ -126,7 +126,7 @@
   <div class="col-md-12">
   <label class="control-label" for="dob">Video Link</label>
   <div class="controls">
-    <input id="link" name="link"  class="input-xlarge" width="100">
+    <input id="link" name="link"  class="input-xlarge" >
     
       
   </div>
@@ -145,7 +145,6 @@
      </div>
  </div>
  
- 
    <div class="control-group">
     <div class="col-md-6">
    <label class="control-label" for="LastName">Last Name</label>
@@ -160,7 +159,7 @@
 
 <input id="author" name="author" value="<?php echo wp_get_current_user()->ID; ?>" type="hidden"/>
 <input id="agency" name="agency" value="<?php echo get_user_meta(get_current_user_id(), "agency", true); ?>" type="hidden"/>
-		 
+         
 
 
 
@@ -197,12 +196,12 @@
   <div class="controls">
     <select id="race" name="race" class="input-xlarge">
      <option value =""></option>
-      <option value="Hispanic">Hispanic</option>
-      <option value="White">White</option>
-      <option value="Asian">Asian</option>
-      <option value="Black or African American">Black or African American</option>
-      <option value="American Indian or Alaska Native">America Indian or Alaska Native</option>
-        <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+      <option>Hispanic</option>
+      <option>White</option>
+      <option>Asian</option>
+      <option>Black or African American</option>
+      <option>America Indian or Alaska Native</option>
+        <option>Native Hawaiian or Other Pacific Islander</option>
     </select>
   </div>
  </div>
@@ -251,14 +250,14 @@
   <div class="controls">
     <select id="haircolor" name="haircolor" class="input-xlarge">
      <option value =""></option>
-      <option value="Black">Black</option>
-      <option value="Blonde">Blonde</option>
-      <option value="Red">Red</option>
-      <option value="Brown">Brown</option>
-      <option value="Gray">Gray</option>
-      <option value="White">White</option>
-      <option value="Sandy">Sandy</option>
-      <option value="Bald (No hair)">Bald (No hair)</option>
+      <option>Black</option>
+      <option>Blonde</option>
+      <option>Red</option>
+      <option>Brown</option>
+      <option>Gray</option>
+      <option>White</option>
+      <option>Sandy</option>
+      <option>Bald (No hair)</option>
     </select>
   </div>
  </div>
@@ -314,7 +313,7 @@
   <label class="control-label" for="source">Source Reliability</label>
   <div class="controls">
   <label class="checkbox-inline"></label>
-  	<label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Reliable">Reliable</label>
+    <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Reliable">Reliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Usually Reliable">Usually Reliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Unreliable">Unreliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Unknown">Unknown</label>
@@ -364,17 +363,15 @@
 
    </div>
   </div>
-  <?php 
-		if ($_SESSION['isMobile'] !== TRUE) :
-    ?>
+  
   <div class="control-group">
     <div class="col-md-4">
  <br/><br/>
-  <a href="#" id="preview" class="btn btn-primary" align = "center">Preview</a>
+  <button  type="submit" value="preview" name="preview" class="btn btn-primary" align = "center">Preview</button>
 
    </div>
   </div>
-  <?php endif; ?>
+  
   
   <div class="control-group">
     <div class="col-md-4">
@@ -383,38 +380,53 @@
      </div>
   </div>
   
-  <style>
+  </form>
+
+</div>
+</div>
+</div>
+</div>
+  
+</div>
+
+<style>
 
 .modal-backdrop{
-	z-index:0;
+    z-index:0;
 }
-
 
 </style>
 
  <!-- MODAL BELOW FOR BOLO PREVIEW -->
-<div class="modal fade" id="myModal">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Preview</h4>
+        <h4 class="modal-title" id="myModalLabel">Preview</h4>
       </div>
       <div class="modal-body">
           
           <!-- I get the user id and concat it with the default preview location on the database, but only after the modal has loaded -->
-          <!-- TODO: make more secure, wp-content/.../ should not be visible to user -->
-		 
-			<div id="mobilePreview" style="display: none">
-				Opening preview in new window...
-			</div>
-			<div id="normalPreview">
-
+          
+              <div id="pdfauthor" style="display: none">
+                <?php 
+                    echo wp_get_current_user()->ID; 
+                ?>
+              </div>
+              <script>
+                  var div = document.getElementById("pdfauthor");
+                  var authorName = div.textContent;
+                  var pdf = "uploads/preview";
+                  var preLocation = pdf.concat(authorName);
+                  var previewLocation = pdf.concat('.pdf');
+                  var location = document.getElementById('pdfPreview').value = previewLocation;
+              </script>
                   <!-- After concatenation I use the variable to retrieve it and display it in the modal -->
-              <object id="objectPrev" data="" type='application/pdf' style="width: 100%; height: 600px">
-                   <embed id="embedPrev" src="" type='application/pdf'></embed>
+              <!-- <input type="text" id="pdfPreview" name="pdfPreview"/> -->
+              < object data="pdfPreview" type='application/pdf'>
+                   < embed src="pdfPreview" type='application/pdf'></embed>
               </object>
-			</div>
           
           
       </div>
@@ -430,22 +442,11 @@
 </div
  <!-- end of modal -->
 
-  
-  </form>
-
-</div>
-</div>
-</div>
-</div>
-  
-</div>
-
-
 
 </html>
-					 
-				
-	 
+                     
+                
+     
   
   
 
