@@ -8,7 +8,7 @@
 <?php
 
 
-include_once("HomeMVC/Model_Bolo.php");
+include_once("Model_Bolo.php");
 
 if($_POST['idBolo'] == "")
 {
@@ -16,7 +16,7 @@ if($_POST['idBolo'] == "")
 }
 else
 {
-   $model = new Bolo_Model();
+   $model = new Model_Bolo();
    $result = $model->unarchive($_POST['idBolo']);
    
    if($result)
