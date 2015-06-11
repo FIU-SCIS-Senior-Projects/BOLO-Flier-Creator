@@ -10,14 +10,14 @@
 
 include_once("Model_Bolo.php");
 
-if($_POST['idBolo'] == "")
+if($_GET['idBolo'] == "")
 {
    echo("<h3>Sorry something wrong has occurred</h3>");
 }
 else
 {
    $model = new Model_Bolo();
-   $result = $model->unarchive($_POST['idBolo']);
+   $result = $model->unarchive($_GET['idBolo']);
    
    if($result)
    {
