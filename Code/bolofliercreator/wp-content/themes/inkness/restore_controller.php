@@ -8,7 +8,7 @@
 <?php
 
 
-include_once("HomeMVC/Bolo_Model.php");
+include_once("HomeMVC/Model_Bolo.php");
 
 if($_POST['idBolo'] == "")
 {
