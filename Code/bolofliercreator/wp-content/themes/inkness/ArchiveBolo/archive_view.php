@@ -34,7 +34,7 @@ class archive_view{
 			{
 				if(confirm("Are you sure you want to restore this BOLO?"))
 				{
-					jQuery.get("?page_id=1580&idBolo=" + boloid,function()
+					jQuery.post( "?page_id=1580", { idBolo: boloid },function()
 					{
 						location.reload();
 					});
