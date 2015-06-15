@@ -126,7 +126,7 @@
   <div class="col-md-12">
   <label class="control-label" for="dob">Video Link</label>
   <div class="controls">
-    <input id="link" name="link"  class="input-xlarge" width="100">
+    <input id="link" name="link"  class="input-xlarge" style="width: 72%">
     
       
   </div>
@@ -292,7 +292,7 @@
 <div class="col-md-12">
   <label class="control-label" for="adtnl-info">Additional Info</label>
   <div class="controls">                     
-    <textarea id="adtnlinfo" name="adtnlinfo"></textarea>
+    <textarea id="adtnlinfo" name="adtnlinfo" style="height: 20%"></textarea>
   </div>
  </div>
 </div>
@@ -302,7 +302,7 @@
 <div class="col-md-12">
   <label class="control-label" for="summary">Summary</label>
   <div class="controls">                     
-    <textarea id="summary" name="summary"></textarea>
+    <textarea id="summary" name="summary" style="height: 20%"></textarea>
   </div>
  </div>
 </div>
