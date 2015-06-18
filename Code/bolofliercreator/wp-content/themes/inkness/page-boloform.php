@@ -22,62 +22,85 @@
 
 
 <?php get_header(); ?>
-	
+    
  <?php include ('inc/headers.php'); ?>
  
  <script>
  $(document).ready(function() {
-	$('#preview').click(function() {
-		var data = new FormData($('#boloForm').get(0));
-		data.append('picture', $('#picture').get(0).files[0]);
-		$.ajax({
-		  url: 'wp-content/themes/inkness/flier_preview.php',
-		  data: data,
-		  type: 'POST',
-		  processData: false,
-		  contentType: false,
-		  success: function(data) {
-			  console.log(data);			// data.preview_url
-			if (data.mobile) {
-				// TODO: unhide #mobilePreview
-				setTimeout(function() {
-					window.open(data.preview_url);
-				}, 2000);
-			} else {
-				$('#objectPrev').attr("data", data.preview_url);
-				$('#embedPrev').attr("src", data.preview_url);
-			}
-			
-			$('#myModal').modal();
-
-		  },
-		  error: function() {
-			console.log("Error with form.");
-		  }
-		});
-	}) 
+    $('#preview').click(function() {
+        var data = new FormData($('#boloForm').get(0));
+        data.append('picture', $('#picture').get(0).files[0]);
+        $.ajax({
+          url: 'wp-content/themes/inkness/flier_preview.php',
+          data: data,
+          type: 'POST',
+          processData: false,
+          contentType: false,
+          success: function(data) {
+              data = $.parseJSON(data);
+              console.log(data);            // data.preview_url
+            if (data.mobile) {
+                // TODO: unhide #mobilePreview
+                setTimeout(function() {
+                  window.open(data.preview_url);
+                }, 1500);
+                
+                //$('#objectPrev').attr("src", data.preview_url);
+                //$('#previewBOLOid').attr("value", data.preview_url);
+            } else {
+                $('#objectPrev').attr("src", data.preview_url);
+                $('#previewBOLOid').attr("value", data.boloID);
+            }
+            
+            $('#myModal').modal();
+            setTimeout(function(){
+                previewDelete(data.boloID);
+            }, 1500);
+            
+          },
+          error: function() {
+            console.log("Error with form.");
+          }
+        });
+    }) 
  });
+  function previewDelete(boloID)
+ {
+     var link = "wp-content/themes/inkness/FlierDelete.php?boloID=" + boloID;
+     $.ajax({
+          url: link,
+          type: 'GET',
+          processData: false,
+          contentType: false,
+          success: function(data) {
+              console.log("Deleted bolo " + boloID);
+          },
+          error: function() {
+            console.log("Error with delete.");
+          }
+        });
+ }
  </script>
 
 
-	
+    
 <div class="container">
-	<div class="row">
-		<div class="col-md-9">
-			<div class="form-group">
-				
+    <div class="row">
+        <div class="col-md-9">
+            <div class="form-group">
+                
 
 
 <!--<form action="?page_id=1481" method="POST" enctype="multipart/form-data">-->
-	
+    
 <form id="boloForm" action="<?php echo get_template_directory_uri();?>../flier_controller.php" method="POST" enctype="multipart/form-data" name="boloCreate">
  
  
 <div class="controls">
-	<div class="col-md-6">
-	 <label class="control-label" for="selectbasic">Category</label>
-	 <br />
-   	  <select id="selectcat" name="selectcat" class="input-xlarge">
+    <div class="col-md-6">
+     <label class="control-label" for="selectbasic">Category</label>
+     <br />
+      <select id="selectcat" name="selectcat" class="input-xlarge">
       <option value=""></option>
       <option value="ARSON">ARSON</option>
       <option value="BURGLARY">BURGLARY</option>
@@ -160,7 +183,7 @@
 
 <input id="author" name="author" value="<?php echo wp_get_current_user()->ID; ?>" type="hidden"/>
 <input id="agency" name="agency" value="<?php echo get_user_meta(get_current_user_id(), "agency", true); ?>" type="hidden"/>
-		 
+<input id="previewBOLOid" name="previewBOLOid" value="" type="hidden"/>              
 
 
 
@@ -314,7 +337,7 @@
   <label class="control-label" for="source">Source Reliability</label>
   <div class="controls">
   <label class="checkbox-inline"></label>
-  	<label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Reliable">Reliable</label>
+    <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Reliable">Reliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Usually Reliable">Usually Reliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Unreliable">Unreliable</label>
     <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Unknown">Unknown</label>
@@ -364,9 +387,10 @@
 
    </div>
   </div>
+  <!--
   <?php 
-		if ($_SESSION['isMobile'] !== TRUE) :
-    ?>
+        if ($_SESSION['isMobile'] !== TRUE) :
+    ?> -->
   <div class="control-group">
     <div class="col-md-4">
  <br/><br/>
@@ -374,7 +398,8 @@
 
    </div>
   </div>
-  <?php endif; ?>
+  <!--
+  <?php endif; ?> -->
   
   <div class="control-group">
     <div class="col-md-4">
@@ -386,8 +411,18 @@
   <style>
 
 .modal-backdrop{
-	z-index:0;
+    z-index:0;
 }
+<?php 
+    $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+    if (stripos($ua, 'android') === false && stripos($ua, 'iphone') === false && stripos($ua, 'ipad') === false):
+    ?>
+.modal-content{
+    width:180%;
+}
+<?php endif; ?>
+
+</style>
 
 
 </style>
@@ -404,18 +439,27 @@
           
           <!-- I get the user id and concat it with the default preview location on the database, but only after the modal has loaded -->
           <!-- TODO: make more secure, wp-content/.../ should not be visible to user -->
-		 
-			<div id="mobilePreview" style="display: none">
-				Opening preview in new window...
-			</div>
-			<div id="normalPreview">
-
-                  <!-- After concatenation I use the variable to retrieve it and display it in the modal -->
+            <!--<div id="mobilePreview" style="display: none">
+                Opening preview in new window...
+            </div> -->
+            <?php 
+        $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+        if (stripos($ua, 'android') === false && stripos($ua, 'iphone') === false && stripos($ua, 'ipad') === false):
+        ?>
+            <div id="normalPreview">
+                
+                <iframe id="objectPrev" style="width:100%; height:500px" src=""></iframe>
+                  <!-- After concatenation I use the variable to retrieve it and display it in the modal 
               <object id="objectPrev" data="" type='application/pdf' style="width: 100%; height: 600px">
-                   <embed id="embedPrev" src="" type='application/pdf'></embed>
+                   <embed id="embedPrev" src="" type='application/pdf'></embed> -->
               </object>
-			</div>
+            </div>
+          <?php else: ?>
+            <div id="mobilePreview">
+                    Opening preview in new window...
+            </div>
           
+          <?php endif; ?>
           
       </div>
       <div class="modal-footer">
@@ -443,9 +487,9 @@
 
 
 </html>
-					 
-				
-	 
+                     
+                
+     
   
   
 
