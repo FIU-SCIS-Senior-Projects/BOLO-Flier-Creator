@@ -40,11 +40,19 @@
               data = $.parseJSON(data);
               console.log(data);            // data.preview_url
             if (data.mobile) {
-                // TODO: unhide #mobilePreview
+                
                 setTimeout(function() {
                   window.open(data.preview_url);
+                  //if (("standalone" in window.navigator) && window.navigator.standalone) {
+                  // For iOS Apps
+                    var a = document.createElement('a');
+                    a.setAttribute("href", data.preview_url);
+                    a.setAttribute("target","_blank");
+                    var dispatch = document.createEvent("HTMLEvents");
+                    dispatch.initEvent("click", true, true);
+                    a.dispatchEvent(dispatch);
+                //}
                 }, 1500);
-                
                 //$('#objectPrev').attr("src", data.preview_url);
                 //$('#previewBOLOid').attr("value", data.preview_url);
             } else {
