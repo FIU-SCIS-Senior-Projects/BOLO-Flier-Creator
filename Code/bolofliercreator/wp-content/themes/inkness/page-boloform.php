@@ -63,7 +63,7 @@
             $('#myModal').modal();
             setTimeout(function(){
                 previewDelete(data.boloID);
-            }, 1500);
+            }, 1800);
             
           },
           error: function() {
@@ -338,54 +338,6 @@
  </div>
 </div>
 <br>
-
-<!-- Multiple Checkboxes (inline) -->
-<div class="control-group">
-<div class="col-md-12">
-  <label class="control-label" for="source">Source Reliability</label>
-  <div class="controls">
-  <label class="checkbox-inline"></label>
-    <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Reliable">Reliable</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Usually Reliable">Usually Reliable</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Unreliable">Unreliable</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "reliability[]" value ="Unknown">Unknown</label>
-    <label class="checkbox-inline"><input type="hidden" name= "reliability[]" value =""</label>  
- </div>
-</div>
-</div>
-
-
-<!-- Multiple Checkboxes (inline) -->
-<div class="control-group">
-<div class="col-md-12">
-  <label class="control-label" for="content">Content Validity</label>
-  <div class="controls">
-  <label class="checkbox-inline"></label>
-    <label class="checkbox-inline"><input type="checkbox" name= "validity[]" value ="Confirmed">Confirmed</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "validity[]" value ="Probable">Probable</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "validity[]" value ="Doubtful">Doubtful</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "validity[]" value ="Cannot be determined">Cannot be determined</label>
-    <label class="checkbox-inline"><input type="hidden" name= "validity[]" value =" "></label>
-    
-  </div>
- </div>
-</div>
-<!-- Multiple Checkboxes (inline) -->
-<div class="control-group">
- <div class="col-md-12">
-  <label class="control-label" for="content">Information Classification</label>
-  <div class="controls">
-    
-    <label class="checkbox-inline"></label>
-    <label class="checkbox-inline"><input type="checkbox" name= "classification[]" value ="For Official Use Only (FOUO)"> For Official Use Only (FOUO)</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "classification[]" value ="Law Enforcement Sensitive">Law Enforcement Sensitive</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "classification[]" value = "Contains Personal Identifier Information (PII)">Contains Personal Identifier Information (PII)</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "classification[]" value ="Public">Public</label>
-    <label class="checkbox-inline"><input type="checkbox" name= "classification[]" value ="Contains Information on US Person or a Lawful Permanent Resident (LPR)">Contains Information on US Person or a Lawful Permanent Resident (LPR)</label>
-    <label class="checkbox-inline"><input type="hidden" name= "classification[]" value =""></label>
-   </div>
-  </div>
- </div>
 
 <!-- Button --> 
 <div class="control-group">
