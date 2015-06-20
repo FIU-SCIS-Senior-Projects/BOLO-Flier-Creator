@@ -7,16 +7,36 @@
  ?>
  <?php //page 1510 ?>
  
-<?php
+ 
+ <?php
+if(isset($_GET['function3']))
+{
+    update_agency();
+}
+ 
+function update_agency()
+{
+	$idAgency = $_POST["id"];
+	$name = $_POST["a_name"];
+	$address = $_POST["address"];
+	$city =$_POST["city"];
+	$zip = $_POST["zip"];
+	$phone = $_POST["phone"];
+		
+	//update agency
+	include_once('new_agency_model.php');
+	$model = new agency_model();
+	$model->update_agency($idAgency, $name, $address, $city, $zip, $phone);	
+	header('Location: /bolofliercreator/?page_id=1508');
+}
+?>
+
+
+ <?php
 if(isset($_GET['function']))
 {
     save_agency();
 }
-else
-{
-	update_agency();
-}
-	
 
 function save_agency(){
 	$name = $_POST["a_name"];
@@ -25,25 +45,14 @@ function save_agency(){
 	$zip = $_POST["zip"];
 	$phone = $_POST["phone"];
 	
-function update_agency(){
-	$name = $_POST["a_name"];
-	$address = $_POST["address"];
-	$city =$_POST["city"];
-	$zip = $_POST["zip"];
-	$phone = $_POST["phone"];
-	
+
 	
 	include_once('new_agency_model.php');
 	$model = new agency_model();
 	$model->save_agency($name, $address, $city, $zip, $phone);	
 	header('Location: /bolofliercreator/?page_id=1508');
-	
-	//update agency
-	include_once('new_agency_model.php');
-	$model = new agency_model();
-	$model->update_agency($name, $address, $city, $zip, $phone);	
-	header('Location: /bolofliercreator/?page_id=1508');
 }
+
 ?>
 
 <?php
@@ -68,5 +77,17 @@ function new_agency(){
 			$model = new agency_model();
 			return $model->get_agencies();
 		}
+		
+		public function getAgency($idAgency)
+		{
+			include_once("new_agency_model.php");
+			$model = new agency_model();
+			$result = $model->getAgency($idAgency);
+			return $result->fetch_assoc();
+			
+		}
+		
+
 	}
+	
 ?>
