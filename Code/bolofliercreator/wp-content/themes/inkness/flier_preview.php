@@ -37,9 +37,6 @@
     $author = $_POST['author'];
     $agency = $_POST['agency'];
     $link = $_POST['link'];
-    $vcheckboxes= null;
-    $rcheckboxes= null;
-    $clacheckboxes= null;
     $previousID = $_POST ['previewBOLOid'];
     
     
@@ -49,7 +46,7 @@
     {
         $flier->remove($previousID);
     }
-    $flier->submitPreview($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
+    $flier->submitPreview($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary,$adtnlinfo,$newfilename,$author,$agency,$link);
     //$data = $flier->getPreview($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
     $data = $flier->getlast();
     $ua = strtolower($_SERVER['HTTP_USER_AGENT']);

@@ -43,15 +43,6 @@ class Model_Bolo {
 
     }
 
-    public function loadClass()
-    {
-        $conn=new data_access();
-        $sql="SELECT classification FROM wp_flierform";
-
-        return $conn->execute_query($sql);
-
-    }
-
     public function loadDob()
     {
         $conn=new data_access();
@@ -92,15 +83,6 @@ class Model_Bolo {
 
     }
 
-    public function loadReli()
-    {
-        $conn=new data_access();
-        $sql="SELECT DISTINCT reliability FROM wp_flierform";
-
-        return $conn->execute_query($sql);
-
-    }
-
     
 
     public function loadSex()
@@ -121,14 +103,6 @@ class Model_Bolo {
 
     }
 	
-    public function loadValidity()
-    {
-        $conn=new data_access();
-        $sql="SELECT DISTINCT validity FROM wp_flierform";
-
-        return $conn->execute_query($sql);
-
-    }
 
 	
 	public function loadDateCreated()
@@ -257,7 +231,7 @@ SQL;
 	
 	
 	
-    public function searchResults($p1,$p2,$p3,$p4,$p5,$p6,$p7,$p8,$p9,$p10,$p11,$p12,$p13,$p14)
+    public function searchResults($p1,$p2,$p3,$p4,$p6,$p7,$p8,$p9,$p11,$p12,$p14)
     {   
 	    $activeWhere = false;
         $sql = "SELECT * 
@@ -303,20 +277,6 @@ SQL;
             else
             {
                 $sql.=" AND address = '".$p4."'";
-            }
-        }
-
-        
-        if(strlen($p5)>0)
-        {
-            if($activeWhere==false)
-            {
-                $sql.=" WHERE classification = '".$p5."'";
-                $activeWhere = true;
-            }
-            else
-            {
-                $sql.=" AND classification = '".$p5."'";
             }
         }
         if(strlen($p6)>0)
@@ -368,18 +328,6 @@ SQL;
                 $sql.=" AND race = '".$p9."'";
             }
         }
-        if(strlen($p10)>0)
-        {
-            if($activeWhere==false)
-            {
-                $sql.=" WHERE reliability = '".$p10."'";
-                $activeWhere = true;
-            }
-            else
-            {
-                $sql.=" AND reliability = '".$p10."'";
-            }
-        }
         
         if(strlen($p11)>0)
         {
@@ -403,19 +351,6 @@ SQL;
             else
             {
                 $sql.=" AND selectcat = '".$p12."'";
-            }
-        }
-       
-        if(strlen($p13)>0)
-        {
-            if($activeWhere==false)
-            {
-                $sql.=" WHERE validity = '".$p13."'";
-                $activeWhere = true;
-            }
-            else
-            {
-                $sql.=" AND validity = '".$p13."'";
             }
         }
         

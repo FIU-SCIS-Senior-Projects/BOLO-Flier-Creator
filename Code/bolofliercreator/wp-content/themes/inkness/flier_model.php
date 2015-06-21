@@ -9,12 +9,12 @@ class FlierModel {
 
     }
     
-    public function submit($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $rcheckboxes, $vcheckboxes, $clacheckboxes, $adtnlinfo,$newfilename,$author,$agency,$link)
+    public function submit($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $adtnlinfo,$newfilename,$author,$agency,$link)
     {                  
         $conn=new data_access();
         
-         $res = "INSERT INTO wp_flierform (selectcat, myName, lastName, dob, license, race, sex, height, weight, haircolor,address,tattoos,summary,reliability, validity, classification,adtnlinfo,image,author,agency,link) 
-        VALUES ('$selectcat', '$myName','$lastName','$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address','$tattoos', '$summary', '$rcheckboxes','$vcheckboxes','$clacheckboxes' ,'$adtnlinfo','$newfilename','$author', '$agency', '$link')";
+         $res = "INSERT INTO wp_flierform (selectcat, myName, lastName, dob, license, race, sex, height, weight, haircolor,address,tattoos,summary,adtnlinfo,image,author,agency,link) 
+        VALUES ('$selectcat', '$myName','$lastName','$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address','$tattoos', '$summary' ,'$adtnlinfo','$newfilename','$author', '$agency', '$link')";
     
              if ($conn->execute_query($res) === TRUE)
         {
@@ -45,12 +45,12 @@ SQL;
     /**
      * insert query for the bolo_pdf table
      */
-    public function submit_pdf($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $rcheckboxes, $vcheckboxes, $clacheckboxes, $adtnlinfo,$newfilename,$author,$agency,$link){
+    public function submit_pdf($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $adtnlinfo,$newfilename,$author,$agency,$link){
         
         $conn=new data_access();
         
-        $res = "INSERT INTO bolo_pdf (selectcat, myName, lastName, dob, license, race, sex, height, weight, haircolor,address,tattoos,summary,reliability, validity, classification,adtnlinfo,image,author,agency,link) 
-        VALUES ('$selectcat', '$myName','$lastName','$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address','$tattoos', '$summary', '$rcheckboxes','$vcheckboxes','$clacheckboxes' ,'$adtnlinfo','$newfilename','$author', '$agency', '$link')";
+        $res = "INSERT INTO bolo_pdf (selectcat, myName, lastName, dob, license, race, sex, height, weight, haircolor,address,tattoos,summary,adtnlinfo,image,author,agency,link) 
+        VALUES ('$selectcat', '$myName','$lastName','$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address','$tattoos', '$summary' ,'$adtnlinfo','$newfilename','$author', '$agency', '$link')";
     
             if ($conn->execute_query($res) === TRUE){
             //echo "Bolo flier created successfully";                     
@@ -65,14 +65,13 @@ SQL;
         /**
      * delete query for the bolo_pdf table
      */
-    public function remove_pdf($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $rcheckboxes, $vcheckboxes, $clacheckboxes, $adtnlinfo,$newfilename,$author,$agency,$link){
+    public function remove_pdf($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $adtnlinfo, $newfilename, $author, $agency, $link){
         
         $conn=new data_access();
     
         $delete = "DELETE FROM bolo_pdf
         WHERE selectcat='$selectcat' , myName='$myName' , lastName='$lastName', dob='$dob', license='$DLnumber', race='$race', sex='$sex', 
         height='$height', weight='$weight', haircolor='$haircolor',address='$address',tattoos='$tattoos',summary='$summary',
-        reliability='$rcheckboxes', validity='$vcheckboxes', classification='$clacheckboxes',
         adtnlinfo='$adtnlinfo',image='$newfilename',author='$author',agency='$agency',link='$link'";
     
         $conn->execute_query($delete);
@@ -92,7 +91,7 @@ SQL;
     }//end function remove_pdf
     
     //Gets BOLO for previewing from wp_flierform(NOT THE PDF)
-    public function getPreview($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $rcheckboxes, $vcheckboxes, $clacheckboxes, $adtnlinfo,$author,$agency,$link)
+    public function getPreview($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $adtnlinfo,$author,$agency,$link)
     {
         $conn=new data_access();
     
@@ -101,7 +100,6 @@ SQL;
             FROM `wp_flierform`
             WHERE selectcat='$selectcat' , myName='$myName' , lastName='$lastName', dob='$dob', license='$DLnumber', race='$race', sex='$sex', 
             height='$height', weight='$weight', haircolor='$haircolor',address='$address',tattoos='$tattoos',summary='$summary',
-            reliability='$rcheckboxes', validity='$vcheckboxes', classification='$clacheckboxes',
             adtnlinfo='$adtnlinfo',author='$author',agency='$agency',link='$link'";
 SQL;
        
@@ -109,12 +107,12 @@ SQL;
 
     }//end function getPreview
     
-        public function submitPreview($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary, $rcheckboxes, $vcheckboxes, $clacheckboxes, $adtnlinfo,$newfilename,$author,$agency,$link)
+        public function submitPreview($selectcat, $myName,$lastName,$dob, $DLnumber,$race,$sex, $height,$weight, $haircolor,$address, $tattoos, $summary,$adtnlinfo,$newfilename,$author,$agency,$link)
     {                  
         $conn=new data_access();
         
-         $res = "INSERT INTO wp_flierform (selectcat, myName, lastName, dob, license, race, sex, height, weight, haircolor,address,tattoos,summary,reliability, validity, classification,adtnlinfo,image,author,agency,link) 
-        VALUES ('$selectcat', '$myName','$lastName','$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address','$tattoos', '$summary', '$rcheckboxes','$vcheckboxes','$clacheckboxes' ,'$adtnlinfo','$newfilename','$author', '$agency', '$link')";
+         $res = "INSERT INTO wp_flierform (selectcat, myName, lastName, dob, license, race, sex, height, weight, haircolor,address,tattoos,summary,adtnlinfo,image,author,agency,link) 
+        VALUES ('$selectcat', '$myName','$lastName','$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address','$tattoos', '$summary','$adtnlinfo','$newfilename','$author','$agency','$link')";
     
              if ($conn->execute_query($res) === TRUE)
         {

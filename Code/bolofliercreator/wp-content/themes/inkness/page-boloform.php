@@ -43,7 +43,6 @@
                 
                 setTimeout(function() {
                   window.open(data.preview_url);
-                  //if (("standalone" in window.navigator) && window.navigator.standalone) {
                   // For iOS Apps
                     var a = document.createElement('a');
                     a.setAttribute("href", data.preview_url);
@@ -347,10 +346,6 @@
 
    </div>
   </div>
-  <!--
-  <?php 
-        if ($_SESSION['isMobile'] !== TRUE) :
-    ?> -->
   <div class="control-group">
     <div class="col-md-4">
  <br/><br/>
@@ -358,8 +353,6 @@
 
    </div>
   </div>
-  <!--
-  <?php endif; ?> -->
   
   <div class="control-group">
     <div class="col-md-4">

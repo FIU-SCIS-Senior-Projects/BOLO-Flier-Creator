@@ -42,7 +42,7 @@ SQL;
 	 * creates a new bolo given all the parameters
 	 */
 	public function new_bolo($selectcat, $myName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
-			$adtnlinfo, $summary, $newfilename, $val, $rel, $clas, $author_id){
+			$adtnlinfo, $summary, $newfilename, $author_id){
 		
 		$servername = "localhost";
 		$username = "root";
@@ -57,8 +57,8 @@ SQL;
 		}		
 		
 		$sql = <<<SQL
-	    INSERT INTO `wp_flierform` (selectcat, myName, dob,license,race, sex, height, weight, haircolor, address, tattoos,adtnlinfo,summary,image,validity,reliability,classification,author)
-	    VALUES ('$selectcat', '$myName', '$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address', '$tattoos', '$adtnlinfo', '$summary', '$newfilename', '$val', '$rel', '$clas', '$author_id')
+	    INSERT INTO `wp_flierform` (selectcat, myName, dob,license,race, sex, height, weight, haircolor, address, tattoos,adtnlinfo,summary,image,author)
+	    VALUES ('$selectcat', '$myName', '$dob', '$DLnumber', '$race', '$sex', '$height', '$weight', '$haircolor', '$address', '$tattoos', '$adtnlinfo', '$summary', '$newfilename', '$author_id')
 SQL;
 		
 		if(!$result = $conn->query($sql)){

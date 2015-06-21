@@ -49,10 +49,6 @@ $link = $_POST['link'];
 
     //initialize
 
-    
-		$vcheckboxes= null;
-		$rcheckboxes= null;
-		$clacheckboxes= null;
 		
 		
 		if ($_POST['reliability'] == null){		
@@ -71,7 +67,7 @@ if ($_POST['classification'] == null){
 //case the user clicks on save
 if(isset($_POST["save"]) && $_POST["save"]) {
  	
-	$flier->submit ($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
+	$flier->submit ($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $adtnlinfo, $newfilename, $author, $agency, $link);
 	$data = $flier->getlast();
 
 	$result = $data->fetch_assoc(); 
@@ -100,7 +96,7 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
    } 
 	
     //submit information for pdf creation
-    $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);    
+    $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $adtnlinfo, $newfilename, $author, $agency, $link);    
     
     $result = $flier->get_bolo();
     
@@ -120,7 +116,7 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     //session_write_close();
 	header("Location: http://bolo.cs.fiu.edu/bolofliercreator/?page_id=6");
 	//remove PDF info after it has been displayed
-    $flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
+    $flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $adtnlinfo, $newfilename, $author, $agency, $link);
     
     //set to false so another BOLO may be shown
     $showModal = false;
@@ -128,7 +124,7 @@ elseif(isset($_POST["preview"]) && $_POST["preview"]) {
 //case the user clicks on Save as PDF (the flier will be saved on a diff table only for the PDFs, completely
 //independent from the regular bolos)
 else{	
-	$flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);	
+	$flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos, $summary, $adtnlinfo, $newfilename, $author, $agency, $link);	
 	
 	$result = $flier->get_bolo();
 	include"BoloPDF/bolo_pdf.php";

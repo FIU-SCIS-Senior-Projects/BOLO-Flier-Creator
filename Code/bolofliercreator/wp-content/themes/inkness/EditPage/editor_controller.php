@@ -74,9 +74,6 @@ function update(){
 	$tattoos=$_POST ['tattoos'];
 	$adtnlinfo=$_POST ['adtnlinfo'];
 	$summary=$_POST ['summary'];
-	$val= implode(' ', $_POST['validity']);
-	$rel= implode(' ', $_POST['reliability']);
-	$clas= implode(' ', $_POST['classification']);
 	$editor_id = $_POST['editor_id'];
 	$update = $_POST['update'];
 	$link = $_POST['link'];
@@ -97,7 +94,7 @@ function update(){
 		}//move uploaded file
 				
 		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
-        $adtnlinfo, $summary, filename_for_sql, $val, $rel, $clas, $update, $editor_id,$link);
+        $adtnlinfo, $summary, filename_for_sql, $update, $editor_id,$link);
 	}
 	//otherwise, just keep the old picture
 	else{
@@ -105,7 +102,7 @@ function update(){
 		$row = $result->fetch_assoc();
 		$old_pic = $row['image'];
 		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
-			$adtnlinfo, $summary, $old_pic, $val, $rel, $clas, $update, $editor_id,$link);
+			$adtnlinfo, $summary, $old_pic, $update, $editor_id,$link);
 	}
 	//delete old bolo
 	//$model->delete($_POST['bolo_id']);

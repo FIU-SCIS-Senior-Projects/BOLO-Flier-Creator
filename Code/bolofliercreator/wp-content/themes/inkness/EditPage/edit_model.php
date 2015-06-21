@@ -102,7 +102,7 @@ SQL;
 	 * updates a bolo given all the parameters
 	 */
 	public function update_bolo($boloid, $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
-			$adtnlinfo, $summary, $newfilename, $val, $rel, $clas, $update, $author_id, $link){
+			$adtnlinfo, $summary, $newfilename, $update, $author_id, $link){
 		
 		$servername = "localhost";
 		$username = "root";
@@ -172,7 +172,7 @@ SQL;
         
         $updateSQL3 = <<<SQL
         UPDATE `wp_flierform`
-        SET race="$race", sex="$sex", height="$height", validity="$val", reliability="$rel", classification="$clas", update_status="$update", edit_author="$author_id", link = "$link", image="$newfilename"
+        SET race="$race", sex="$sex", height="$height", update_status="$update", edit_author="$author_id", link = "$link", image="$newfilename"
         WHERE bolo_id = "$boloid"
 SQL;
         if(!$updateResult3 = $conn->query($updateSQL3)){

@@ -137,29 +137,6 @@ SQL;
 		;
 		
 		$html4=
-		'<div class="container">
-		<div class="row" style="padding-top:15px;">
-		<div class="col-md-12">
-		<p style="font-weight: bold;">Source Reliability: </p>'. $bolo_row['reliability'].'
-			
-		</div>
-		</div>
-			   
-		<div class="row" style="padding-top:15px;">
-		<div class="col-md-12">
-		<p style="font-weight: bold;">Content Validity: </p>'. $bolo_row['validity'].'
-			
-		</div>
-		</div>
-			
-		<div class="row" style="padding-top:15px;">
-		<div class="col-md-12">
-		<p style="font-weight: bold;">Information Classification: </p>'. $bolo_row['classification'].' 
-			
-		</div>
-		</div>    
-			    			    
-		</div>'.
 		
 		'<br><br>'.
 		'Any Agency having questions regarding this document may contact: ' . $author['display_name']
@@ -174,7 +151,7 @@ SQL;
 		//$stylesheet = file_get_contents('mpdf60/examples/mpdfstyletables.css');
 		$mpdf->WriteHTML('mpdf60/examples/mpdfstyletables.css',1);
 		
-		$mpdf->WriteHTML($html.$html2.$html3,2);
+		$mpdf->WriteHTML($html.$html2.$html3.$html4,2);
 		
         if($display===TRUE)
         {
