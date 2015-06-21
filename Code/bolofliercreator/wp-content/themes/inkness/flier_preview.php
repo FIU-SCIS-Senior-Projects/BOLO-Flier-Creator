@@ -37,9 +37,9 @@
     $author = $_POST['author'];
     $agency = $_POST['agency'];
     $link = $_POST['link'];
-    $vcheckboxes= implode(' ', $_POST['validity']);
-    $rcheckboxes= implode(' ', $_POST['reliability']);
-    $clacheckboxes= implode(' ', $_POST['classification']);
+    $vcheckboxes= null;
+    $rcheckboxes= null;
+    $clacheckboxes= null;
     $previousID = $_POST ['previewBOLOid'];
     
     

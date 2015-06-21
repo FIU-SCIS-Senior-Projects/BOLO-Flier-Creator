@@ -174,7 +174,7 @@ SQL;
 		//$stylesheet = file_get_contents('mpdf60/examples/mpdfstyletables.css');
 		$mpdf->WriteHTML('mpdf60/examples/mpdfstyletables.css',1);
 		
-		$mpdf->WriteHTML($html.$html2.$html3.$html4,2);
+		$mpdf->WriteHTML($html.$html2.$html3,2);
 		
         if($display===TRUE)
         {

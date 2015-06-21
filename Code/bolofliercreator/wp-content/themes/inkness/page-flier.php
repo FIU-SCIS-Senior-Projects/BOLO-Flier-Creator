@@ -181,36 +181,6 @@ echo "<h4>Summary:</h4> $summary"?></p></td></p>
 <div class="container">
 	<div class="row" style="padding-top:25px;">
     <div class="col-md-12">
-      <?php
-    //initialize
-
-    
-if ($_POST['reliability'] == null){		
-//do nothing
-} elseif ( $reliability = count($_POST['reliability']) ? $_POST['reliability'] : array());
-echo '<span style="font-weight:bold;">Source Reliability:</span>';
-echo "<br>";
-echo   count($reliability) ? implode('&nbsp;&nbsp; ',$reliability) : 'Nothing';
-echo "<br>";
-echo "<br>";
-if ($_POST['validity'] == null){		
-//do nothing
-} elseif ( $validity = count($_POST['validity']) ? $_POST['validity'] : array());
-echo '<span style="font-weight:bold;">Content Validity:</span>';
-echo "<br>";
-echo   count($validity) ? implode('&nbsp;&nbsp; ',$validity) : 'Nothing';
-echo "<br>";
-echo "<br>";
-
-if ($_POST['classification'] == null){		
-//do nothing
-} elseif ( $classification = count($_POST['classification']) ? $_POST['classification'] : array());
-echo '<span style="font-weight:bold;">Information Classification:</span>';
-echo "<br>";
-echo   count($classification) ? implode('&nbsp;&nbsp; ',$classification) : 'Nothing';
-
-  
-  ?>  
 
     </div>
     </div>

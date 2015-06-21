@@ -50,9 +50,9 @@ $link = $_POST['link'];
     //initialize
 
     
-		$vcheckboxes= implode(' ', $_POST['validity']);
-		$rcheckboxes= implode(' ', $_POST['reliability']);
-		$clacheckboxes= implode(' ', $_POST['classification']);
+		$vcheckboxes= null;
+		$rcheckboxes= null;
+		$clacheckboxes= null;
 		
 		
 		if ($_POST['reliability'] == null){		

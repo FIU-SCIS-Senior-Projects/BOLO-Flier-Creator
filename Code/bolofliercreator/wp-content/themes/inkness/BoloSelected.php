@@ -204,30 +204,6 @@ $background = 'watermark.jpg';
 
 </div> <!--- Summary-->
 
-<div class="container">
-    <div class="row" style="padding-top:25px;">
-    <div class="col-md-12">
-      <h4>Source Reliability:<?php echo "$resultReli" ?> </h4> 
-
-    </div>
-    </div>
-   
-<div class="row" style="padding-top:25px;">
-    <div class="col-md-12">
-     <h4>Content Validity: <?php echo "$resultValidity" ?> </h4> 
-
-    </div>
-    </div>
-
-<div class="row" style="padding-top:25px;">
-    <div class="col-md-12">
-      <h4>Information Classification:<?php echo "$resultClass" ?> </h4> 
-
-    </div>
-    </div>    
-    
-    
-     </div>
     
     
 <div class="container">
