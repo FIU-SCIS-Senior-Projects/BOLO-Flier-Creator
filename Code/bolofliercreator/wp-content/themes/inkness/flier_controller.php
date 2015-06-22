@@ -49,21 +49,6 @@ $link = $_POST['link'];
 
     //initialize
 
-		
-		
-		if ($_POST['reliability'] == null){		
-//do nothing
-} elseif ( $reliability = count($_POST['reliability']) ? $_POST['reliability'] : array());
-
-if ($_POST['validity'] == null){		
-//do nothing
-} elseif ( $validity = count($_POST['validity']) ? $_POST['validity'] : array());
-
-if ($_POST['classification'] == null){		
-//do nothing
-} elseif ( $classification = count($_POST['classification']) ? $_POST['classification'] : array());
-		
-  
 //case the user clicks on save
 if(isset($_POST["save"]) && $_POST["save"]) {
  	
