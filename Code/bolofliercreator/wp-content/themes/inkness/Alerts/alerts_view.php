@@ -8,7 +8,10 @@
  */
 ?>
 
-<?php get_header();?>
+
+<?php 
+	get_header();
+?>
 
 <?php
 include 'alerts_control.php';
@@ -16,6 +19,48 @@ $control = new alert_control();
 $alert = $control->get_info();
 ?>
 
+	
+ <?php
+ 
+     include_once('/../New Agency/new_agency_control.php');
+	 $controlo = new agency_control();
+	 $result = $controlo->get_agencies();
+ ?>
+ 
+ <style>
+	th, td {
+	 		padding: 10px;
+	 		max-height: 10px;
+			}
+</style>
+<div class="container">
+	<table style="width:70%">
+		<tr>
+			<th>Name</th>
+		    <th>Address</th>
+		    <th>City</th>
+			<th>Zip</th>
+			<th>State</th>
+			<th>Phone</th>
+		</tr>
+		<?php
+		while($row = $result->fetch_assoc()){
+			echo '<tr>';			
+			echo '<td>' . $row['name'] . '</td>';
+			echo '<td>' . $row['st_address'] . '</td>';
+			echo '<td>' . $row['city'] . '</td>';						
+			echo '<td>' . $row['zip'] . '</td>';
+			echo '<td>FL</td>';
+			echo '<td>' . $row['phone'] . '</td>';
+			//echo '<td> <a href="?page_id=1585&idAgency=' . $row['id'] . '">Edit</a></td>';
+			echo '</tr>';
+		}
+		?>
+
+
+
+		
+		
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
