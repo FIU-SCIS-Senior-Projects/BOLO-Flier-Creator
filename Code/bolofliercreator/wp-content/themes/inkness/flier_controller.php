@@ -59,15 +59,27 @@ if(isset($_POST["save"]) && $_POST["save"]) {
 	$id = $result['bolo_id']; 
 	$url = "/bolofliercreator/wp-content/themes/inkness/BoloSelected.php?idBolo=" . $id;
 	echo "<script>window.location = '$url'      </script>";
-   
-   //delete the preview BOLO if it exists
-    if (realpath('uploads/preview' . md5($author['display_name']) . '.pdf'))
+    
+   if (realpath('uploads/preview' . $userID . '.pdf'))
    {
        //delete the preview file
-       unlink('uploads/preview' . md5($author['display_name']) . '.pdf');
+       //unlink('uploads/preview' . $userID . '.pdf');
    } 
+
+    //submit information for pdf creation
+    $flier = new FlierModel();
+    $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link, TRUE);    
+    
+    $result = $flier->get_bolo();
+    
+    $doc = new bolo_pdf();
+    //created pdf using submitted information
+    $doc->save_pdf($result, TRUE, $author);
    
-	include_once'emailController.php';
+   //send email with PDF file
+    include_once'emailController.php';
+    //delete the generated pdf
+    $flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
    	//die();
 }
 //if preview button was clicked

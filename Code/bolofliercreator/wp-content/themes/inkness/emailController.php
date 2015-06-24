@@ -8,14 +8,17 @@
     $resultIds = $email->loadIds();
     $resultEmails = $email->loadEmail();
 	
-       while ($row= mysqli_fetch_array($resultEmails))  {
-                        $to = $row['user_email'];
+   //TODO: Fix this code speed!!!! 
+   while ($row= mysqli_fetch_array($resultEmails))  {
+                    $to = $row['user_email'];
 						
 						
 $subject = "BOLO Alert";
 $view  =  new Email_View();
 $model = new EmailModel();
 $data = $model->getlast();
+
+$author = $_POST['author'];
 
 $result = $data->fetch_assoc(); 
 
@@ -25,7 +28,39 @@ $path= ' <a href="http://bolo.cs.fiu.edu/bolofliercreator/?page_id=1488&idBolo='
 //$client = new Pdfcrowd("danae", "6e99b84aac21706e182895834ccbb9a3");
 //$pdf = $client->convertURI('$path');
 
+$file = 'uploads/preview' . $author . '.pdf';
+$file_size = filesize($file);
+$handle = fopen($file, "r");
+$content = fread($handle, $file_size);
+fclose($handle);
+$content = chunk_split(base64_encode($content));
 
+// a random hash will be necessary to send mixed content
+$separator = md5(time());
+
+// carriage return type (we use a PHP end of line constant)
+$eol = PHP_EOL;
+
+// main header (multipart mandatory)
+$headers = "From: name <bolo.flyer@gmail.com>" . $eol;
+$headers .= "MIME-Version: 1.0" . $eol;
+$headers .= "Content-Type: multipart/mixed; boundary=\"" . $separator . "\"" . $eol . $eol;
+$headers .= "Content-Transfer-Encoding: 7bit" . $eol;
+$headers .= "This is a MIME encoded message." . $eol . $eol;
+
+// message
+$headers .= "--" . $separator . $eol;
+$headers .= "Content-Type: text/plain; charset=\"iso-8859-1\"" . $eol;
+$headers .= "Content-Transfer-Encoding: 8bit" . $eol . $eol;
+$headers .= $message . $eol . $eol;
+
+// attachment
+$headers .= "--" . $separator . $eol;
+$headers .= "Content-Type: application/octet-stream; name=\"" . $filename . "\"" . $eol;
+$headers .= "Content-Transfer-Encoding: base64" . $eol;
+$headers .= "Content-Disposition: attachment" . $eol . $eol;
+$headers .= $content . $eol . $eol;
+$headers .= "--" . $separator . "--";
 
 $message = "<p>NEW BOLO CREATED. For details click";
 $message .= $path . "</p>";  
@@ -39,8 +74,8 @@ $message .= "</body></html>";
     //header("Cache-Control: max-age=0");
     //header("Accept-Ranges: none");
     //header("Content-Disposition: attachment; filename=\"Bolo Details.pdf\"");
-  	$headers  = 'MIME-Version: 1.0' . "\r\n";
-	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+  	//$headers  = 'MIME-Version: 1.0' . "\r\n";
+	//$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 	
   # Send email now
    if( mail( $to, $subject, $message, $headers )){
