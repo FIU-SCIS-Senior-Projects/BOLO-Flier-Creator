@@ -60,18 +60,18 @@ if(isset($_POST["save"]) && $_POST["save"]) {
 	$url = "/bolofliercreator/wp-content/themes/inkness/BoloSelected.php?idBolo=" . $id;
 	echo "<script>window.location = '$url'      </script>";
     
-   if (realpath('uploads/preview' . $userID . '.pdf'))
+   if (realpath('uploads/preview' . $author . '.pdf'))
    {
        //delete the preview file
-       //unlink('uploads/preview' . $userID . '.pdf');
+       unlink('uploads/preview' . $author. '.pdf');
    } 
 
     //submit information for pdf creation
     $flier = new FlierModel();
-    $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link, TRUE);    
+    $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $adtnlinfo,$newfilename,$author,$agency,$link, TRUE);    
     
     $result = $flier->get_bolo();
-    
+    include"BoloPDF/bolo_pdf.php";
     $doc = new bolo_pdf();
     //created pdf using submitted information
     $doc->save_pdf($result, TRUE, $author);
@@ -79,19 +79,12 @@ if(isset($_POST["save"]) && $_POST["save"]) {
    //send email with PDF file
     include_once'emailController.php';
     //delete the generated pdf
-    $flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
+    //$flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
    	//die();
 }
 //if preview button was clicked
 elseif(isset($_POST["preview"]) && $_POST["preview"]) {
     
-	//delete the preview BOLO if it exists
-    if (realpath('uploads/preview' . md5($author['display_name']) . '.pdf'))
-   {
-       //delete the preview file
-       unlink('uploads/preview' . md5($author['display_name']) . '.pdf');
-   } 
-	
     //submit information for pdf creation
     $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $adtnlinfo, $newfilename, $author, $agency, $link);    
     
@@ -127,14 +120,7 @@ else{
 	include"BoloPDF/bolo_pdf.php";
 	$doc = new bolo_pdf();
 	$doc->save_pdf($result, FALSE, $author);
-    
-    //delete the preview BOLO if it exists
-    if (realpath('uploads/preview' . md5($author['display_name']) . '.pdf'))
-   {
-       //delete the preview file
-       unlink('uploads/preview' . md5($author['display_name']) . '.pdf');
-   } 
-    	
+	
 }
  //session_unset();
 

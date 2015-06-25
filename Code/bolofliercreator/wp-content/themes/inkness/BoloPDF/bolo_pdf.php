@@ -16,7 +16,7 @@ class bolo_pdf{
      * 
      * @param $display indicates whether to simply display the PDF or download it
 	 */
-	public function save_pdf($bolo, $display, $author){
+	public function save_pdf($bolo, $display, $auth){
 		
 		include("mpdf60/mpdf.php");
 
@@ -155,8 +155,14 @@ SQL;
 		
         if($display===TRUE)
         {
+            if (realpath('uploads/preview' . $auth . '.pdf'))
+           {
+               //delete the preview file
+               unlink('uploads/preview' . $auth . '.pdf');
+           } 
+            
             //save on the server for retrieval
-            $mpdf->Output('uploads/preview' . $author . '.pdf', 'F');
+            $mpdf->Output('uploads/preview' . $auth . '.pdf', 'F');
         }else{
             $mpdf->Output('mpdf.pdf','D');
         
