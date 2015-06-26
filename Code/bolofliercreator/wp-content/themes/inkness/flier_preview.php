@@ -3,10 +3,11 @@
     include_once 'flier_model.php';
     include "BoloPDF/bolo_pdf.php";
     
-    $tmp_name = $_FILES["picture"]["tmp_name"];
+    
     
     //case a picture is uploaded when creating a bolo
-    if($_FILES["picture"]["name"] !== '' ){
+    if(isset($_FILES["picture"]) && $_FILES["picture"]["name"] !== '' ){
+        $tmp_name = $_FILES["picture"]["tmp_name"];
         $uploadfilename = $_FILES["picture"]["name"];
     $saveddate = date("mdy-Hms");
     $newfilename = "uploads/".$saveddate."_".$uploadfilename;

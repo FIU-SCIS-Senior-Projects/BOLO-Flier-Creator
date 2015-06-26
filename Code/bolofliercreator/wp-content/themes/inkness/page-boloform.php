@@ -28,8 +28,27 @@
  <script>
  $(document).ready(function() {
     $('#preview').click(function() {
-        var data = new FormData($('#boloForm').get(0));
+        var data = new FormData();
+        //var data = new FormData($('#boloForm').get(0));
         data.append('picture', $('#picture').get(0).files[0]);
+        data.append('selectcat', $('#selectcat').val());
+        data.append('myName', $('#name').val());
+        data.append('lastName', $('#lastName').val());
+        data.append('dob', $('#dob').val());
+        data.append('DLnumber', $('#DLnumber').val());
+        data.append('race', $('#race').val());
+        data.append('sex', $('#sex').val());
+        data.append('height', $('#height').val());
+        data.append('weight', $('#weight').val());
+        data.append('haircolor', $('#haircolor').val());
+        data.append('address', $('#address').val());
+        data.append('tattoos', $('#tattoos').val());
+        data.append('adtnlinfo', $('#adtnlinfo').val());
+        data.append('summary', $('#summary').val());
+        data.append('author', $('#author').val());
+        data.append('agency', $('#agency').val());
+        data.append('link', $('#link').val());
+        data.append('previewBOLOid', $('#previewBOLOid').val());
         $.ajax({
           url: 'wp-content/themes/inkness/flier_preview.php',
           data: data,
