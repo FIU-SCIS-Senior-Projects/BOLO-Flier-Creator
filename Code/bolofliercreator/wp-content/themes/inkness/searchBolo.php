@@ -30,7 +30,7 @@ get_header(); ?>
     $resultAgency = $bolo->loadAgency();
     $resultAddr = $bolo->loadAddr();
     //$resultAdt = $bolo->loadAdtnlinfo();
-    $resultClass = $bolo->loadClass();
+    //$resultClass = $bolo->loadClass();
     $resultDob = $bolo->loadDob();
     $resultHair = $bolo->loadHairColor();
     //$resultHeight = $bolo->loadHeight();
@@ -38,12 +38,12 @@ get_header(); ?>
     $resultName = $bolo->loadName();
 	$resultlastName = $bolo->loadLastName();
     $resultRace = $bolo->loadRace();
-    $resultReli = $bolo->loadReli();
+    //$resultReli = $bolo->loadReli();
     $resulCat = $bolo->loadCat();
     $resultSex = $bolo->loadSex();
     //$resultSumm = $bolo->loadSumm();
     //$resultTattoo = $bolo->loadTattoo();
-    $resultValidity = $bolo->loadValidity();
+    //$resultValidity = $bolo->loadValidity();
     //$resultWeight = $bolo->loadWeight();
     $resultCat = $bolo->loadCat();
 	$picture = $bolo->loadPicture();
@@ -138,7 +138,7 @@ get_header(); ?>
 		  </div>
           
            
-           
+           <br>
            
           <div class="col-md-6"> <br>     
                 <label>Select Address:</label>
@@ -159,25 +159,7 @@ get_header(); ?>
 </div>
  
            
-                <br>
-            <div class="col-md-6"><br>    
-                <label>Select Classification:</label>
-                
-
-                <select id="classif" name="classif" style="width:200px;" class="form-control" >
-                    <option >  </option >
-
-                    <?php
-                    while ($row= mysqli_fetch_array($resultClass))  {
-                        $prop2 = $row['classification'];
-                        echo "<option > $prop2 </option >";
-
-                    }
-                    ?>
-
-                </select>
-    <br>
-  </div>      
+               
                 <br>
         <div class="col-md-6">    
                 <label>Select DOB:</label>
@@ -198,7 +180,8 @@ get_header(); ?>
                 <br>
       </div>
                 <br>
-          <div class="col-md-6">    
+          <div class="col-md-6">  
+<br>		  
                 <label>Select Hair Color:</label>
                 
 
@@ -253,24 +236,7 @@ get_header(); ?>
                 </select>
                 <br>
         </div>  
-                <br>
-          <div class="col-md-6">       
-                <label>Select Reliability:</label>
-               
-
-                <select id="reli" name="reli" style="width:200px;" class="form-control"  >
-                    <option >  </option >
-
-                    <?php
-                    while ($row= mysqli_fetch_array($resultReli))  {
-                        $prop2 = $row['reliability'];
-                        echo "<option > $prop2 </option >";
-
-                    }
-                    ?>
-
-                </select>
-           </div>
+              
             
                 <br>
                 
@@ -292,26 +258,7 @@ get_header(); ?>
                 </select>
                 <br>
           </div> 
-                <br>
                 
-              <div class="col-md-6">   
-                <label>Select Validity:</label>
-                
-
-                <select id="val" name="val" style="width:200px;" class="form-control"  >
-                    <option >  </option >
-
-                    <?php
-                    while ($row= mysqli_fetch_array($resultValidity))  {
-                        $prop2 = $row['validity'];
-                        echo "<option > $prop2 </option >";
-
-                    }
-                    ?>
-
-                </select>
-                <br>
-              </div>  
                 <br>
           <button type="button submit" class="btn btn-primary">Search</button>
                 <!--<input type="submit" value="Search">-->
