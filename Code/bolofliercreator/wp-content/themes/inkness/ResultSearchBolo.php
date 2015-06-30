@@ -130,7 +130,7 @@ $cont = 0;
 echo("<br>");
     include_once'Model_Bolo.php';
     $bolo = new Model_Bolo();
-    $resultProp1= $bolo->searchResults($agency,$nome,$lastn,$addr,$classif,$dob,$hcolor,$lic,$race,$reli,$sex,$cat,$val,$link);
+    $resultProp1= $bolo->searchResults($agency,$nome,$lastn,$addr,$dob,$hcolor,$lic,$race,$sex,$cat,$link);
 	
  	//if no results
    if($resultProp1->num_rows==0){
