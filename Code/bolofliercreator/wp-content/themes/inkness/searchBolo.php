@@ -84,7 +84,6 @@ get_header(); ?>
             <div class="col-md-6">     
                 <label>Select Category:</label>
                 
-
                 <select id="cat" name="cat" style="width:200px;" class="form-control"  >
                     <option >  </option >
 
@@ -123,7 +122,6 @@ get_header(); ?>
                 
 
                 <select id="lastn" name="lastn" style="width:200px;" class="form-control" >
-                    <option >  </option >
 
                     <?php
                     while ($row= mysqli_fetch_array($resultlastName))  {
@@ -144,7 +142,6 @@ get_header(); ?>
                 <label>Select Address:</label>
 
                 <select id="addr" name="addr" class="form-control" style="width:200px;" >
-                    <option >  </option >
 
                     <?php
                     while ($row= mysqli_fetch_array($resultAddr))  {
@@ -162,11 +159,11 @@ get_header(); ?>
                
                 <br>
         <div class="col-md-6">    
+		<br>
                 <label>Select DOB:</label>
                
              
                 <select id="dob" name="dob" style="width:200px;" class="form-control" >
-                    <option >  </option >
 
                     <?php
                     while ($row= mysqli_fetch_array($resultDob))  {
@@ -181,7 +178,7 @@ get_header(); ?>
       </div>
                 <br>
           <div class="col-md-6">  
-<br>		  
+		  
                 <label>Select Hair Color:</label>
                 
 
@@ -197,14 +194,13 @@ get_header(); ?>
                     ?>
 
                 </select>
-		<br>
+		
           </div>
                 <br>
             <div class="col-md-6">    
                 <label>Select License:</label>
                 
                 <select id="lic" name="lic" style="width:200px;" class="form-control" >
-                    <option >  </option >
 
                     <?php
                     while ($row= mysqli_fetch_array($resultLicense))  {
@@ -219,11 +215,11 @@ get_header(); ?>
         </div>   
                 <br>
            <div class="col-md-6">
+		   
                 <label>Select Race:</label>
          
                     
                 <select id="race" name="race"  style="width:200px;" class="form-control"  >
-                    <option >  </option >
 
                     <?php
                     while ($row= mysqli_fetch_array($resultRace))  {
@@ -242,10 +238,9 @@ get_header(); ?>
                 
            <div class="col-md-6">      
                 <label>Select Sex:</label>
-             
 
                 <select id="sex" name="sex" style="width:200px;" class="form-control"  >
-                    <option >  </option >
+                   <!-- <option >  </option > -->
 
                     <?php
                     while ($row= mysqli_fetch_array($resultSex))  {
