@@ -26,7 +26,7 @@
  			<div class="row">
 				<div class="col-md-9">
 					<div class="form-group">
-						<form action="?page_id=1510&function3=update_agency" method="POST" enctype="multipart/form-data">
+						<form id="agencyUpdate" action="<?php echo get_template_directory_uri();?>../edit_agency_control.php" method="POST" enctype="multipart/form-data" name="agencyUpdate">
 							<input id="id" name="id" type="hidden" value="<?php echo $_GET["idAgency"];?>">
 							<div class="control">
 								<div class="col-md-9">
@@ -82,11 +82,10 @@
 							</div>	
 							<!-- Save Button -->
 							
-							<form action="?page_id=1510&function3=update_agency" method="POST" enctype="multipart/form-data">
 							<div class="control-group">
 								<div class="col-md-9">
 									<br/><br/>
-									<button  id="submit" name="submit"  class="btn btn-primary" align = "right">Save</button>
+									<button  type="submit" value="save" name="save" class="btn btn-primary" align = "right">Submit</button>
 								</div>
 							</div>
 						</form>

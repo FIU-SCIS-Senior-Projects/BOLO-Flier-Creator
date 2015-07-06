@@ -17,8 +17,25 @@ if(isset($_GET['function3']))
 function update_agency()
 {
 	
+	//This is the directory where images will be saved
+	$target = "agencies/";
+	$logoTarget = $target . basename( $_FILES['logo']['name']);
+	
+	//Writes the photo to the server
+/* 	if(move_uploaded_file($_FILES['logo']['tmp_name'], $target))
+	{
+
+	//Tells you if its all ok
+	echo "The file ". basename( $_FILES['logo']['name']). " has been uploaded, and your information has been added to the directory: ".$logoTarget;
+	}
+	else {
+
+	//Gives and error if its not
+	echo "Sorry, there was a problem uploading your file.";
+	} */
+	
 	//case a Logo is uploaded when updating an agency
-    if(isset($_FILES["logo"]) && $_FILES["logo"]["name"] !== '' ){
+    /* if(isset($_FILES["logo"]) && $_FILES["logo"]["name"] !== '' ){
         $tmp_name = $_FILES["logo"]["tmp_name"];
         $uploadfilename = $_FILES["logo"]["name"];
     $saveddate = date("mdy-Hms");
@@ -26,10 +43,13 @@ function update_agency()
     $logourl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
     
 		if (move_uploaded_file($tmp_name, $newfilename)){
-			$msg = "File uploaded";
+			$msg = "Logo file uploaded\n";
+			echo($msg);
 		}
-	}
-	
+		else{
+			echo("Logo FAILURE!!\n");
+		}
+	} */
 	//case a Shield is uploaded when updating an agency
     if(isset($_FILES["shield"]) && $_FILES["shield"]["name"] !== '' ){
         $tmp_name = $_FILES["shield"]["tmp_name"];
@@ -39,10 +59,14 @@ function update_agency()
     $shieldurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
     
 		if (move_uploaded_file($tmp_name, $newfilename)){
-			$msg = "File uploaded";
+			$msg = "Shield file uploaded\r\n";
+			echo($msg);
+		}
+		else{
+			echo("Shield FAILURE!!\r\n");
 		}
 	}
-	
+	print_r($FILES);
 	
 	$idAgency = $_POST["id"];
 	$name = $_POST["a_name"];
@@ -54,8 +78,8 @@ function update_agency()
 	//update agency
 	include_once('new_agency_model.php');
 	$model = new agency_model();
-	$model->update_agency($idAgency, $name, $address, $city, $zip, $phone, $logourl, $shieldurl);	
-	header('Location: /bolofliercreator/?page_id=1508');
+	$model->update_agency($idAgency, $name, $address, $city, $zip, $phone, $logoTarget, $shieldurl);	
+	//header('Location: /bolofliercreator/?page_id=1508');
 }
 ?>
 
