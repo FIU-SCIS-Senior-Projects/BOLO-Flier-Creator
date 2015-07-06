@@ -25,10 +25,10 @@ function update_agency()
     $newfilename = "uploads/".$saveddate."_".$uploadfilename;
     $logourl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
     
-    if (move_uploaded_file($tmp_name, $newfilename)){
-        $msg = "File uploaded";
-    }
-	
+		if (move_uploaded_file($tmp_name, $newfilename)){
+			$msg = "File uploaded";
+		}
+	}
 	
 	//case a Shield is uploaded when updating an agency
     if(isset($_FILES["shield"]) && $_FILES["shield"]["name"] !== '' ){
@@ -38,9 +38,10 @@ function update_agency()
     $newfilename = "uploads/".$saveddate."_".$uploadfilename;
     $shieldurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
     
-    if (move_uploaded_file($tmp_name, $newfilename)){
-        $msg = "File uploaded";
-    }
+		if (move_uploaded_file($tmp_name, $newfilename)){
+			$msg = "File uploaded";
+		}
+	}
 	
 	
 	$idAgency = $_POST["id"];
@@ -75,10 +76,10 @@ function save_agency(){
     $newfilename = "uploads/".$saveddate."_".$uploadfilename;
     $logourl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
     
-    if (move_uploaded_file($tmp_name, $newfilename)){
-        $msg = "File uploaded";
-    }
-	
+		if (move_uploaded_file($tmp_name, $newfilename)){
+			$msg = "File uploaded";
+		}
+	}
 	
 	//case a Shield is uploaded when updating an agency
     if(isset($_FILES["shield"]) && $_FILES["shield"]["name"] !== '' ){
@@ -88,9 +89,10 @@ function save_agency(){
     $newfilename = "uploads/".$saveddate."_".$uploadfilename;
     $shieldurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
     
-    if (move_uploaded_file($tmp_name, $newfilename)){
-        $msg = "File uploaded";
-    }
+		if (move_uploaded_file($tmp_name, $newfilename)){
+			$msg = "File uploaded";
+		}
+	}
 	
 	$name = $_POST["a_name"];
 	$address = $_POST["address"];
