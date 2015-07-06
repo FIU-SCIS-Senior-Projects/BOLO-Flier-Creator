@@ -7,7 +7,7 @@ class agency_model{
 	/*
 	 * 
 	 */
-	public function save_agency($name, $address, $city, $zip, $phone){
+	public function save_agency($name, $address, $city, $zip, $phone, $logo, $shield){
 		$servername = "localhost";
 		$username = "root";
 		$password = "";
@@ -21,8 +21,8 @@ class agency_model{
 		}
 		
 		$sql = <<<SQL
-	    INSERT INTO `agencies` (name, st_address, city, zip, phone)
-	    VALUES ('$name', '$address', '$city', '$zip', '$phone')
+	    INSERT INTO `agencies` (name, st_address, city, zip, phone, logo1, logo2)
+	    VALUES ('$name', '$address', '$city', '$zip', '$phone', $logo, $shield)
 SQL;
 		if(!$result = $conn->query($sql)){
 		    die('There was an error running the query [' . $db->error . ']');
@@ -33,7 +33,7 @@ SQL;
 	}//end 
 	
 	// EDIT AGENCY
-	public function update_agency($idAgency, $name, $address, $city, $zip, $phone){
+	public function update_agency($idAgency, $name, $address, $city, $zip, $phone, $logo, $shield){
 		$servername = "localhost";
 		$username = "root";
 		$password = "";
@@ -48,7 +48,7 @@ SQL;
 		
 		$sql = <<<SQL
 	    UPDATE agencies
-		SET name = "$name", st_address = "$address", city = "$city", zip = "$zip", phone = "$phone"
+		SET name = "$name", st_address = "$address", city = "$city", zip = "$zip", phone = "$phone", logo1 = "$logo", logo2 = "$shield"
 	   WHERE id = "$idAgency"
 SQL;
 		if(!$result = $conn->query($sql)){

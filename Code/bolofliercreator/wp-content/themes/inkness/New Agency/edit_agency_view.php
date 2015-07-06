@@ -55,6 +55,29 @@
 									<div class="controls">
 										<input id="phone" name="phone" placeholder="" class="input-xlarge" type="text" size="15" value="<?php echo $agency["phone"];?>">
 									</div>
+									
+									<!-- Logo Upload --> 
+									<div class="control-group">
+										<div class="col-md-6">
+											<label class="control-label" for="picture">Upload Logo</label>
+											<div class="controls">
+												<input type="hidden" name="MAX-FILE_SIZE" value="102400">
+												<input type = "file" name="logo" id="logo" accept="image/*"/>
+											</div>
+									  </div>
+									</div> 
+									
+									<!-- Shield Upload --> 
+									<div class="control-group">
+										<div class="col-md-6">
+											<label class="control-label" for="picture">Upload Shield</label>
+											<div class="controls">
+												<input type="hidden" name="MAX-FILE_SIZE" value="102400">
+												<input type = "file" name="shield" id="shield" accept="image/*"/>
+											</div>
+									  </div>
+									</div> 
+									
 								</div>
 							</div>	
 							<!-- Save Button -->

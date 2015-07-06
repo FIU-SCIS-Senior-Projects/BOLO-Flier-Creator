@@ -16,6 +16,33 @@ if(isset($_GET['function3']))
  
 function update_agency()
 {
+	
+	//case a Logo is uploaded when updating an agency
+    if(isset($_FILES["logo"]) && $_FILES["logo"]["name"] !== '' ){
+        $tmp_name = $_FILES["logo"]["tmp_name"];
+        $uploadfilename = $_FILES["logo"]["name"];
+    $saveddate = date("mdy-Hms");
+    $newfilename = "uploads/".$saveddate."_".$uploadfilename;
+    $logourl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
+    
+    if (move_uploaded_file($tmp_name, $newfilename)){
+        $msg = "File uploaded";
+    }
+	
+	
+	//case a Shield is uploaded when updating an agency
+    if(isset($_FILES["shield"]) && $_FILES["shield"]["name"] !== '' ){
+        $tmp_name = $_FILES["shield"]["tmp_name"];
+        $uploadfilename = $_FILES["shield"]["name"];
+    $saveddate = date("mdy-Hms");
+    $newfilename = "uploads/".$saveddate."_".$uploadfilename;
+    $shieldurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
+    
+    if (move_uploaded_file($tmp_name, $newfilename)){
+        $msg = "File uploaded";
+    }
+	
+	
 	$idAgency = $_POST["id"];
 	$name = $_POST["a_name"];
 	$address = $_POST["address"];
@@ -26,7 +53,7 @@ function update_agency()
 	//update agency
 	include_once('new_agency_model.php');
 	$model = new agency_model();
-	$model->update_agency($idAgency, $name, $address, $city, $zip, $phone);	
+	$model->update_agency($idAgency, $name, $address, $city, $zip, $phone, $logourl, $shieldurl);	
 	header('Location: /bolofliercreator/?page_id=1508');
 }
 ?>
@@ -39,6 +66,32 @@ if(isset($_GET['function']))
 }
 
 function save_agency(){
+	
+	//case a Logo is uploaded when updating an agency
+    if(isset($_FILES["logo"]) && $_FILES["logo"]["name"] !== '' ){
+        $tmp_name = $_FILES["logo"]["tmp_name"];
+        $uploadfilename = $_FILES["logo"]["name"];
+    $saveddate = date("mdy-Hms");
+    $newfilename = "uploads/".$saveddate."_".$uploadfilename;
+    $logourl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
+    
+    if (move_uploaded_file($tmp_name, $newfilename)){
+        $msg = "File uploaded";
+    }
+	
+	
+	//case a Shield is uploaded when updating an agency
+    if(isset($_FILES["shield"]) && $_FILES["shield"]["name"] !== '' ){
+        $tmp_name = $_FILES["shield"]["tmp_name"];
+        $uploadfilename = $_FILES["shield"]["name"];
+    $saveddate = date("mdy-Hms");
+    $newfilename = "uploads/".$saveddate."_".$uploadfilename;
+    $shieldurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
+    
+    if (move_uploaded_file($tmp_name, $newfilename)){
+        $msg = "File uploaded";
+    }
+	
 	$name = $_POST["a_name"];
 	$address = $_POST["address"];
 	$city =$_POST["city"];
@@ -49,7 +102,7 @@ function save_agency(){
 	
 	include_once('new_agency_model.php');
 	$model = new agency_model();
-	$model->save_agency($name, $address, $city, $zip, $phone);	
+	$model->save_agency($name, $address, $city, $zip, $phone, $logourl, $shieldurl);	
 	header('Location: /bolofliercreator/?page_id=1508');
 }
 
