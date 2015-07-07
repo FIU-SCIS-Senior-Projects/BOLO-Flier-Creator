@@ -49,5 +49,5 @@
 	include_once('new_agency_model.php');
 	$model = new agency_model();
 	$model->update_agency($idAgency, $name, $address, $city, $zip, $phone, $logourl, $shieldurl);	
-	//header('Location: /bolofliercreator/?page_id=1508');
+	header('Location: /bolofliercreator/?page_id=1508');
 ?>

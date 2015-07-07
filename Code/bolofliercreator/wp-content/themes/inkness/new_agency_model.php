@@ -20,12 +20,18 @@ class agency_model{
 		    die("Connection failed: " . $conn->connect_error);
 		}
 		
-		$sql = <<<SQL
+/* 		$sql = <<<SQL
 	    INSERT INTO `agencies` (name, st_address, city, zip, phone, logo1, logo2)
 	    VALUES ('$name', '$address', '$city', '$zip', '$phone', $logo, $shield)
+SQL; */
+
+		$sql = <<<SQL
+	    INSERT INTO `agencies` (name, st_address, city, zip, phone, logo1, logo2)
+	    VALUES ('$name', '$address', '$city', '$zip', '$phone', '$logo', '$shield')
 SQL;
+
 		if(!$result = $conn->query($sql)){
-		    die('There was an error running the query [' . $db->error . ']');
+		    die('There was an error creating the agency.');
 		}
 		
 		mysqli_close($conn); 

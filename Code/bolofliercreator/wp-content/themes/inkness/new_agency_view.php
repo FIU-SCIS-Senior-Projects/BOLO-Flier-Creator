@@ -16,7 +16,7 @@
  			<div class="row">
 				<div class="col-md-9">
 					<div class="form-group">
-						<form action="?page_id=1510&function=save_agency" method="POST" enctype="multipart/form-data">
+						<form id="agencyCreate" action="<?php echo get_template_directory_uri();?>../new_agency_controller.php" method="POST" enctype="multipart/form-data" name="agencyCreate">
 							<div class="control">
 								<div class="col-md-9">
 									<!-- Agency Name Field--><br>

@@ -26,7 +26,7 @@
  			<div class="row">
 				<div class="col-md-9">
 					<div class="form-group">
-						<form id="agencyUpdate" action="<?php echo get_template_directory_uri();?>../edit_agency_control.php" method="POST" enctype="multipart/form-data" name="agencyUpdate">
+						<form id="agencyUpdate" action="<?php echo get_template_directory_uri();?>../edit_agency_controller.php" method="POST" enctype="multipart/form-data" name="agencyUpdate">
 							<input id="id" name="id" type="hidden" value="<?php echo $_GET["idAgency"];?>">
 							<div class="control">
 								<div class="col-md-9">
