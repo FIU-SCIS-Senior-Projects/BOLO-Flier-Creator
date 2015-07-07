@@ -17,6 +17,9 @@
 			echo("Logo FAILURE!!\n");
 		}
 	}
+	else{
+		$logourl = null;
+	}
 	//case a Shield is uploaded when updating an agency
     if(isset($_FILES["shield"]) && $_FILES["shield"]["name"] !== '' ){
         $tmp_name = $_FILES["shield"]["tmp_name"];
@@ -35,7 +38,7 @@
 		}
 	}
 	else{
-		echo("ERROR!!!");
+		$shieldurl = null;
 	}
 	
 	$idAgency = $_POST["id"];
