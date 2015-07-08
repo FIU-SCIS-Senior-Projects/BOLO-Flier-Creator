@@ -61,7 +61,21 @@ SQL;
 		}
 		$author = $result3->fetch_assoc();
 		
-		
+		$sectionSQL = <<<SQL
+        SELECT meta_value
+        FROM wp_usermeta
+        WHERE user_id="$id" AND meta_key="Section"
+SQL;
+        $sectionResults = $conn->query($sectionSQL);
+        $section = $sectionResults->fetch_assoc();
+
+        $rankSQL = <<<SQL
+        SELECT meta_value
+        FROM wp_usermeta
+        WHERE user_id="$id" AND meta_key="Rank"
+SQL;
+        $rankResults = $conn->query($rankSQL);
+        $rank = $rankResults->fetch_assoc();
 		
 		$html=    
 				
@@ -139,7 +153,7 @@ SQL;
 		$html4=
 		
 		'<br><br>'.
-		'Any Agency having questions regarding this document may contact: ' . $author['display_name']
+		'Any Agency having questions regarding this document may contact: ' . $section['meta_value'] . " " . $rank['meta_value'] . " " . $author['display_name']
      ;
 		
 		$mpdf=new mPDF('c','A4','','',15,15,15,15,15,15); 

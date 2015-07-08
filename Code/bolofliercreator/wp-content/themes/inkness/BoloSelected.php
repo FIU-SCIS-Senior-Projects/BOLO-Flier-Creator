@@ -60,6 +60,32 @@ $background = 'watermark.jpg';
     }
 	
 	$author_name = $bolo->loadAuthor($author);
+    
+    //get user info
+    
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "bolo_creator";
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    $sectionSQL = <<<SQL
+    SELECT meta_value
+    FROM wp_usermeta
+    WHERE user_id="$author" AND meta_key="Section"
+SQL;
+    $sectionResults = $conn->query($sectionSQL);
+    $section = $sectionResults->fetch_assoc();
+
+    $rankSQL = <<<SQL
+    SELECT meta_value
+    FROM wp_usermeta
+    WHERE user_id="$author" AND meta_key="Rank"
+SQL;
+    $rankResults = $conn->query($rankSQL);
+    $rank = $rankResults->fetch_assoc();
+    
  ?>
 
  <?php include_once('inc/header_view_bolo.php'); 
@@ -207,7 +233,7 @@ $background = 'watermark.jpg';
     <div class="row">
          <div class="col-md-12" style="border: 1px solid #7e7e7e; padding: 15px;">
             <p style="font-size:12px;"><em>Contact Information:</em>
-            	Any Agency having questions regarding this document may contact <?php echo $author_name; ?>.
+            	Any Agency having questions regarding this document may contact <?php echo $section['meta_value'];?> <?php echo $rank['meta_value'] ?> <?php echo $author_name; ?>.
             	</p>
         </div>
     </div>
