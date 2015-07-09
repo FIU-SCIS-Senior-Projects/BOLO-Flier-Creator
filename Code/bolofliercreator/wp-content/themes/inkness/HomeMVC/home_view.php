@@ -70,7 +70,7 @@ class home_view{
                                     $true=1;
                                     if ($row['recently_updated']==$true)
                                     {
-                                        echo '<font color="red">UPDATED! on ' .$row['datecreated'] . '</font> <br />';
+                                        echo '<font color="red">UPDATED! on ' .$row['edit_date'] . '</font> <br />';
                                     }
                                     else {
                                     	echo $row['datecreated'] . '<br />';
