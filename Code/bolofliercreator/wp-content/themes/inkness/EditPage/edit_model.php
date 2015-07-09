@@ -145,6 +145,14 @@ SQL;
 		    $queryResults = false;
 		}
 		
+        $setUpdateQuery = <<<SQL
+        UPDATE wp_flierform
+        SET recently_updated = TRUE
+        WHERE bolo_id = "$boloid"
+SQL;
+
+        $result = $conn->query($setUpdateQuery);
+        
 /* These next three sql queries are for updating an already created BOLO.
          * After all the queries execute, a boolean value is returned; this acts
          * as a check to make sure that all the queries in this class execute

@@ -65,16 +65,26 @@ class home_view{
 									echo '<p class="alignright">'.$row['agency'].'</p>';
 									$img = '/bolofliercreator/wp-content/themes/inkness/'.$row['image'];
 									echo '<img style="height: 200px" src="'.$img.'">' . '<br />';
+                                    
+                                    //if the BOLO has been updated, display an Update notification
+                                    $true=1;
+                                    if ($row['recently_updated']==$true)
+                                    {
+                                        echo '<font color="red">UPDATED! on ' .$row['datecreated'] . '</font> <br />';
+                                    }
+                                    else {
+                                    	echo $row['datecreated'] . '<br />';
+                                    }
+                                    
 									echo $id . '<br />';
-									echo $row['datecreated'];
-									echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+									//echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
 									//echo ' <a href="/bolofliercreator/wp-content/themes/inkness/BoloSelected.php?idBolo=' . "$id" . '">
 									//	Details</a>';	
-									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a>';
+									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a> &nbsp&nbsp&nbsp';
                                     //Code to show edit link if appropriate below
                                     //if current user is admin, show edit on all BOLOS
                                     if(current_user_can( 'activate_plugins' )){
-                                        echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
+                                        echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a> &nbsp&nbsp&nbsp';
                                         //Archive link
                                        
                                        echo '<td> <a href="#" onclick="javascript: archiveJS(\'' . "$id" . '\')">Archive</a></td>';
