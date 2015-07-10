@@ -93,8 +93,14 @@ SQL;
 	$head->make_banner($author);
  ?>
 
+
+ <div class="redirects" style="position: relative; left: 52px; bottom: 25px;">
+    <a href="http://bolo.cs.fiu.edu/bolofliercreator/"><font size="6" color="green" font-weight: "bold">Home</font></a>
+    <td>&emsp;&emsp;&emsp;&emsp;</td>
+    <a href="http://bolo.cs.fiu.edu/bolofliercreator/?page_id=284"><font size="6" color="green" font-weight: "bold">Search</font></a>
+ </div>
  <div class="container">
- 	
+
 	<div class="row" >
     	<div class="col-md-4">
     	<div style="width: 320px;">	
@@ -245,12 +251,6 @@ SQL;
  
 
 <!--<a href="searchBolo.php" > Start Search</a>-->
-
-
- 
-<a href="http://bolo.cs.fiu.edu/bolofliercreator/"><font size="5" color="green" font-weight: "bold">Home</font></a>
-<td>&nbsp;</td>
-<a href="http://bolo.cs.fiu.edu/bolofliercreator/?page_id=284"><font size="5" color="green" font-weight: "bold">Start Search</font></a>
 
 
 
