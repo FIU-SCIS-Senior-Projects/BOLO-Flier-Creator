@@ -39,6 +39,7 @@
             echo '<td>FL</td>';
             echo '<td>' . $row['phone'] . '</td>';
             echo '<td> <a href="?page_id=1585&idAgency=' . $row['id'] . '">Edit</a></td>';
+            echo '<td> <a href="agencyDelete?id=' . $row['id'] . '">Delete</a></td>';
             echo '</tr>';
         }
         ?>
