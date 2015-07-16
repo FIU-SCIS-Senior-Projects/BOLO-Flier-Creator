@@ -108,6 +108,7 @@ SQL;
 		$sql = <<<SQL
 	    SELECT *
 	    FROM agencies
+	    ORDER BY id
 SQL;
 		if(!$result = $conn->query($sql)){
 		    die('There was an error running the query [' . $db->error . ']');

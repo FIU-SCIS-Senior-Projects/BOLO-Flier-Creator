@@ -20,26 +20,26 @@
     $sqlAgencyName = <<<SQL
         SELECT name
         FROM agencies
-        WHERE id = "$agencyID"
+        WHERE id="$agencyID"
 SQL;
 
-    $result = $conn->query($sql);
+    $agencyName = $conn->query($sqlAgencyName);
     
-    $agencyName = $result["name"];
+    $agencyName = $agencyName->fetch_assoc();
     
     $sqlAgencyDelete = <<<SQL
         DELETE FROM agencies
         WHERE id = "$agencyID"
 SQL;
 
-    $result = $conn->query($sql);
+    $result = $conn->query($sqlAgencyDelete);
     
     $sqlAgencyDeleteMeta = <<<SQL
         DELETE FROM wp_usermeta
         WHERE meta_key = agency AND meta_value = "$agencyName"
 SQL;
 
-    $result = $conn->query($sql);
+    $result = $conn->query($sqlAgencyDeleteMeta);
     
     
     mysqli_close($conn);  
