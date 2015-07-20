@@ -84,6 +84,39 @@ SQL;
     public function get_user(){
         
     }
+    
+    //gets all BOLOs made by specified user
+    public function get_user_bolos($offset)
+    {
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "bolo_creator";
+                
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        
+        
+        $authorID = get_current_user_id();
+        
+        $sqlBOLO = <<<SQL
+        SELECT *
+        FROM `wp_flierform` 
+        WHERE author = "$authorID"
+        ORDER BY edit_date DESC LIMIT $offset,24
+SQL;
+
+        $result = $conn->query($sqlBOLO);
+        
+        mysqli_close($conn);
+    
+        return $result;
+        
+    }
 
 
 

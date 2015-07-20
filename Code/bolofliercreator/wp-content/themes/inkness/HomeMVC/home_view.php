@@ -36,6 +36,7 @@ class home_view{
 						<select id="agency" name="agency" style="width:160px;" class="form-control";>
 								<option></option>
 			                    <option>Show All</option >
+			                    <option>Show My BOLOs</option >
 			                    <?php                    
 			                    while ($row = $agencies->fetch_assoc()){
 			                        $prop1 = $row['name'];

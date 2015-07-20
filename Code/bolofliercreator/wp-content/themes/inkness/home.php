@@ -21,7 +21,14 @@ $view = new home_view();
 $agencies = $model->get_agencies();
 
 //get the bolos for the desired agency (default value = 'Show ALL')
-$result = $model->get_data($_POST['agency'], $_POST['offset']+0);
+if($_POST['agency'] == 'Show My BOLOs' )
+{
+    $result = $model->get_user_bolos($_POST['offset']+0);
+}
+else {
+	$result = $model->get_data($_POST['agency'], $_POST['offset']+0);
+}
+
 //update the view with the new data
 $view->update_view($result, $data, $agencies, $_POST['agency'], $_POST['offset']+0);
 

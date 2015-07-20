@@ -51,8 +51,8 @@ SQL;
 			$sql = <<<SQL
 		    SELECT *
 		    FROM `wp_flierform`
-		    WHERE author = "$author" AND archive = FALSE
-		    ORDER BY datecreated DESC
+		    WHERE author = "$author"
+		    ORDER BY edit_date DESC
 SQL;
 		}
 		
