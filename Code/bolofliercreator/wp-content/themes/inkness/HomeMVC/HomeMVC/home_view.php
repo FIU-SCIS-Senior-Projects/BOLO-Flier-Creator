@@ -20,34 +20,12 @@ class home_view{
 			
 			function archiveJS(boloid)
 			{
-				
-				if(confirm("Are you sure you want to archive this BOLO?"))
-				{
-					jQuery.get("?page_id=1532&idBolo=" + boloid,function(){
+				jQuery.get("?page_id=1532&idBolo=" + boloid,function(){
 					location.reload();
 				});
-				}	
 			}
 			
 		</script>
-		<style>
-			.updated-bolo-flag{
-				border: 1px solid;
-				  padding: 3px;
-				  background-color: beige;
-				  border-radius: 5px;
-				  color: red;
-				  /* margin-top: -10px; */
-				  position: relative;
-				  text-align: center;
-				  width: 100%;
-
-			}
-			
-			.update-status{
-				font-weight: bold;
-			}
-		</style>
 		<body>
 		
 		<div class="container">
@@ -58,7 +36,6 @@ class home_view{
 						<select id="agency" name="agency" style="width:160px;" class="form-control";>
 								<option></option>
 			                    <option>Show All</option >
-			                    <option>Show My BOLOs</option >
 			                    <?php                    
 			                    while ($row = $agencies->fetch_assoc()){
 			                        $prop1 = $row['name'];
@@ -88,28 +65,18 @@ class home_view{
 									echo '<p class="alignright">'.$row['agency'].'</p>';
 									$img = '/bolofliercreator/wp-content/themes/inkness/'.$row['image'];
 									echo '<img style="height: 200px" src="'.$img.'">' . '<br />';
-                                    
-                                    //if the BOLO has been updated, display an Update notification
-                                    $true=1;
-                                    if ($row['recently_updated']==$true)
-                                    {
-                                        echo '<div class="updated-bolo-flag">UPDATED! on ' .$row['edit_date'] . '<br/><b>' .$row['update_status'] . '</b></div>';
-                                    }
-                                    else {
-                                    	echo $row['datecreated'] . '<br />';
-                                    }
-                                    
 									echo $id . '<br />';
-									//echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+									echo $row['datecreated'];
+									echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
 									//echo ' <a href="/bolofliercreator/wp-content/themes/inkness/BoloSelected.php?idBolo=' . "$id" . '">
 									//	Details</a>';	
-									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a> &nbsp&nbsp&nbsp';
+									echo ' <a href="?page_id=1488&idBolo=' . "$id" . '">Details</a>';
                                     //Code to show edit link if appropriate below
                                     //if current user is admin, show edit on all BOLOS
                                     if(current_user_can( 'activate_plugins' )){
-                                        echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a> &nbsp&nbsp&nbsp';
+                                        echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
                                         //Archive link
-                                       
+                                       // echo '<td> <a href="?page_id=1532&idBolo=' . "$id" . '">Archive</a></td>';
                                        echo '<td> <a href="#" onclick="javascript: archiveJS(\'' . "$id" . '\')">Archive</a></td>';
                                     }
                                     //but if tier 2, show edit only on agency bolos
@@ -118,8 +85,6 @@ class home_view{
                                          if($ag_name == $row['agency'])
                                          {
                                              echo ' <a href="?page_id=1502&idBolo=' . "$id" . '">Edit</a>';
-                                             //tier 2 archive link
-                                             echo '<td> <a href="#" onclick="javascript: archiveJS(\'' . "$id" . '\')">Archive</a></td>';
                                          }
                                         
                                     }
