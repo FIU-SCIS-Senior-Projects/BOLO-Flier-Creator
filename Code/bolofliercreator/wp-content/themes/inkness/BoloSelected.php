@@ -99,7 +99,7 @@ SQL;
     <td>&emsp;&emsp;&emsp;&emsp;</td>
     <a href="http://bolo.cs.fiu.edu/bolofliercreator/?page_id=284"><font size="6" color="green" font-weight: "bold">Search</font></a>
     <td>&emsp;&emsp;&emsp;&emsp;</td>
-    <a href="http://bolo.cs.fiu.edu/bolofliercreator/?page_id=1594&id=' . $resultId . '"><font size="6" color="green" font-weight: "bold">Download</font></a>
+    <a href="http://bolo.cs.fiu.edu/bolofliercreator/?page_id=1594&id=<?php echo $resultId?>"><font size=6" color="green" font-weight: "bold">Download</font></a>
  </div>
  <div class="container">
 
