@@ -17,13 +17,22 @@ class EmailModel {
         return $conn->execute_query($sql);
     }
 	
+	/*
 	public function loadEmail()
     {
         $conn=new data_access();
         //$sql="SELECT user_email FROM wp_users";
-		$sql='SELECT * FROM `wp_users` INNER JOIN `wp_usermeta` ON `wp_users`.ID=`wp_usermeta`.user_id WHERE meta_key="alert" AND meta_value="true" ';        
-		
+		$sql='SELECT * FROM `wp_users` INNER JOIN `wp_usermeta` ON `wp_users`.ID=`wp_usermeta`.user_id WHERE meta_key="alert" AND meta_value="true" '; 
         return $conn->execute_query($sql);
+    }*/
+	
+	public function loadEmail($agency_id)
+    {
+       $conn=new data_access();
+       //$sql="SELECT user_email FROM wp_users";
+	   $sql='SELECT * FROM `wp_users` INNER JOIN `wp_usermeta` ON `wp_users`.ID=`wp_usermeta`.user_id WHERE meta_key="alert" AND (meta_value="true" OR meta_value LIKE "%<' . $agency_id . '>%") ';        
+		
+       return $conn->execute_query($sql);
     }
 	
 	public function getlast()

@@ -1,4 +1,3 @@
-
 <?php
 
 require_once('class.phpmailer.php');
@@ -6,18 +5,18 @@ require_once('class.phpmailer.php');
   include_once'emailModel.php';
   include_once'emailView.php';
   
-    $email=new emailModel();
-    $resultIds = $email->loadIds();
-    $resultEmails = $email->loadEmail();
-    $receiverEmails = "";
-                        
-                        
+  $author = $_POST['author'];
+  $agency = $_POST['agency'];
+
+  $email			= new emailModel();
+  $resultIds 		= $email->loadIds();
+  $resultEmails 	= $email->loadEmail($agency);
+  $receiverEmails 	= "";
+                           
 $subject = "BOLO Alert";
 $view  =  new Email_View();
 $model = new EmailModel();
 $data = $model->getlast();
-
-$author = $_POST['author'];
 
 $result = $data->fetch_assoc(); 
 
@@ -60,4 +59,3 @@ $mail->AddAttachment($file);      // attachment
 $mail->Send();
 
 ?>
-

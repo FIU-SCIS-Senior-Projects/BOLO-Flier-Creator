@@ -78,6 +78,8 @@ if(isset($_POST["save"]) && $_POST["save"]) {
    
    //send email with PDF file
     include_once'emailController.php';
+	
+	
     //delete the generated pdf
     //$flier->remove_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,$summary, $rcheckboxes,$vcheckboxes,$clacheckboxes,$adtnlinfo,$newfilename,$author,$agency,$link);
    	//die();
