@@ -98,6 +98,8 @@ SQL;
     <a href="http://bolo.cs.fiu.edu/bolofliercreator/"><font size="6" color="green" font-weight: "bold">Home</font></a>
     <td>&emsp;&emsp;&emsp;&emsp;</td>
     <a href="http://bolo.cs.fiu.edu/bolofliercreator/?page_id=284"><font size="6" color="green" font-weight: "bold">Search</font></a>
+    <td>&emsp;&emsp;&emsp;&emsp;</td>
+    <a href="?page_id=dsfkljhsdklfds&id=' . $resultId . '"><font size="6" color="green" font-weight: "bold">Download</font></a>
  </div>
  <div class="container">
 
