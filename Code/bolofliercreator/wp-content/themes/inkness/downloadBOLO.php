@@ -75,7 +75,8 @@ SQL;
     }else{
         
         //if not, add it to the database (not, DB has no primary key...)
-        $flier->submit_pdf($selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos, $summary, $adtnlinfo, $newfilename, $author, $agency, $link);    
+        $flier->submit_pdf($resultCat, $resultName, $resultlastName, $resultDob, $resultLicense, $resultRace, $resultSex, $resultHeight, $resultWeight,
+          $resultHair, $resultAddr, $resultTattoo, $resultSumm, $resultAdt, $pathImage, $author, $resultAgency, $link);    
         //since it was freshly added, retrieve it and send it to the pdf creator
         $result = $flier->get_bolo();
         $doc->save_pdf($result, FALSE, $author);
