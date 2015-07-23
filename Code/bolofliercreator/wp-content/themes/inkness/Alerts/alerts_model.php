@@ -7,7 +7,7 @@ class alert_model{
 	}
 	
 	/**
-	 * gets the status of whether the user wants to eceive alerts
+	 * gets the status of whether the user wants to receive alerts
 	 * @param the id of the user
 	 * @return true or false depending on whether the user wants to receive alerts
 	 */
@@ -59,15 +59,36 @@ SQL;
 		if ($conn->connect_error) {
 		    die("Connection failed: " . $conn->connect_error);
 		}
-
+		
 		$sql = <<<SQL
-	    UPDATE wp_usermeta
-	    SET meta_value="$status"
-	    WHERE meta_key="alert" AND user_id="$user"
+		SELECT count(*) FROM wp_usermeta WHERE user_id="$user" AND meta_key="alert"
 SQL;
 		if(!$result = $conn->query($sql)){
 		    die('There was an error running the query [' . $db->error . ']');
 		}
+		
+		$row = $result->fetch_assoc();
+		if($row)
+		{
+			$sql = <<<SQL
+				UPDATE wp_usermeta
+				SET meta_value="$status"
+				WHERE meta_key="alert" AND user_id="$user"
+SQL;
+				if(!$result = $conn->query($sql)){
+					die('There was an error running the query [' . $db->error . ']');
+				}
+		}
+		else
+		{
+			$sql = <<<SQL
+				INSERT INTO wp_usermeta (user_id, meta_key, meta_value) VALUES ("$user","alert","$status")
+SQL;
+				if(!$result = $conn->query($sql)){
+					die('There was an error running the query [' . $db->error . ']');
+				}
+		}
+		
 		mysqli_close($conn);
 	}//end function uptade_alert
 	

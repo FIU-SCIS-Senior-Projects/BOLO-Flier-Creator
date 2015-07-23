@@ -36,19 +36,28 @@ if(isset($_GET['function']))
     update();
 }
 
-/*
- * This method request and update of the bolo
- */
+
 function update(){
 	
-	$alert= implode(' ', $_POST['alert']);
-	$user = $_POST['user_id'];
+	$user		 = $_POST['user_id'];
+	$id_agencies = '';
+	
+	/// Populate the Agencies  array. (id of each selected agency)
+	$i=0;
+	foreach( $_POST as $stuff => $val1 ) {
+		if( !is_array( $stuff ) &&  strncasecmp($stuff,'check-',6) == 0) {
+			$id_agencies = $id_agencies . '<' . substr_replace($stuff,'',0,6) . '>';
+			$i++;
+		}
+	}
+
+	foreach($id_agencies as $ida)
+		echo $ida . '<br/>';
 	
 	include'alerts_model.php';
 
 	$model = new alert_model();	
-	
-	$model->update_alert($user, $alert);
+	$model->update_alert($user, $id_agencies);
 	
 	header('Location: /bolofliercreator/?page_id=1561');
 }
