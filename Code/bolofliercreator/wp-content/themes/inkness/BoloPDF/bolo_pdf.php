@@ -133,7 +133,7 @@ SQL;
         '<td></td>'.
         '<td><p style="font-weight: bold;">Weight: </p>'.$bolo ['weight'].'</td>'.
         '<td><p style="font-weight: bold;">Hair Color: </p>'.$bolo ['haircolor'].'</td>'.
-        '<td><p style="font-weight: bold;">Bolo ID: </td>'.
+        '<td><p style="font-weight: bold;">Bolo ID: </p>'.$bolo ['bolo_id'].' </td>'.
         '</tr>'.
         
         '<tr>'.
