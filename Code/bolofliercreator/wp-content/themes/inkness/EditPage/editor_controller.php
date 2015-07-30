@@ -59,60 +59,63 @@ if(isset($_GET['function']))
 function update(){
     include_once("edit_model.php");
     $model = new edit_model();
-    	
-	$selectcat=$_POST ['selectcat'];
-	$myName=$_POST ['myName'];
-	$lastName=$_POST ['lastName'];
-	$dob=$_POST ['dob'];
-	$DLnumber=$_POST ['DLnumber'];
-	$race=$_POST ['race'];
-	$sex=$_POST ['sex'];
-	$height=$_POST ['height'];
-	$weight=$_POST ['weight'];
-	$haircolor=$_POST ['haircolor'];
-	$address=$_POST ['address'];
-	$tattoos=$_POST ['tattoos'];
-	$adtnlinfo=$_POST ['adtnlinfo'];
-	$summary=$_POST ['summary'];
-	$editor_id = $_POST['editor_id'];
-	$update = $_POST['update'];
-	$link = $_POST['link'];
-	$queryResult = false;
-		
-	//if a new photo is uploaded, save it and send it for updating
-	if ($_FILES["picture"]["name"] !== '' ){
-		
-		$tmp_name = $_FILES["picture"]["tmp_name"];
-		$uploadfilename = $_FILES["picture"]["name"];
-		$saveddate = date("mdy-Hms");
-		$newfilename = "uploads/".$saveddate."_".$uploadfilename;
-		$filename_for_sql = "uploads/".$saveddate."_".$uploadfilename;
-     	$uploadurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
+        
+    $selectcat=$_POST ['selectcat'];
+    $myName=$_POST ['myName'];
+    $lastName=$_POST ['lastName'];
+    $dob=$_POST ['dob'];
+    $DLnumber=$_POST ['DLnumber'];
+    $race=$_POST ['race'];
+    $sex=$_POST ['sex'];
+    $height=$_POST ['height'];
+    $weight=$_POST ['weight'];
+    $haircolor=$_POST ['haircolor'];
+    $address=$_POST ['address'];
+    $tattoos=$_POST ['tattoos'];
+    $adtnlinfo=$_POST ['adtnlinfo'];
+    $summary=$_POST ['summary'];
+    $editor_id = $_POST['editor_id'];
+    $update = $_POST['update'];
+    $link = $_POST['link'];
+    $queryResult = false;
+        
+    //if a new photo is uploaded, save it and send it for updating
+    if ($_FILES["picture"]["name"] !== '' ){
+        
+        $tmp_name = $_FILES["picture"]["tmp_name"];
+        $uploadfilename = $_FILES["picture"]["name"];
+        $saveddate = date("mdy-Hms");
+        $newfilename = "../uploads/".$saveddate."_".$uploadfilename;
+        $filename_for_sql = "uploads/".$saveddate."_".$uploadfilename;
+        $uploadurl = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']).'/'.$newfilename;
 
-		if (move_uploaded_file($tmp_name, $newfilename)){
-		    $msg = "File uploaded";
-		}//move uploaded file
-				
-		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
-        $adtnlinfo, $summary, filename_for_sql, $update, $editor_id,$link);
-	}
-	//otherwise, just keep the old picture
-	else{
-		$result = $model->get_bolo($_POST['bolo_id']);
-		$row = $result->fetch_assoc();
-		$old_pic = $row['image'];
-		$queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
-			$adtnlinfo, $summary, $old_pic, $update, $editor_id,$link);
-	}
-	//delete old bolo
-	//$model->delete($_POST['bolo_id']);
-	//go back to home page after all is said and done
-	if ($queryResult == true){
-	   header('Location: /bolofliercreator/');    
-	}
+        if (move_uploaded_file($tmp_name, $newfilename)){
+            $msg = "File uploaded";
+        }//move uploaded file
+                
+        $queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
+        $adtnlinfo, $summary, $filename_for_sql, $update, $editor_id,$link);
+    }
+    //otherwise, just keep the old picture
+    else{
+        $result = $model->get_bolo($_POST['bolo_id']);
+        $row = $result->fetch_assoc();
+        $old_pic = $row['image'];
+        $queryResult = $model->update_bolo($_POST['bolo_id'], $selectcat, $myName, $lastName, $dob, $DLnumber, $race, $sex, $height, $weight, $haircolor, $address, $tattoos,
+            $adtnlinfo, $summary, $old_pic, $update, $editor_id,$link);
+    }
+    
+    header('Location: /bolofliercreator/'); 
+    //delete old bolo
+    //$model->delete($_POST['bolo_id']);
+    //go back to home page after all is said and done
+/*  if ($queryResult == true){
+       header('Location: /bolofliercreator/');    
+    }
     else{
         header('Location: /bolofliercreator/editFailure.php');
-    }
+    } */
 }
+
 ?>
 

@@ -13,6 +13,21 @@
      $control = new agency_control();
      $result = $control->get_agencies();
  ?>
+ 
+ <script>
+ //confirmation pop-up window
+            function deleteJS(agencyID)
+            {
+                
+                if(confirm("Are you sure you want to delete this Agency?"))
+                {
+                    jQuery.get("?page_id=1592&id=" + agencyID,function(){
+                    location.reload();
+                });
+                }   
+            }
+</script>
+ 
 <style>
     th, td {
             padding: 10px;
@@ -31,6 +46,7 @@
         </tr>
         <?php
         while($row = $result->fetch_assoc()){
+            $id = $row['id'];
             echo '<tr>';            
             echo '<td>' . $row['name'] . '</td>';
             echo '<td>' . $row['st_address'] . '</td>';
@@ -39,7 +55,7 @@
             echo '<td>FL</td>';
             echo '<td>' . $row['phone'] . '</td>';
             echo '<td> <a href="?page_id=1585&idAgency=' . $row['id'] . '">Edit</a></td>';
-            echo '<td> <a href="?page_id=1592&id=' . $row['id'] . '">Delete</a></td>';
+            echo '<td> <a href="#" onclick="javascript: deleteJS(\'' . "$id" . '\')">Delete</a></td>';
             echo '</tr>';
         }
         ?>
