@@ -18,11 +18,11 @@ class FlierModel {
     
              if ($conn->execute_query($res) === TRUE)
         {
-            echo "Bolo flier created successfully";         
+            //echo "Bolo flier created successfully";         
                             
             
         }else{
-            echo "Error:" .$res . "<br> . $conn->error";
+            //echo "Error:" .$res . "<br> . $conn->error";
                 
         }
         //$conn->close();   
