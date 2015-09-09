@@ -1,6 +1,10 @@
+/*
+ * BOLO Version 3.0 API Server
+ *
+ * @author David Vizcaino <david.e.vizcaino@gmail.com>
+ *
+ */
 
-//@Author: David Vizcaino david.e.vizcaino@gmail.com
-//================ Load all Dependencies ===================
 var express = require('express'),
     http = require('http'),
     path = require('path'),
@@ -24,35 +28,25 @@ var multipartMiddleware = multipart();
 // Initialize
 var app = express();
 
-
-// all environments
-
-//router.use(function(req, res){
-//	//log data
-//	console.log('Something has been done.');
-//});
-
-//set to port 3000
+// Application settings
 app.set('port', process.env.PORT || 3000);
-
 app.set('views', __dirname + '/views');
-//templating engine; can be changed to whatever
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
+
+// Development Specific Middleware
 app.use(logger('dev'));
 
 //use express for setting and tracking cookies
-//app.use(cookieParser());
 app.use(cookieParser('Passw0rd'));
-app.use(expressSession({ secret: 'Passw0rd',
-    cookie: { secure: true } }));
+app.use(expressSession({
+    secret: 'Passw0rd',
+    cookie: { secure: true }
+}));
 
 //body parser allows us to get data from POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-//use the router
-//app.use('', router);
 
 app.use(methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
