@@ -26,10 +26,6 @@ var cloudant;
 
 var fileToUpload;
 
-var dbCredentials = {
-    dbName : 'my_sample_db'
-};
-
 //bcrypt will encrypt passwords
 var bcrypt = require('bcrypt');
 //and this adds salt to all the passwords
@@ -88,38 +84,6 @@ if ('development' == app.get('env')) {
     app.use(errorHandler());
 }
 
-function initDBConnection() {
-
-    if(process.env.VCAP_SERVICES) {
-        var vcapServices = JSON.parse(process.env.VCAP_SERVICES);
-        if(vcapServices.cloudantNoSQLDB) {
-            dbCredentials.host = vcapServices.cloudantNoSQLDB[0].credentials.host;
-            dbCredentials.port = vcapServices.cloudantNoSQLDB[0].credentials.port;
-            dbCredentials.user = vcapServices.cloudantNoSQLDB[0].credentials.username;
-            dbCredentials.password = vcapServices.cloudantNoSQLDB[0].credentials.password;
-            dbCredentials.url = vcapServices.cloudantNoSQLDB[0].credentials.url;
-        }
-        console.log('VCAP Services: '+JSON.stringify(process.env.VCAP_SERVICES));
-    }
-    else{
-        dbCredentials.host = "ffe37731-0505-4683-96a8-87d02a33e03e-bluemix.cloudant.com";
-        dbCredentials.port = 443;
-        dbCredentials.user = "ffe37731-0505-4683-96a8-87d02a33e03e-bluemix";
-        dbCredentials.password = "c7003d0b156d9c4ce856c4e6b4427f3b576c7ea6229235f0369ada1ed47b159c";
-        dbCredentials.url = "https://ffe37731-0505-4683-96a8-87d02a33e03e-bluemix:c7003d0b156d9c4ce856c4e6b4427f3b576c7ea6229235f0369ada1ed47b159c@ffe37731-0505-4683-96a8-87d02a33e03e-bluemix.cloudant.com";
-
-    }
-
-    cloudant = require('cloudant')(dbCredentials.url);
-
-    // check if DB exists if not create
-    //	cloudant.db.create(dbCredentials.dbName, function (err, res) {
-    //		if (err) { console.log('could not create db ', err); }
-    //    });
-    //db = cloudant.use(dbCredentials.dbName);
-}
-
-initDBConnection();
 
 //gets current time; useful for bolo creation and update
 function getDateTime() {
