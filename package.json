@@ -1,29 +1,28 @@
-
 {
-	"name": "BOLOFlyerCreatorApp",
-	"version": "0.0.1",
-	"description": "BOLO Flyer Creator by Pinevrest Police Department",
-	"scripts": {
-		"start": "node app.js"
-	},
-	"dependencies": {
-		"express": "4.12.x",
-		"ejs": "*",
-		"cfenv": "1.0.x",
-		"pouchdb": "*",
-		"bcrypt": "0.8.x",
-		"cloudant": "*",
-        "body-parser": "1.13.2",
-        "cookie-parser": "*",
-        "method-override": "2.3.3",
-        "morgan": "1.6.1",
-        "errorhandler": "1.4.1",
-        "connect-multiparty": "1.2.5",
-		"express-session": "1.7.6"
-		
-	},
-	"repository": {},
-	"engines": {
-		"node": "0.12.x"
-	} 
+  "name": "BOLOFlyerCreatorApp",
+  "version": "0.0.1",
+  "description": "BOLO Flyer Creator by Pinevrest Police Department",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bcrypt": "0.8.x",
+    "body-parser": "1.13.2",
+    "cfenv": "1.0.x",
+    "cloudant": "*",
+    "connect-multiparty": "1.2.5",
+    "cookie-parser": "*",
+    "dotenv": "^1.2.0",
+    "ejs": "*",
+    "errorhandler": "1.4.1",
+    "express": "4.12.x",
+    "express-session": "1.7.6",
+    "method-override": "2.3.3",
+    "morgan": "1.6.1",
+    "pouchdb": "*"
+  },
+  "repository": {},
+  "engines": {
+    "node": "0.12.x"
+  }
 }
