@@ -12,10 +12,10 @@
 var expect = require('chai').expect;
 var path = require('path');
 
-var src_dir = path.join(__dirname, '../../src');
+var src_dir = path.join(__dirname, '../../src/');
 
-var ClientAccess = require(path.join(src_dir, 'core/ports/client-access-port.js'));
-var StorageMock = require(path.join(src_dir, 'core/adapters/mock-storage-adapter.js'));
+var ClientAccess = require(src_dir + 'core/ports/client-access-port.js');
+var AdapterFactory = require(src_dir + 'core/adapters');
 
 
 /* Feature Test Specification */
@@ -23,7 +23,7 @@ describe('Officer creates a BOLO', function () {
 
     it('should save the BOLO to the system', function () {
         var clientAccess = new ClientAccess();
-        var storageAdapter = new StorageMock();
+        var storageAdapter = AdapterFactory.create('storage', 'mock');
         var date = new Date();
 
         // given the BOLO has sufficient information
