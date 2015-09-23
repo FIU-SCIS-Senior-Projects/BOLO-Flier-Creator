@@ -2,16 +2,27 @@
 /* global describe, it */
 
 
+/*
+ * Client Access Port -- Unit Test
+ *
+ */
+
+
 /* Testing Utilities */
 var expect = require('chai').expect;
 var sinon = require('sinon');
+var path = require('path');
+
+
+/* Base Project Paths */
+var src_dir = path.join(__dirname, '../../src');
 
 
 /* Unit Under Test */
-var ClientAccess = require('../src/core/ports/client-access-port.js');
+var ClientAccess = require(path.join(src_dir, 'core/ports/client-access-port.js'));
 
 
-/* Test Fixtures */
+/* Fixtures */
 var date = new Date();
 var validBoloData = {
     creationDate : date,
@@ -40,14 +51,13 @@ var validBoloData = {
 };
 
 
-/* Test Suite */
+/* Test Specification */
 describe('client access port', function () {
 
     it('should create a new BOLO and save it', function () {
         /* arrange */
         var clientAccess = new ClientAccess();
         var mockStorageAdapter = {
-            'record' : {},
             'insert' : function ( data ) { this.record = data; }
         };
 

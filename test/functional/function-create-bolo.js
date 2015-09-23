@@ -1,14 +1,27 @@
 /* jshint expr:true */
 /* global describe, it */
 
+
+/*
+ * Feature Test: Create BOLO
+ *
+ */
+
+
+/* Dependencies */
 var expect = require('chai').expect;
+var path = require('path');
 
-var ClientAccess = require('../../src/core/ports/client-access-port.js');
-var StorageMock = require('../../src/core/adapters/mock-storage-adapter.js');
+var src_dir = path.join(__dirname, '../../src');
 
+var ClientAccess = require(path.join(src_dir, 'core/ports/client-access-port.js'));
+var StorageMock = require(path.join(src_dir, 'core/adapters/mock-storage-adapter.js'));
+
+
+/* Feature Test Specification */
 describe('Officer creates a BOLO', function () {
 
-    it('should submit with sufficient information', function () {
+    it('should save the BOLO to the system', function () {
         var clientAccess = new ClientAccess();
         var storageAdapter = new StorageMock();
         var date = new Date();
