@@ -1,6 +1,12 @@
 /* Module Dependencies */
 var router = require('express').Router();
-var cloudant = require(__dirname + '/../lib/cloudant-connection.js');
+var path = require('path');
+var cloudant = require('../lib/cloudant-connection.js');
+
+var core_dir = path.normalize(__dirname + '../../../core/');
+
+var ClientAccess = require(core_dir + 'ports/client-access-port.js');
+var StorageAdapterFactory = require(core_dir + 'adapters');
 
 //gets current time; useful for bolo creation and update
 function getDateTime() {
@@ -23,70 +29,39 @@ function getDateTime() {
 
 //create a BOLO report
 router.post('/create', function(req, res) {
-    //store all data in DB
-    var fliers = cloudant.db.use('bolo_fliers');
 
-    fliers.get("currentBOLOCount", function(err, currentCount) {
-        //max users created so far
-        var currentBOLOs = currentCount.totalNum;
-        //needed to update total
-        var rev = currentCount._rev;
-        if (err) {
-            //do something
-        }
-        else {
-            fliers.insert({
-                boloID : ++currentBOLOs,
-                creationDate : getDateTime(),
-                lastUpdate : "",
-                authorFName : req.cookies.boloFirstName,
-                authorLName : req.cookies.boloLastName,
-                authorUName : req.cookies.boloUsername,
-                category : req.body.category,
-                imageURL : req.body.imageURL,
-                videoLink : req.body.videoLink,
-                firstName : req.body.fName,
-                lastName : req.body.lName,
-                dob : req.body.dob,
-                dlNumber : req.body.dlNumber,
-                race : req.body.race,
-                sex : req.body.sex,
-                height : req.body.height,
-                weight : req.body.weight,
-                hairColor : req.body.hairColor,
-                tattoos : req.body.tattoos,
-                address : req.body.address,
-                additional : req.body.additional,
-                summary : req.body.summary,
-                agency : req.body.agency,
-                archive : false
-            }, "bolo"+currentBOLOs, function(err, doc) {
-                //TODO: fix code below
-                //if user creation failed, log the error and return a message
-                if (err) {
-                    console.log(err);
-                    res.json({ Result: 'Failure', Message: 'Error creating BOLO'});
-                }
-                else {
-                    //if it succeeded, inform the user
-                    console.log("Created BOLO with ID#" + currentBOLOs);
-                    //update max users
-                    fliers.insert({
-                        _rev: rev,
-                        totalNum: currentBOLOs
-                    }, "currentBOLOCount", function(err, doc) {
-                        //TODO: Decide what to do if there is an error...
-                        if (err) {
-                            console.log(err);
-                        }
-                    });
-                    res.json({ Result: 'Success', Message: 'BOLO Successfully Created!',
-                        boloID: currentBOLOs});
-                }
+    var clientAccess = new ClientAccess();
+    var cloudantAdapter = StorageAdapterFactory.create( 'storage', 'cloudant' );
 
-            });//end flier.insert
-        }//end else
-    });//end flier.get currentUserCount
+    var result = clientAccess.createBolo({
+        boloID : ++currentBOLOs,
+        creationDate : getDateTime(),
+        lastUpdate : "",
+        authorFName : req.cookies.boloFirstName,
+        authorLName : req.cookies.boloLastName,
+        authorUName : req.cookies.boloUsername,
+        category : req.body.category,
+        imageURL : req.body.imageURL,
+        videoLink : req.body.videoLink,
+        firstName : req.body.fName,
+        lastName : req.body.lName,
+        dob : req.body.dob,
+        dlNumber : req.body.dlNumber,
+        race : req.body.race,
+        sex : req.body.sex,
+        height : req.body.height,
+        weight : req.body.weight,
+        hairColor : req.body.hairColor,
+        tattoos : req.body.tattoos,
+        address : req.body.address,
+        additional : req.body.additional,
+        summary : req.body.summary,
+        agency : req.body.agency,
+        archive : false
+    });
+
+    res.json(result);
+
 });
 
 router.get('', function(req, res) {
@@ -107,7 +82,7 @@ router.get('', function(req, res) {
                 additional: bolo.additionalInfo, summary: bolo.summary, agency: bolo.agency, boloID: bolo.boloID});
         }
     });//end flier.get currentUserCount
-})
+});
 
 //deletes a bolo
 router.delete('', function(req, res) {
@@ -126,9 +101,9 @@ router.delete('', function(req, res) {
 
             fliers.destroy("bolo"+boloID, revisionID, function(error, body) {
                 if (error) {
-                    console.log("Unable to delete bolo with ID#"+boloID+".\n", error)
-                        res.json({ Result: 'Failure', Message: 'Unable to delete bolo.',
-                            boloID: boloID});
+                    console.log("Unable to delete bolo with ID#"+boloID+".\n", error);
+                    res.json({ Result: 'Failure', Message: 'Unable to delete bolo.',
+                        boloID: boloID});
                 }
                 else {
                     console.log("Successfully deleted bolo with ID#"+boloID+"\n");
@@ -140,7 +115,7 @@ router.delete('', function(req, res) {
         }
     });//end flier.get currentUserCount
 
-})
+});
 
 //updates a field in a bolo
 router.put('', function(req, res) {
@@ -195,7 +170,7 @@ router.put('', function(req, res) {
 
         }
     });//end flier.get currentUserCount
-})
+});
 
 
 module.exports = router;

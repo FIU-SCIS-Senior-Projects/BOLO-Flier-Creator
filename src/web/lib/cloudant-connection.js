@@ -1,7 +1,8 @@
 var Cloudant = require('cloudant');
 
 /* Assume default credentials using dotenv */
-require('dotenv').load();
+require('dotenv')
+    .config({ path: __dirname + '/../../../.env' });
 var dbCredentials = {
     "host"      : process.env.CLOUDANT_HOST,
     "port"      : process.env.CLOUDANT_PORT,
