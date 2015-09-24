@@ -25,7 +25,7 @@ ClientPort.prototype.createBolo = function ( boloData, storageAdapter ) {
     var bolo = new Bolo( boloData );
 
     if ( bolo.isValid() )
-        storageAdapter.insert( bolo );
+        storageAdapter.insert( bolo.data );
 
     return { success: true };
 };
