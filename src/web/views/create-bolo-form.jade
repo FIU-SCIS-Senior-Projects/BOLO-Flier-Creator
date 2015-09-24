@@ -1,0 +1,100 @@
+include includes/mixins
+extends layout
+
+block content
+  form(action="/bolo/create" enctype="multipart/form-data" method="post")
+    .form-group
+      label.control-label(for="select_category") Category
+      select.form-control(name="select_category")
+        option(disabled selected) == select an option ==
+        +option('ARSON')
+        +option('BURGLARY')
+        +option('DOMESTIC SECURITY')
+        +option('ESCAPE')
+        +option('FRAUD')
+        +option('HOME INVASION')
+        +option('HOMICIDE')
+        +option('MISSING JUVENILE')
+        +option('MISSING PERSON')
+        +option('NARCOTICS')
+        +option('NEED TO IDENTIFY')
+        +option('OFFICER SAFETY')
+        +option('PC TO ARREST')
+        +option('ROBBERY')
+        +option('RUNAWAY')
+        +option('SEX OFFENSE')
+        +option('SITUATIONAL AWARENESS')
+        +option('THEFT - AUTO')
+        +option('THEFT - BOAT')
+        +option('THEFT - GRAND')
+        +option('THEFT - PETIT')
+        +option('WANTED')
+        +option('FIELD INTERVIEW')
+        +option('INFORMATION')
+
+    .form-group
+      label.control-label(for="author_fname") Author First Name
+      input.form-control(name="author_fname" type="text" placeholder="")
+
+    .form-group
+      label.control-label(for="author_lname") Author Last Name
+      input.form-control(name="author_lname" type="text" placeholder="")
+
+    input(name="author" type="hidden" value="")
+    input(name="agency" type="hidden" value="")
+    input(name="previewBOLOid" type="hidden" value="")
+
+    .form-group
+      label.control-label(for="dl_number") Drivers License Number
+      input.form-control(name="dl_number" type="text" placeholder="")
+
+    .form-group
+      label.control-label(for="race") Race
+      select.form-control(name="race")
+        option(disabled selected) == select an option ==
+        each val in ['Hispanic', 'White', 'Asian', 'Black or African American', 'American Indian or Alaska Native', 'Native Hawaiian or Other Pacific Islander']
+          +option(val)
+
+    .form-group
+      label.control-label(for="sex") Sex
+      select.form-control(name="sex")
+        option(disabled selected) == select an option ==
+        +option('Male')
+        +option('Femail')
+
+    .form-group
+      label.control-label(for="height") Height
+      input.form-control(name="height" type="text" placeholder="")
+
+    .form-group
+      label.control-label(for="weight") Weight
+      input.form-control(name="weight" type="text" placeholder="")
+
+    .form-group
+      label.control-label(for="weight") Weight
+      select.form-control(name="weight")
+        option(disabled selected) == select an option ==
+        each val in ['Black','Blonde','Red','Brown','Gray','White','Sandy','Bald (No hair)']
+          +option(val)
+
+    .form-group
+      label.control-label(for="tattoos") Tattoos
+      textarea.form-control(name="tattoos")
+
+    .form-group
+      label.control-label(for="last_known_address") Last Known Address
+      input.form-control(name="last_known_address" type="text" placeholder="")
+
+    .form-group
+      label.control-label(for="addition_info") Additional Info
+      textarea.form-control(name="additional_info")
+
+    .form-group
+      label.control-label(for="summary") Summary
+      textarea.form-control(name="summary")
+
+    .form-group
+      button.btn.btn-primary(type="submit" value="save") Submit
+      button.btn.btn-default(type="submit" disabled=true value="preview") Preview
+      button.btn.btn-default(type="submit" disabled=true value="pdf") PDF
+
