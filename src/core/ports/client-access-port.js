@@ -18,12 +18,15 @@ var ClientPort = function () {};
  * Create a new BOLO in the system.
  *
  * @param {object} boloData - Data for the new BOLO
- * @param storateAdapter - A storage adapter implementing the Storage Port
- *          Interface.
+ * @param storageAdapter - A storage adapter implementing the Storage Port
+ *                         Interface.
  */
 ClientPort.prototype.createBolo = function ( boloData, storageAdapter ) {
     var bolo = new Bolo( boloData );
-    bolo.save( storageAdapter );
+
+    if ( bolo.isValid() )
+        storageAdapter.insert( bolo );
+
     return { success: true };
 };
 
