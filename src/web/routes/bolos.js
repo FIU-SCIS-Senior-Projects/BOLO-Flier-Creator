@@ -27,11 +27,17 @@ function getDateTime() {
     return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
 }
 
+// render the bolo create form
+router.get( '/create', function ( req, res ) {
+    res.render( 'create-bolo-form' );
+});
+
 //create a BOLO report
 router.post('/create', function(req, res) {
 
     var clientAccess = new ClientAccess();
-    var cloudantAdapter = StorageAdapterFactory.create( 'storage', 'cloudant' );
+    // TODO Change the adapter back to mock
+    var cloudantAdapter = StorageAdapterFactory.create( 'storage', 'mock' );
 
     var result = clientAccess.createBolo({
         boloID : ++currentBOLOs,
