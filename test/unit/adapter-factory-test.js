@@ -49,7 +49,7 @@ describe('adapter factory', function () {
     });
 
     describe('create method', function () {
-        it('returns a new objects for valid adapters', function () {
+        it('returns a new object when the requested adapter exists', function () {
             // arrange
             var fileAdapter;
 

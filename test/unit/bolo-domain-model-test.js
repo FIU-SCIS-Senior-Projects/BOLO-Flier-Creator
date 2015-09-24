@@ -24,16 +24,6 @@ var Bolo = require(path.join(src_dir, 'core/domain/bolo.js'));
 /* Test Specification */
 describe('bolo domain model', function () {
 
-    it('should save data to a storage adapter', function () {
-        var bolo = new Bolo( { "data": "bolo data" } );
-        var mockStorage = {
-            insert: function ( data ) {
-                this._data = data;
-            }
-        };
-        bolo.save( mockStorage );
-        expect( mockStorage._data.data ).to.equal( "bolo data" );
-    });
 
 });
 
