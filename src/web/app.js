@@ -30,9 +30,8 @@ var app = express();
 
 // Application settings
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-app.engine('html', require('ejs').renderFile);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 // Development Specific Middleware
 app.use(logger('dev'));
@@ -44,43 +43,61 @@ app.use(expressSession({
     cookie: { secure: true }
 }));
 
-//body parser allows us to get data from POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 app.use(methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/style', express.static(path.join(__dirname, '/views/style')));
 
 // development only
 if ('development' == app.get('env')) {
     app.use(errorHandler());
 }
 
-
-/* =============================================================================
- * =============================================================================
- *  From here on out are the HTTP methods and what app (express) does with each
- *   (with respect to the URI)
- */
+app.get('/', function ( req, res ) {
+  res.render( 'index' );
+});
 
 // router middleware to authenticate user before doing any action(s)
-app.use(['/bolo', '/agency'], function(request, response, next) {
-    //AUTHENTICATE USER HERE
-    if (request.cookies.boloUsername) {
-        //if user is logged in, then continue
-        console.log("User authenticated!\n");
-        next();
-    }
-    else {
-        //otherwise, give an error
-        response.json({Result: 'Failure', Message : 'Please log in to continue'});
-    }
-});
+//app.use(['/bolo', '/agency'], function(request, response, next) {
+//    //AUTHENTICATE USER HERE
+//    if (request.cookies.boloUsername) {
+//        //if user is logged in, then continue
+//        console.log("User authenticated!\n");
+//        next();
+//    }
+//    else {
+//        //otherwise, give an error
+//        response.json({Result: 'Failure', Message : 'Please log in to continue'});
+//    }
+//});
 
 app.use("/users", UsersEndpoints);
 app.use('/bolo', BolosEndpoints);
 app.use('/agency', AgencyEndpoints);
+
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
+}
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
+});
 
 //LAUNCH THE SERVER!!!
 http.createServer(app).listen(app.get('port'), function() {
