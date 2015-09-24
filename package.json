@@ -13,16 +13,21 @@
     "connect-multiparty": "1.2.5",
     "cookie-parser": "*",
     "dotenv": "^1.2.0",
-    "ejs": "*",
     "errorhandler": "1.4.1",
     "express": "4.12.x",
     "express-session": "1.7.6",
+    "jade": "^1.11.0",
     "method-override": "2.3.3",
-    "morgan": "1.6.1",
-    "pouchdb": "*"
+    "morgan": "1.6.1"
   },
   "repository": {},
   "engines": {
     "node": "0.12.x"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3",
+    "mockery": "^1.4.0",
+    "sinon": "^1.17.0"
   }
 }
