@@ -5,11 +5,11 @@
  */
 
 var adapter = function () {
-    this._records = new Array();
+    this._records = [];
 };
 
 adapter.prototype.insert = function ( data ) {
     this._records.push( data );
-}
+};
 
 module.exports = adapter;
