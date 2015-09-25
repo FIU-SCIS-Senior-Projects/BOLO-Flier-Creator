@@ -30,7 +30,7 @@ factory.create = function ( port, adapter ) {
     }
     catch ( e ) {
         throw new Error(
-            "Adapter does not exist: " + path.resolve( adapter_path )
+            "Adapter does not exist: " + __dirname + '/' + adapter_path
         );
     }
 
