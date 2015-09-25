@@ -58,7 +58,7 @@ describe('client access port', function () {
         /* arrange */
         var clientAccess = new ClientAccess();
         var mockStorageAdapter = {
-            'insert' : function ( data ) { this.record = data; }
+            'insert' : function ( bolo ) { this.record = bolo; }
         };
 
         /* act */

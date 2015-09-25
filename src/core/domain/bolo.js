@@ -7,18 +7,15 @@
  * @constructor
  */
 var Bolo = function ( data ) {
-    this._data = data;
+    this.data = data;
 };
 
-
 /**
- * Save a BOLO to the provided storage interface.
- *
- * @param storageInterface - A storage adapter which implements the storage
- * port interface.
+ * Checks if the bolo is valid
  */
-Bolo.prototype.save = function ( storageInterface ) {
-    storageInterface.insert( this._data );
+Bolo.prototype.isValid = function () {
+    // TODO Validate data
+    return true;
 };
 
 module.exports = Bolo;
