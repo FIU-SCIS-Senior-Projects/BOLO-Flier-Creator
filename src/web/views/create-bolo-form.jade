@@ -1,48 +1,55 @@
 include includes/mixins
 extends layout
 
+block jumbo
+  .jumbotron
+    .container
+      h1 Create a BOLO
+      p Fill out the form and submit to create a new BOLO.
+
 block content
+  //- Dropdown Box Selections
+  -
+    var categories = [
+      'ARSON', 'BURGLARY', 'DOMESTIC SECURITY', 'ESCAPE', 'FRAUD',
+      'HOME INVASION', 'HOMICIDE', 'MISSING JUVENILE', 'MISSING PERSON',
+      'NARCOTICS', 'NEED TO IDENTIFY', 'OFFICER SAFETY', 'PC TO ARREST',
+      'ROBBERY', 'RUNAWAY', 'SEX OFFENSE', 'SITUATIONAL AWARENESS',
+      'THEFT - AUTO', 'THEFT - BOAT', 'THEFT - GRAND', 'THEFT - PETIT',
+      'WANTED', 'FIELD INTERVIEW', 'INFORMATION'
+    ]
+
+    var races = [
+      'Hispanic', 'White', 'Asian', 'Black or African American',
+      'American Indian or Alaska Native',
+      'Native Hawaiian or Other Pacific Islander'
+    ]
+
+    var hair_colors = [
+      'Black','Blonde','Red','Brown','Gray','White','Sandy','Bald (No hair)'
+    ]
+
+
+  //- Actual Form
   form(action="/bolo/create" enctype="multipart/form-data" method="post")
     .form-group
-      label.control-label(for="select_category") Category
-      select.form-control(name="select_category")
+      label.control-label(for="bolo_category") Category
+      select.form-control(name="bolo_category" required)
         option(disabled selected) == select an option ==
-        +option('ARSON')
-        +option('BURGLARY')
-        +option('DOMESTIC SECURITY')
-        +option('ESCAPE')
-        +option('FRAUD')
-        +option('HOME INVASION')
-        +option('HOMICIDE')
-        +option('MISSING JUVENILE')
-        +option('MISSING PERSON')
-        +option('NARCOTICS')
-        +option('NEED TO IDENTIFY')
-        +option('OFFICER SAFETY')
-        +option('PC TO ARREST')
-        +option('ROBBERY')
-        +option('RUNAWAY')
-        +option('SEX OFFENSE')
-        +option('SITUATIONAL AWARENESS')
-        +option('THEFT - AUTO')
-        +option('THEFT - BOAT')
-        +option('THEFT - GRAND')
-        +option('THEFT - PETIT')
-        +option('WANTED')
-        +option('FIELD INTERVIEW')
-        +option('INFORMATION')
+        each val in categories
+          +option(val)
 
     .form-group
-      label.control-label(for="author_fname") Author First Name
-      input.form-control(name="author_fname" type="text" placeholder="")
+      label.control-label(for="fname") First Name
+      input.form-control(name="fname" type="text" placeholder="")
 
     .form-group
-      label.control-label(for="author_lname") Author Last Name
-      input.form-control(name="author_lname" type="text" placeholder="")
+      label.control-label(for="lname") Last Name
+      input.form-control(name="lname" type="text" placeholder="")
 
-    input(name="author" type="hidden" value="")
-    input(name="agency" type="hidden" value="")
-    input(name="previewBOLOid" type="hidden" value="")
+    .form-group
+      label.control-label(for="dob") Date of Birth (DD/MM/YYYY)
+      input.form-control(name="dob" type="text" placeholder="DD/MM/YYYY")
 
     .form-group
       label.control-label(for="dl_number") Drivers License Number
@@ -52,7 +59,7 @@ block content
       label.control-label(for="race") Race
       select.form-control(name="race")
         option(disabled selected) == select an option ==
-        each val in ['Hispanic', 'White', 'Asian', 'Black or African American', 'American Indian or Alaska Native', 'Native Hawaiian or Other Pacific Islander']
+        each val in races
           +option(val)
 
     .form-group
@@ -60,21 +67,21 @@ block content
       select.form-control(name="sex")
         option(disabled selected) == select an option ==
         +option('Male')
-        +option('Femail')
+        +option('Female')
 
     .form-group
-      label.control-label(for="height") Height
-      input.form-control(name="height" type="text" placeholder="")
+      label.control-label(for="height") Height - Feet-Inches (e.g. 05-09)
+      input.form-control(name="height" type="text" placeholder="e.g. 05-09")
 
     .form-group
-      label.control-label(for="weight") Weight
+      label.control-label(for="weight") Weight - Pounds
       input.form-control(name="weight" type="text" placeholder="")
 
     .form-group
-      label.control-label(for="weight") Weight
-      select.form-control(name="weight")
+      label.control-label(for="hair_color") Hair Color
+      select.form-control(name="hair_color")
         option(disabled selected) == select an option ==
-        each val in ['Black','Blonde','Red','Brown','Gray','White','Sandy','Bald (No hair)']
+        each val in hair_colors
           +option(val)
 
     .form-group
@@ -84,6 +91,14 @@ block content
     .form-group
       label.control-label(for="last_known_address") Last Known Address
       input.form-control(name="last_known_address" type="text" placeholder="")
+
+    .form-group
+      label.control-label(for="image_upload") Image Attachment
+      input(name="image_upload" type="file" accept="image/*")
+
+    .form-group
+      label.control-label(for="video_url") Video Link
+      input.form-control(name="video_url" type="url")
 
     .form-group
       label.control-label(for="addition_info") Additional Info
