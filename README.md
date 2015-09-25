@@ -26,3 +26,28 @@ environment needs to have specific Cloudant credentials set. All you need to
 do is save a file named .env in your project root with the needed environment
 variables set. Check the .env.example file to see the format and variables
 used in this project.  **Do not edit the .env.example file and/or commit it.**
+
+### Testing
+This project is using the following libraries for testing:
+
+* [Mocha Test Runner](https://mochajs.org/)
+* [Chai Assertion Library](http://chaijs.com/)
+* [Sinon.JS Test Double Library](http://sinonjs.org)
+* [Mockery - Node.js require() Mocking Library](https://github.com/mfncooper/mockery)
+
+The project is set up for an effective BDD/TDD workflow. Tests are contained
+in the test/ directory which contain directories for unit, functional, and
+accpetance tests.  
+
+To run or functional tests:  
+`mocha test/unit`
+`mocha test/functional`
+
+The --watch flag can be used to watch for any changes to tests during
+development:  
+`mocha --watch test/unit`
+`mocha --watch test/functional`
+
+Note that acceptance tests have not been implemented yet. The project plans
+to use WebDriver for accpetance tests against user story scenarios. Changes
+to these plans will be noted as needed.
