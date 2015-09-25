@@ -1,5 +1,6 @@
 /* Module Dependencies */
 var router = require('express').Router();
+var multiparty = require('connect-multiparty')();
 var path = require('path');
 var cloudant = require('../lib/cloudant-connection.js');
 
@@ -33,41 +34,36 @@ router.get( '/create', function ( req, res ) {
 });
 
 //create a BOLO report
-router.post('/create', function(req, res) {
+router.post('/create', multiparty, function(req, res) {
 
     var clientAccess = new ClientAccess();
-    // TODO Change the adapter back to mock
-    var cloudantAdapter = StorageAdapterFactory.create( 'storage', 'mock' );
+    var cloudantAdapter = StorageAdapterFactory.create( 'storage', 'cloudant' );
 
     var result = clientAccess.createBolo({
-        boloID : ++currentBOLOs,
-        creationDate : getDateTime(),
-        lastUpdate : "",
-        authorFName : req.cookies.boloFirstName,
-        authorLName : req.cookies.boloLastName,
-        authorUName : req.cookies.boloUsername,
-        category : req.body.category,
-        imageURL : req.body.imageURL,
-        videoLink : req.body.videoLink,
-        firstName : req.body.fName,
-        lastName : req.body.lName,
+        authorFName : "",
+        authorLName : "",
+        authorUName : "",
+        category : req.body.bolo_category,
+        firstName : req.body.fname,
+        lastName : req.body.lname,
         dob : req.body.dob,
-        dlNumber : req.body.dlNumber,
+        dlNumber : req.body.dl_number,
         race : req.body.race,
         sex : req.body.sex,
         height : req.body.height,
         weight : req.body.weight,
-        hairColor : req.body.hairColor,
+        hairColor : req.body.hair_color,
         tattoos : req.body.tattoos,
         address : req.body.address,
-        additional : req.body.additional,
+        imageURL : req.body.image_upload,
+        videoLink : req.body.video_url,
+        additional : req.body.last_known_address,
         summary : req.body.summary,
         agency : req.body.agency,
         archive : false
-    });
+    }, cloudantAdapter);
 
-    res.json(result);
-
+    res.json(req.body);
 });
 
 router.get('', function(req, res) {

@@ -21,9 +21,7 @@ var expressSession = require('express-session'),
     cookieParser = require('cookie-parser'),
     methodOverride = require('method-override'),
     logger = require('morgan'),
-    errorHandler = require('errorhandler'),
-    multipart = require('connect-multiparty');
-var multipartMiddleware = multipart();
+    errorHandler = require('errorhandler');
 
 // Initialize
 var app = express();
