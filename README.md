@@ -40,7 +40,7 @@ in the test/ directory which contain directories for unit, functional, and
 accpetance tests.  
 
 To run or functional tests:  
-`mocha test/unit`
+`mocha test/unit`  
 `mocha test/functional`
 
 The --watch flag can be used to watch for any changes to tests during
