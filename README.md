@@ -45,7 +45,7 @@ To run or functional tests:
 
 The --watch flag can be used to watch for any changes to tests during
 development:  
-`mocha --watch test/unit`
+`mocha --watch test/unit`  
 `mocha --watch test/functional`
 
 Note that acceptance tests have not been implemented yet. The project plans
