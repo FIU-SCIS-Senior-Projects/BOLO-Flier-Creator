@@ -30,7 +30,11 @@ describe('adapter factory', function () {
     var mockAdapter;
 
     before(function () {
-        mockery.enable({ warnOnReplace: false, warnOnUnregistered: false });
+        mockery.enable({
+            useCleanCache: true,
+            warnOnReplace: false,
+            warnOnUnregistered: false
+        });
 
         // mock objects
         fsMock = { readdirSync: sinon.stub() };
