@@ -21,20 +21,20 @@ var factory = {};
  * @arg {string} adapterName - The name of the requested adapter.
  */
 factory.create = function ( port, adapter ) {
-    var theAdapter;
-    var adapter_file = adapter + "-" + port + "-adapter.js";
-    var adapter_path = path.join( port, adapter_file );
+    var adapterObject;
+    var adapterFile = [adapter, port, 'adapter.js'].join('-');
+    var adapterPath = path.join( __dirname, port, adapterFile );
 
     try {
-        theAdapter = require( "./" + adapter_path );
+        adapterObject = require( adapterPath );
     }
     catch ( e ) {
         throw new Error(
-            "Adapter does not exist: " + __dirname + '/' + adapter_path
+            "Adapter does not exist: " +  adapterPath
         );
     }
 
-    return new theAdapter();
+    return new adapterObject();
 };
 
 /**
@@ -46,7 +46,7 @@ factory.list = function ( port ) {
     var list = [];
 
     try {
-        list = fs.readdirSync( path.join( './', port ) );
+        list = fs.readdirSync( path.join( __dirname, port ) );
     }
     catch ( e ) {
         throw new Error(
