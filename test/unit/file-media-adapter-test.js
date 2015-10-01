@@ -81,25 +81,6 @@ describe( 'file (system) media adapter', function () {
             });
         });
 
-        it( 'should return a uuid and the original filename in an object', function () {
-            /* act */
-            uuidPromise = fileMediaAdapter.put( [ testImage ] );
-
-            /* assert */
-            return uuidPromise
-                .then( function ( value ) {
-                    var fileMeta = value[0];
-                    createdFileMetas.push( fileMeta );  // for later cleanup
-                    expect( fileMeta.uuid ).to.match(
-                        // uuid format
-                        /^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
-                    );
-                    expect( fileMeta.filename ).to.equal(
-                        path.basename( testImage )
-                    );
-                });
-        });
-
         it( 'should save to a system configured location', function () {
             /* arrange */
             var uploadsPath = process.env.FILE_STORAGE_PATH;
@@ -118,6 +99,25 @@ describe( 'file (system) media adapter', function () {
                 })
                 .then( function ( value ) {
                     expect( value.isFile() ).to.be.true;
+                });
+        });
+
+        it( 'should return a uuid and the original filename in an object', function () {
+            /* act */
+            uuidPromise = fileMediaAdapter.put( [ testImage ] );
+
+            /* assert */
+            return uuidPromise
+                .then( function ( value ) {
+                    var fileMeta = value[0];
+                    createdFileMetas.push( fileMeta );  // for later cleanup
+                    expect( fileMeta.uuid ).to.match(
+                        // uuid format
+                        /^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
+                    );
+                    expect( fileMeta.filename ).to.equal(
+                        path.basename( testImage )
+                    );
                 });
         });
     });
