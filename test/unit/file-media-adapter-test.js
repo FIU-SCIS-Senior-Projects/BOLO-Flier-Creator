@@ -62,8 +62,7 @@ describe( 'file (system) media adapter', function () {
     });
 
     describe( 'when saving files', function () {
-        var uploadsPath;
-        var uuidPromise, collectedPromises = [];
+        var uuidPromise, createdFileMetas = [];
 
         beforeEach( function () {
             return copy( srcImage, testImage )
@@ -72,14 +71,15 @@ describe( 'file (system) media adapter', function () {
                 });
         });
 
-        /*
-         * TODO
-         * Cleanup files created in the configured uploads directory
-         *
-         * Probably need to cleanup at the end of each promise. It may be
-         * difficult to deal with race conditions with a collectino strategy
-         * or trying to use the "after" hook method.
-         */
+        after( function () {
+            var uploadsPath = process.env.FILE_STORAGE_PATH;
+            var noop = function () {};
+            createdFileMetas.forEach( function ( fileMeta ) {
+                var prefix = path.join( uploadsPath, fileMeta.uuid );
+                fs.unlink( prefix + path.extname( fileMeta.filename ), noop );
+                fs.unlink( prefix + '.json', noop );
+            });
+        });
 
         it( 'should return a uuid and the original filename in an object', function () {
             /* act */
@@ -89,6 +89,7 @@ describe( 'file (system) media adapter', function () {
             return uuidPromise
                 .then( function ( value ) {
                     var fileMeta = value[0];
+                    createdFileMetas.push( fileMeta );  // for later cleanup
                     expect( fileMeta.uuid ).to.match(
                         // uuid format
                         /^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
@@ -101,7 +102,7 @@ describe( 'file (system) media adapter', function () {
 
         it( 'should save to a system configured location', function () {
             /* arrange */
-            uploadsPath = process.env.FILE_STORAGE_PATH;
+            var uploadsPath = process.env.FILE_STORAGE_PATH;
 
             /* act */
             uuidPromise = fileMediaAdapter.put( [ testImage ] );
@@ -110,6 +111,7 @@ describe( 'file (system) media adapter', function () {
             return uuidPromise
                 .then( function ( value ) {
                     var fileMeta = value[0];
+                    createdFileMetas.push( fileMeta );  // for later cleanup
                     return stat(
                         path.join( uploadsPath, fileMeta.uuid + extImage )
                     );
