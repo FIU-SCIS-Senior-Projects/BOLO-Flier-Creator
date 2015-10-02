@@ -111,8 +111,26 @@ describe( 'file (system) media adapter', function () {
                         /^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
                     );
                     expect( fileMeta.filename ).to.equal(
-                        path.basename( testImage )
+                        expectedFilename + path.extname( srcImage )
                     );
+                });
+        });
+
+        it( 'should handle multiple files', function () {
+            /* arrange */
+            var filesPromise = fileFactory.create( [ 'file1', 'file2' ] );
+
+            /* act */
+            uuidPromise = filesPromise
+                .then( function ( files ) {
+                    return fileMediaAdapter.put( [ files[0], files[1] ] );
+                });
+
+            /* assert */
+            return uuidPromise
+                .then( function ( metas ) {
+                    createdFileMetas = createdFileMetas.concat( metas );  // for later cleanup
+                    expect( metas ).to.be.length( 2 );
                 });
         });
     });
