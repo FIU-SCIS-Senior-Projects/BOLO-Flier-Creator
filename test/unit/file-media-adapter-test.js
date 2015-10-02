@@ -18,43 +18,26 @@ var path = require('path');
 var fs = require('fs');
 var buf = require('buffer');
 var Promise = require('promise');
+var FileFactory = require( path.normalize( '../lib/file-fixture-factory.js' ) );
 
 require('dotenv').config({
     path: path.resolve( __dirname, '../../.env' )
 });
 
 
+
 /* Base Project Paths */
 var src_dir = path.resolve( __dirname, '../../src' );
-
-
-/* Test Helpers */
-var copy = function ( src, dst ) {
-    var srcFile = fs.createReadStream( src );
-    var dstFile = fs.createWriteStream( dst );
-    return new Promise ( function ( fulfill, reject ) {
-        srcFile.pipe( dstFile );
-        dstFile.on( 'finish', fulfill );
-        dstFile.on( 'error', reject );
-        srcFile.on( 'error', reject );
-    });
-};
 
 
 /* Test Spec */
 describe( 'file (system) media adapter', function () {
     var stat;
     var adapterFactory, fileMediaAdapter;
-    var imagePath, srcImage, testImage, extImage;
 
     before( function () {
         stat = Promise.denodeify( fs.stat );
         adapterFactory = require( path.join( src_dir, 'core/adapters' ) );
-
-        srcImage = path.resolve( __dirname, '../assets', 'nodejs.png' );
-        testImage = path.resolve( __dirname, '../assets', 'test.png' );
-        extImage = path.extname( srcImage );
-
     });
 
     beforeEach( function () {
@@ -62,13 +45,13 @@ describe( 'file (system) media adapter', function () {
     });
 
     describe( 'when saving files', function () {
+        var fileFactory;
         var uuidPromise, createdFileMetas = [];
+        var srcImage;
 
-        beforeEach( function () {
-            return copy( srcImage, testImage )
-                .catch( function ( error ) {
-                    throw new Error( "failed to create test image" );
-                });
+        before( function () {
+            srcImage = path.resolve( __dirname, '../assets', 'nodejs.png' );
+            fileFactory = new FileFactory( srcImage );
         });
 
         after( function () {
@@ -84,9 +67,14 @@ describe( 'file (system) media adapter', function () {
         it( 'should save to a system configured location', function () {
             /* arrange */
             var uploadsPath = process.env.FILE_STORAGE_PATH;
+            var extImage = path.extname( srcImage );
+            var filePromise = fileFactory.create( 'file1' );
 
             /* act */
-            uuidPromise = fileMediaAdapter.put( [ testImage ] );
+            uuidPromise = filePromise
+                .then( function ( testFile ) {
+                    return fileMediaAdapter.put( [ testFile ] );
+                });
 
             /* assert */
             return uuidPromise
@@ -103,8 +91,15 @@ describe( 'file (system) media adapter', function () {
         });
 
         it( 'should return a uuid and the original filename in an object', function () {
+            /* arrange */
+            var expectedFilename = 'file1';
+            var filePromise = fileFactory.create( expectedFilename );
+
             /* act */
-            uuidPromise = fileMediaAdapter.put( [ testImage ] );
+            uuidPromise = filePromise
+                .then( function ( testFile ) {
+                    return fileMediaAdapter.put( [ testFile ] );
+                });
 
             /* assert */
             return uuidPromise
