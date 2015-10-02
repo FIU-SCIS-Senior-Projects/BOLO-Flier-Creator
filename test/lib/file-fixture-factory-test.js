@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* jshint node: true, mocha: true, expr: true */
 
 var expect = require('chai').expect;
 
@@ -15,7 +15,7 @@ var unlink = Promise.denodeify( fs.unlink );
 /*
  * Test Spec
  */
-describe( 'the file fixture factory', function () {
+describe( 'the file fixture factory module', function () {
     var factory;
     var sourcePath, sourceFile, sourceExt;
 
@@ -30,6 +30,20 @@ describe( 'the file fixture factory', function () {
 
     it( 'should instantiate with with a source template file', function () {
         expect( factory.src ).to.equal( sourceFile );
+    });
+
+    it( 'should throw an error when instantiated with a relative path', function () {
+        var relativePath = '../assets/nodejs.png';
+        var didThrow = false;
+
+        try {
+            factory = new FileFactory( relativePath );
+        }
+        catch ( err ) {
+            didThrow = true;
+        }
+
+        expect(didThrow).to.be.true;
     });
 
     it( 'should create a single file in the source file directory', function () {

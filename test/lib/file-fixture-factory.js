@@ -35,6 +35,11 @@ var targetPath = function ( name, parts ) {
  *  guaranteed.
  */
 function FileFactory ( fp ) {
+    if ( ! path.isAbsolute( fp ) ) {
+        throw new Error(
+            'Factory template file must be specified by an absolute path.'
+        );
+    }
     this.src = fp;
     this.parts = path.parse( fp );
 }
