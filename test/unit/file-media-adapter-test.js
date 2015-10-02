@@ -15,15 +15,11 @@ var path = require('path');
 
 
 /* Other Dependencies */
+var os = require('os');
 var fs = require('fs');
 var buf = require('buffer');
 var Promise = require('promise');
 var FileFactory = require( path.normalize( '../lib/file-fixture-factory.js' ) );
-
-require('dotenv').config({
-    path: path.resolve( __dirname, '../../.env' )
-});
-
 
 
 /* Base Project Paths */
@@ -38,6 +34,7 @@ describe( 'file (system) media adapter', function () {
     before( function () {
         stat = Promise.denodeify( fs.stat );
         adapterFactory = require( path.join( src_dir, 'core/adapters' ) );
+        process.env.FILE_STORAGE_PATH = os.tmpdir();
     });
 
     beforeEach( function () {
