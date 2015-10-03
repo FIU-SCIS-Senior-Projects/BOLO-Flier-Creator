@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 /*
  * Client Access Port
  *
@@ -10,7 +13,10 @@
 var Bolo = require('../domain/bolo.js');
 
 /*
+ * Client Port Interface
  * @constructor
+ * @param storageAdapter - A storage adapter implementing the Storage Port
+ *                         Interface.
  */
 var ClientPort = function () {};
 
@@ -18,8 +24,8 @@ var ClientPort = function () {};
  * Create a new BOLO in the system.
  *
  * @param {object} boloData - Data for the new BOLO
- * @param storageAdapter - A storage adapter implementing the Storage Port
- *                         Interface.
+ * @param {object} attachments - BOLO Attachments
+ *                               valid keys = { image, video, audio }
  */
 ClientPort.prototype.createBolo = function ( boloData, storageAdapter ) {
     var bolo = new Bolo( boloData );

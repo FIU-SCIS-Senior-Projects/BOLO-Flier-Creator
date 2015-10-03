@@ -1,9 +1,8 @@
-/* jshint expr:true */
-/* global describe, it */
-
+/* jshint node: true, mocha: true, expr:true */
+'use strict';
 
 /*
- * Client Access Port -- Unit Test
+ * Unit Test: Client Access Port
  *
  */
 
@@ -13,41 +12,39 @@ var expect = require('chai').expect;
 var sinon = require('sinon');
 var path = require('path');
 
+var Promise = require('promise');
 
 /* Base Project Paths */
-var src_dir = path.join(__dirname, '../../src');
+var src_dir = path.join( __dirname, '../../src' );
 
 
 /* Unit Under Test */
-var ClientAccess = require(path.join(src_dir, 'core/ports/client-access-port.js'));
+var ClientAccess = require( path.join( src_dir, 'core/ports/client-access-port.js' ) );
 
 
 /* Fixtures */
-var date = new Date();
 var validBoloData = {
-    creationDate : date,
-    lastUpdate : date,
-    authorFName : "Jason",
-    authorLName : "Cohen",
-    authorUName : "jcohen",
-    category : "ROBBERY",
-    imageURL : [],
-    videoLink : [],
-    firstName : 'Barry',
-    lastName : 'Badman',
-    dob : "01-23-1945",
-    dlNumber : 'D123-456-78-900-0',
-    race : "Asian",
-    sex : "M",
-    height : "6-01",
-    weight : "185",
-    hairColor : "Black",
-    tattoos : "Tomato tattoo on right chest",
-    address : "123 Gangsta Lane",
-    additional : "",
-    summary : "",
-    agency : "Pinecrest",
-    archive : false
+    creationDate    : ( new Date() ).toString(),
+    lastUpdate      : '',
+    agency          : 'Pinecrest',
+    authorFName     : 'Jason',
+    authorLName     : 'Cohen',
+    authorUName     : 'jcohen',
+    category        : 'ROBBERY',
+    firstName       : 'Barry',
+    lastName        : 'Badman',
+    dob             : '01-23-1945',
+    dlNumber        : 'D123-456-78-900-0',
+    race            : 'Asian',
+    sex             : 'M',
+    height          : '6-01',
+    weight          : '185',
+    hairColor       : 'Black',
+    tattoos         : 'Tomato tattoo on right chest',
+    address         : '123 Gangsta Lane',
+    additional      : '',
+    summary         : '',
+    archive         : false
 };
 
 
