@@ -47,22 +47,94 @@ var validBoloData = {
     archive         : false
 };
 
+var fileAttachments = {
+    image   : [ '/path/to/image.jpg' ],
+    video   : [ '/path/to/video1.avi', '/path/to/video2.avi' ],
+    audio   : [ '/path/to/audio.mp3' ]
+};
+
+
+/* Helper Methods */
+var makeMeta = function ( file ) {
+    return {
+        uuid : "some-generated-uuid",
+        filename : path.basename( file )
+    };
+};
+
 
 /* Test Specification */
-describe('client access port', function () {
+describe('client access port module', function () {
+    var mockStorageAdapter, mockMediaAdapter;
+    var clientAccess;
 
-    it('should create a new BOLO and save it', function () {
-        /* arrange */
-        var clientAccess = new ClientAccess();
-        var mockStorageAdapter = {
-            'insert' : function ( bolo ) { this.record = bolo; }
+    before( function () {
+        /* setup mocks */
+        mockStorageAdapter = {
+            insert : function ( bolo ) {
+                // expected to resolve a promise when done inserting
+                return Promise.resolve( this.record = bolo  );
+            }
         };
+        mockMediaAdapter = {
+            put : function ( files ) {
+                // expected to return meta data for saved files in a promise
+                return Promise.resolve( files.map( makeMeta ) );
+            }
+        };
+    });
 
-        /* act */
-        clientAccess.createBolo( validBoloData, mockStorageAdapter );
+    beforeEach( function () {
+        clientAccess = new ClientAccess( mockStorageAdapter, mockMediaAdapter );
+    });
 
-        /* assert */
-        expect( mockStorageAdapter.record ).to.deep.equal( validBoloData );
+    afterEach( function () {
+        mockStorageAdapter.record = null;
+    });
+
+    it( 'implements the client access port interface', function () {
+        var interface_methods = [
+            'createBolo'
+        ];
+
+        interface_methods.map( function ( method ) {
+            expect( clientAccess ).to.respondTo( method );
+        });
+    });
+
+    describe( 'createBolo method', function () {
+        it( 'saves valid BOLO data into a Storage Port', function () {
+            /* act */
+            var promise = clientAccess.createBolo( validBoloData );
+
+            /* assert */
+            var msa = mockStorageAdapter;
+            return promise
+                .then( function ( result ) {
+                    var msg = "Input is most likely _invalid_";
+                    expect( result ).to.contain.property( 'success', true, msg );
+                    expect( msa.record ).to.include( validBoloData );
+                });
+        });
+
+        it( 'inserts file attachments into the BOLO', function () {
+            /* arrange */
+            var fa = fileAttachments;
+            var msa = mockStorageAdapter;
+
+            /* act */
+            var promise = clientAccess
+                .createBolo( validBoloData, fileAttachments );
+
+            /* assert */
+            return promise
+                .then( function ( result ) {
+                    expect( msa.record ).to.contain.key( 'image' );
+                    expect( msa.record.image[0] ).to.contain.deep.property(
+                        'filename', path.basename( fa.image[0] )
+                    );
+                });
+        });
     });
 
 });
