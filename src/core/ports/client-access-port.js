@@ -11,6 +11,34 @@
 
 /* Dependencies */
 var Bolo = require('../domain/bolo.js');
+var Promise = require('promise');
+
+
+function processAttachments( attachments, bolo, mediaAdapter ) {
+    var at = attachments || { image : [], video: [], audio: [] };
+    var putImages, putVideos, putAudio;
+
+    putImages = mediaAdapter
+        .put( at.image )
+        .then( function ( value ) {
+            return bolo.attachImage( value );
+        });
+
+    putVideos = mediaAdapter
+        .put( at.video )
+        .then( function ( value ) {
+            return bolo.attachVideo( value );
+        });
+
+    putAudio = mediaAdapter
+        .put( at.audio )
+        .then( function ( value ) {
+            return bolo.attachAudio( value );
+        });
+
+    return Promise.all( [ putImages, putVideos, putAudio ] );
+}
+
 
 /*
  * Client Port Interface
@@ -18,7 +46,10 @@ var Bolo = require('../domain/bolo.js');
  * @param storageAdapter - A storage adapter implementing the Storage Port
  *                         Interface.
  */
-var ClientPort = function () {};
+function ClientPort ( storageAdapter, mediaAdapter ) {
+    this.storageAdapter = storageAdapter;
+    this.mediaAdapter = mediaAdapter;
+}
 
 /**
  * Create a new BOLO in the system.
@@ -27,13 +58,24 @@ var ClientPort = function () {};
  * @param {object} attachments - BOLO Attachments
  *                               valid keys = { image, video, audio }
  */
-ClientPort.prototype.createBolo = function ( boloData, storageAdapter ) {
+ClientPort.prototype.createBolo = function ( boloData, attachments ) {
     var bolo = new Bolo( boloData );
+    var promise;
+    var that = this;
 
-    if ( bolo.isValid() )
-        storageAdapter.insert( bolo.data );
+    promise = processAttachments( attachments, bolo, this.mediaAdapter );
 
-    return { success: true };
+    return promise
+        .then( function ( value ) {
+            if ( ! bolo.isValid() ) throw new Error();
+            return that.storageAdapter.insert( bolo.data );
+        })
+        .then( function ( value ) {
+            return { success: true };
+        })
+        .catch( function ( value ) {
+            return { sucess: false };
+        });
 };
 
 module.exports = ClientPort;
