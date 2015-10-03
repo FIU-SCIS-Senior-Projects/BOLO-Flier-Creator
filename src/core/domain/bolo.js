@@ -45,4 +45,31 @@ Bolo.prototype.isValid = function () {
     return ( result.length === required.length );
 };
 
+/**
+ * Attach an image file reference to the bolo data. Reference should be
+ * usable by a Media Adapter.
+ */
+Bolo.prototype.attachImage = function ( meta ) {
+    this.data.image = this.data.image || [];
+    this.data.image = this.data.image.concat( meta );
+};
+
+/**
+ * Attach a video file reference to the bolo data. Reference should be
+ * usable by a Media Adapter.
+ */
+Bolo.prototype.attachVideo = function ( meta ) {
+    this.data.video = this.data.video || [];
+    this.data.video = this.data.video.concat( meta );
+};
+
+/**
+ * Attach an audio file reference to the bolo data. Reference should be
+ * usable by a Media Adapter.
+ */
+Bolo.prototype.attachAudio = function ( meta ) {
+    this.data.audio = this.data.audio || [];
+    this.data.audio = this.data.audio.concat( meta );
+};
+
 module.exports = Bolo;
