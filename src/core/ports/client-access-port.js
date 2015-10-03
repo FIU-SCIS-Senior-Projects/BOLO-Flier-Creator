@@ -67,14 +67,14 @@ ClientPort.prototype.createBolo = function ( boloData, attachments ) {
 
     return promise
         .then( function ( value ) {
-            if ( ! bolo.isValid() ) throw new Error();
+            if ( ! bolo.isValid() ) throw new Error( "invalid bolid data" );
             return that.storageAdapter.insert( bolo.data );
         })
         .then( function ( value ) {
             return { success: true };
         })
-        .catch( function ( value ) {
-            return { sucess: false };
+        .catch( function ( error ) {
+            return { success: false, error: error.message };
         });
 };
 
