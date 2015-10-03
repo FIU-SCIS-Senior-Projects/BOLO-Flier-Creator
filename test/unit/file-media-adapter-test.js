@@ -61,6 +61,15 @@ describe( 'file (system) media adapter', function () {
             });
         });
 
+        it( 'should return an empty array if passed an empty array', function () {
+            uuidPromise = fileMediaAdapter.put( [] );
+
+            return uuidPromise
+                .then( function ( val ) {
+                    expect( val ).to.be.an( 'array' ).and.be.empty;
+                });
+        });
+
         it( 'should save to a system configured location', function () {
             /* arrange */
             var uploadsPath = process.env.FILE_STORAGE_PATH;

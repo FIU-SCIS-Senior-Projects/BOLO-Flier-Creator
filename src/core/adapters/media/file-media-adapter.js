@@ -3,7 +3,6 @@
 
 var fs = require('fs');
 var path = require('path');
-var lodash = require('lodash');
 var uuid = require('node-uuid');
 var Promise = require('promise');
 
@@ -71,7 +70,10 @@ var FileMediaAdapter = function () {};
  * @return {Promise} Promise of an array with UUID of each file uploaded.
  */
 FileMediaAdapter.prototype.put = function ( filePathsArray ) {
-    return Promise.all( lodash.map( filePathsArray, moveFile ) );
+    if ( 0 === filePathsArray.length )
+        return Promise.resolve( [] );
+    else
+        return Promise.all( filePathsArray.map( moveFile ) );
 };
 
 module.exports = FileMediaAdapter;
