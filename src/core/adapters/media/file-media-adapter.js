@@ -70,7 +70,7 @@ var FileMediaAdapter = function () {};
  * @return {Promise} Promise of an array with UUID of each file uploaded.
  */
 FileMediaAdapter.prototype.put = function ( filePathsArray ) {
-    if ( 0 === filePathsArray.length )
+    if ( ! filePathsArray || 0 === filePathsArray.length )
         return Promise.resolve( [] );
     else
         return Promise.all( filePathsArray.map( moveFile ) );
