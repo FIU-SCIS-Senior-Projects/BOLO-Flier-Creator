@@ -1,32 +1,30 @@
-/*
- * Factory for creating new adapter objects
- */
+/* jshint node: true */
+'use strict';
 
-
-/* Dependencies */
 var fs = require('fs');
 var path = require('path');
 
 
-/* Helpers */
+/**
+ * @description Factory for creating new adapter objects
+ * @module core/adapters
+ */
 
-
-/* Main Factory Object */
-var factory = {};
 
 /**
- * Get an instance of the requested adapter
+ * Request the creation of a new port adapter.
  *
- * @arg {string} port
- * @arg {string} adapterName - The name of the requested adapter.
+ * @arg {String} - Name of the port the adapter implements.
+ * @arg {String} - Name of the adapter
+ * @returns - A new instance of the requested adapter.
  */
-factory.create = function ( port, adapter ) {
-    var adapterObject;
+exports.create = function ( port, adapter ) {
+    var AdapterObject;
     var adapterFile = [adapter, port, 'adapter.js'].join('-');
     var adapterPath = path.join( __dirname, port, adapterFile );
 
     try {
-        adapterObject = require( adapterPath );
+        AdapterObject = require( adapterPath );
     }
     catch ( e ) {
         throw new Error(
@@ -34,15 +32,17 @@ factory.create = function ( port, adapter ) {
         );
     }
 
-    return new adapterObject();
+    return new AdapterObject();
 };
+
 
 /**
  * List available adapters.
  *
- * @return {Array.String} Array containing the names of adapters in implemented
+ * @param - The port type to list adapters for.
+ * @return {String|Array} Array containing the names of adapters in implemented
  */
-factory.list = function ( port ) {
+exports.list = function ( port ) {
     var list = [];
 
     try {
@@ -56,5 +56,3 @@ factory.list = function ( port ) {
 
     return list;
 };
-
-module.exports = factory;
