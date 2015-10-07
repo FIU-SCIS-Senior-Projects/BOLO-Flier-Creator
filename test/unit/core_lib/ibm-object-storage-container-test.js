@@ -31,6 +31,10 @@ describe('object storage Container class', function () {
         container = new Container( container_name, stubAccount );
     });
 
+    it( 'saves its name to a read-only property', function () {
+        expect( container ).to.have.property( 'name', container_name );
+    });
+
     describe( '#req_opts method', function () {
         it( 'returns request options based on account options', function () {
             /* act */

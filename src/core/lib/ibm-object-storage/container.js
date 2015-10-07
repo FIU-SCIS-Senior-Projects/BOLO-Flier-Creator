@@ -15,6 +15,7 @@ module.exports = Container;
 
 /** @constructor */
 function Container ( name, account ) {
+    Object.defineProperties( this, { 'name' : { value: name } } );  // read-only
     this.req_opts = function () {
         var base = account.req_opts();
         base.url = base.url.concat( '/', name );
