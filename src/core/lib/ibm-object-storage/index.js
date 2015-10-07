@@ -18,6 +18,11 @@ var Auth = require('./auth');
  * - https://swiftstack.com/docs/admin/middleware/bulk.html
  */
 
+function isValid ( conf ) {
+    return Object.keys( conf )
+        .every( function ( val ) { return undefined !== val } )
+};
+
 
 /**
  *  Connect to the configured Object Storage account.
@@ -27,11 +32,15 @@ var Auth = require('./auth');
  *
  */
 module.exports.connect = function ( account ) {
-    var conf = Auth.configure( account );
-    return Auth.getToken( conf )
-        .then( function ( result ) {
-            var token = ( process.env.VCAP_SERVICES ) ?
-                Auth.configFromBluemix() : Auth.configFromEnv();
+    var conf = ( process.env.VCAP_SERVICES ) ?
+        Auth.configFromBluemix() : Auth.configFromEnvironment();
+
+    if ( ! isValid( conf ) ) {
+        return Promise.reject( new Error( 'object storage credentials missing...' ) );
+    };
+
+    return Auth.getToken( account, conf )
+        .then( function ( token ) {
             return new Account( token );
         })
         .catch( function ( error ) {
