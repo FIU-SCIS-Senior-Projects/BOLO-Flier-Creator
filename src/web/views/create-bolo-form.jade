@@ -67,7 +67,11 @@ block content
 
     .form-group
       label.control-label(for="image_upload") Image Attachment
-      input(name="image_upload" type="file" accept="image/*")
+      div#form-add-img-group
+        input(name="image_upload[]" type="file" accept="image/*")
+      a#form-add-img-btn
+        span.glyphicon.glyphicon-plus
+        | Add Image
 
     .form-group
       label.control-label(for="video_url") Video Link
