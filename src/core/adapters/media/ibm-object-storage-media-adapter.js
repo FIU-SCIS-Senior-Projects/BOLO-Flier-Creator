@@ -5,38 +5,42 @@ var fs = require('fs');
 var path = require('path');
 var Promise = require('promise');
 var uuid = require('node-uuid');
+
 var OStore = require( path.resolve( __dirname, '../../lib/ibm-object-storage' ) );
 
-/** @module
- *
- * Media Storage Adapter using the IBM Object Storage library
- */
-module.exports = IBMObjStore;
+
+module.exports = ObjectStorageMediaAdapter;
 
 
-/* Module Global Connection */
+/* Static Connection Objects */
 var account = null;
 var container = null;
 var ready;
 
 
 /**
- * IBM Object Store Media Adapter
+ * Create a new ObjectStorageMediaAdapter object.
  *
- * @constructor
+ * @class
+ * @memberof module:core/adapters
+ * @classdesc The ObjectStorageMediaAdapter implements the Media Port interface
+ * exposing operations for storing media files to an Object Storage service.
+ * @implements {MediaPort}
  */
-function IBMObjStore () {
+function ObjectStorageMediaAdapter () {
     if ( ! account && ! container )
         module_init();
 }
 
 
 /**
- * #put
+ * Put files into the object storage.
  *
- * @param {Array} fileArray - Array of file paths to store
+ * @param {String|Array} - Array of file paths to store
+ * @returns {Promise|Object|Array} Resolves to an array containing meta data
+ * for stored files.
  */
-IBMObjStore.prototype.put = function ( fileArray ) {
+ObjectStorageMediaAdapter.prototype.put = function ( fileArray ) {
     if ( ! fileArray || 0 === fileArray.length ) {
         return Promise.resolve( [] );
     }

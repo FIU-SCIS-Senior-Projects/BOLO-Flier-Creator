@@ -6,15 +6,16 @@ var Promise = require('promise');
 var Container = require('./container');
 
 
-/** @class
- * Object Storate Account Class
- *
- * Wrapper class for working with the OpenStack Object Storage API V1
- * @link http://developer.openstack.org/api-ref-objectstorage-v1.html
- */
 module.exports = Account;
 
-/** @constructor */
+/**
+ * Object Storage Account Class
+ *
+ * Wrapper class for working with the OpenStack Object Storage API V1
+ * @see {@link http://developer.openstack.org/api-ref-objectstorage-v1.html}
+ * @class
+ * @memberof module:core/lib/ibm-object-storage
+ */
 function Account ( token ) {
     this.req_opts = function () {
         return {

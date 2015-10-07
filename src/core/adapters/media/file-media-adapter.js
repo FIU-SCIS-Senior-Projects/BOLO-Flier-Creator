@@ -6,6 +6,37 @@ var path = require('path');
 var uuid = require('node-uuid');
 var Promise = require('promise');
 
+module.exports = FileMediaAdapter;
+
+/**
+ * Create a new FileMediaAdapter object.
+ *
+ * @class
+ * @memberof module:core/adapters
+ * @classdesc The FileMediaAdapter implements the Media Port interface
+ * exposing operations for storing media files on the local filesystem.
+ * @implements {MediaPort}
+ */
+function FileMediaAdapter () {
+    // constructor stub
+}
+
+
+/**
+ * Asynchronous method for uploading an image to the specified filesystem
+ * path.
+ *
+ * @param {Array} filePathsArray - An array of file paths to upload
+ * @returns {Promise|Object|Array} Resolves to an array containing meta data
+ * for stored files.
+ */
+FileMediaAdapter.prototype.put = function ( filePathsArray ) {
+    if ( ! filePathsArray || 0 === filePathsArray.length )
+        return Promise.resolve( [] );
+    else
+        return Promise.all( filePathsArray.map( moveFile ) );
+};
+
 
 /*
  * Utility and Wrapper Methods
@@ -18,7 +49,9 @@ var rename = Promise.denodeify( fs.rename );
 /**
  * Move a file to the system configured uploads directory.
  *
+ * @private
  * @param {String} filePath - Path to the file to move
+ * @returns {Promise}
  */
 var moveFile = function ( filePath ) {
     var srcFile = path.basename( filePath );
@@ -50,30 +83,3 @@ var moveFile = function ( filePath ) {
              * http://promisejs.org/api#Promise_prototype_then
              */
 };
-
-
-/**
- * @constructor
- * FileMediaAdapter class constructor
- *
- * Implements the expected interface for a Media Port.
- */
-var FileMediaAdapter = function () {};
-
-
-/**
- * FileMediaAdapter#put
- * Asynchronous method for uploading an image to the specified filesystem
- * path.
- *
- * @param {Array} filePathsArray - An array of file paths to upload
- * @return {Promise} Promise of an array with UUID of each file uploaded.
- */
-FileMediaAdapter.prototype.put = function ( filePathsArray ) {
-    if ( ! filePathsArray || 0 === filePathsArray.length )
-        return Promise.resolve( [] );
-    else
-        return Promise.all( filePathsArray.map( moveFile ) );
-};
-
-module.exports = FileMediaAdapter;

@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "BOLO Flyer Creator by Pinevrest Police Department",
   "scripts": {
-    "start": "node src/web/app.js"
+    "start": "node src/web/app.js",
+    "docs": "jsdoc -r -R README.md -d ./jsdoc ./src"
   },
   "dependencies": {
     "bcrypt": "0.8.x",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "chai": "^3.3.0",
+    "jsdoc": "^3.3.3",
     "mocha": "^2.3.3",
     "mockery": "^1.4.0",
     "nock": "^2.13.0",

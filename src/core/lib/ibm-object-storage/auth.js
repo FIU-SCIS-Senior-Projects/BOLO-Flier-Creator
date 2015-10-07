@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* jshint node: true, -W069 */
 'use strict';
 
 var _ = require('lodash');
@@ -6,9 +6,14 @@ var Promise = require('promise');
 var request = require('request');
 
 
+var Auth = {};
+
 /**
  * Return a Basic Auth string from the supplied username and password.
- * @link 
+ *
+ * @private
+ * @param {String} - username to include in the auth string
+ * @param {String} - password to include in the auth string
  */
 var basic_auth = function ( username, password ) {
     return 'Basic ' +
@@ -21,7 +26,7 @@ var basic_auth = function ( username, password ) {
  *
  * @param {Object} credentials - credentials for the object storage service
  */
-module.exports.config = function ( credentials ) {
+Auth.config = function ( credentials ) {
     var conf = {};
     var setReadOnly = _.partial( Object.defineProperty, conf );
     var secret = basic_auth( credentials.username, credentials.password );
@@ -39,7 +44,7 @@ module.exports.config = function ( credentials ) {
  * Helper method to get Object Storage credentials from Bluemix. Assumes
  * an instance of Object Storage V1 is binded to the running instance.
  */
-module.exports.configFromBluemix = function () {
+Auth.configFromBluemix = function () {
     var services = JSON.parse( process.env.VCAP_SERVICES || '{}' );
     var credentials = services.objectstorage[0].credentials || {};
     return this.config( credentials );
@@ -50,7 +55,7 @@ module.exports.configFromBluemix = function () {
  * Helper method to get Object Storage credentials from environment
  * variables accesible via global `process.env` object.
  */
-module.exports.configFromEnvironment = function () {
+Auth.configFromEnvironment = function () {
     return this.config({
         auth_uri : process.env.OSTORE_AUTH_URI,
         username : process.env.OSTORE_AUTH_UN,
@@ -58,11 +63,15 @@ module.exports.configFromEnvironment = function () {
     });
 };
 
-/*
+
+/**
  * Get a token for the IBM OBject Storage API for the application's
  * Object Storage account.
+ *
+ * @param {String} - Account name to get a token for.
+ * @param {Object} - Object containing Object Storage credentials.
  */
-module.exports.getToken = function ( account, conf ) {
+Auth.getToken = function ( account, conf ) {
     var _this = this;
     return new Promise( function ( resolve, reject ) {
         request.get({
@@ -90,7 +99,7 @@ module.exports.getToken = function ( account, conf ) {
  * @param {Object} response - http response header object from .getToken
  * @return {Object} object with the token, url, and timestamp (ts)
  */
-module.exports.buildToken = function ( response ) {
+Auth.buildToken = function ( response ) {
     return Object.create( {}, {
         url : { value: response['x-storage-url'], enumerable: true },
         token : { value: response['x-auth-token'], enumerable: true },
@@ -98,3 +107,6 @@ module.exports.buildToken = function ( response ) {
     });
 };
 
+
+/** @module core/lib/ibm-object-storage */
+module.exports = Auth;
