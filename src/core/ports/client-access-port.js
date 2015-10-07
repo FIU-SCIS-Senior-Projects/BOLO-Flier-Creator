@@ -67,7 +67,8 @@ ClientPort.prototype.createBolo = function ( boloData, attachments ) {
 
     return promise
         .then( function ( value ) {
-            if ( ! bolo.isValid() ) throw new Error( "invalid bolid data" );
+            // TODO Include a reason why its invalid ( wrong field? )
+            if ( ! bolo.isValid() ) throw new Error( "invalid bolo data" );
             return that.storageAdapter.insert( bolo.data );
         })
         .then( function ( value ) {
