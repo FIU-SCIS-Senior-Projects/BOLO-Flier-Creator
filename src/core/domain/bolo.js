@@ -1,11 +1,6 @@
 /* jshint node: true, mocha: true, expr: true */
 'use strict';
 
-/*
- * BOLO Domain Entity
- *
- */
-
 var schema = {
     authorFName     : { required: true, type: 'string' },
     authorLName     : { required: true, type: 'string' },
@@ -18,12 +13,17 @@ var required = Object.keys( schema ).filter( function ( key ) {
 });
 
 
+/** @module core/domain */
+module.exports = Bolo;
+
+
 /**
- * Bolo constructor
+ * Create a new Bolo object.
  *
- * @constructor
- * @param {Object} data - Object containing the Bolo Data
+ * @class
+ * @classdesc Entity object representing a BOLO.
  *
+ * @param {Object} data - Object containing Bolo Data properties
  */
 function Bolo ( data ) {
     this.data = data;
@@ -31,6 +31,8 @@ function Bolo ( data ) {
 
 /**
  * Checks if the bolo is valid
+ *
+ * @returns {bool} true if passes validation, false otherwise
  */
 Bolo.prototype.isValid = function () {
     // TODO Naive validation implementation, refactor using a robust validation
@@ -48,6 +50,8 @@ Bolo.prototype.isValid = function () {
 /**
  * Attach an image file reference to the bolo data. Reference should be
  * usable by a Media Adapter.
+ *
+ * @param {Object} - Meta data object containing a UUID and filename
  */
 Bolo.prototype.attachImage = function ( meta ) {
     this.data.image = this.data.image || [];
@@ -57,6 +61,8 @@ Bolo.prototype.attachImage = function ( meta ) {
 /**
  * Attach a video file reference to the bolo data. Reference should be
  * usable by a Media Adapter.
+ *
+ * @param {Object} - Meta data object containing a UUID and filename
  */
 Bolo.prototype.attachVideo = function ( meta ) {
     this.data.video = this.data.video || [];
@@ -66,10 +72,11 @@ Bolo.prototype.attachVideo = function ( meta ) {
 /**
  * Attach an audio file reference to the bolo data. Reference should be
  * usable by a Media Adapter.
+ *
+ * @param {Object} - Meta data object containing a UUID and filename
  */
 Bolo.prototype.attachAudio = function ( meta ) {
     this.data.audio = this.data.audio || [];
     this.data.audio = this.data.audio.concat( meta );
 };
 
-module.exports = Bolo;
