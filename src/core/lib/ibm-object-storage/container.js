@@ -5,15 +5,17 @@ var request = require('request');
 var Promise = require('promise');
 
 
-/** @class
+module.exports = Container;
+
+/**
  * Object Storage Container Class
  *
  * Wrapper class for working with the OpenStack Object Storage API V1
- * @link http://developer.openstack.org/api-ref-objectstorage-v1.html
+ * @see {@link http://developer.openstack.org/api-ref-objectstorage-v1.html}
+ *
+ * @class
+ * @memberof module:core/lib/ibm-object-storage
  */
-module.exports = Container;
-
-/** @constructor */
 function Container ( name, account ) {
     Object.defineProperties( this, { 'name' : { value: name } } );  // read-only
     this.req_opts = function () {
