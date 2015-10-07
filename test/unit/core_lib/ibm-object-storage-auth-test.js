@@ -10,21 +10,34 @@ var url = require('url');
 var src_dir = path.resolve( __dirname, '../../../src/core/lib/ibm-object-storage' );
 var Auth = require( path.join( src_dir, 'auth' ) );
 
+var env_state = {};
 
 /* == Helper Methods ======================================================== */
 var envClean = function ( key ) { delete process.env[key]; };
+var envCache = function ( key ) { if ( process.env[key] ) env_state[key] = process.env[key]; };
+var envRestore = function ( key ) { process.env[key] = env_state[key]; };
 
 
 /* == Test Spec ============================================================= */
 describe( 'object store Auth module', function () {
     var AUTH_HOST = 'http://www.example.com/auth';
     var AUTH_ACCT = 'some-account';
+    var MODIFIED_ENV = [
+        'OSTORE_AUTH_UN', 'OSTORE_AUTH_PW', 'OSTORE_AUTH_URI',
+        'VCAP_SERVICES'
+    ];
+
+    before( function () {
+        MODIFIED_ENV.map( envCache );
+    });
+
+    after( function () {
+        Object.keys( env_state ).map( envRestore );
+    });
 
     describe( '.config methods', function () {
         afterEach( function () {
-            [ 'OSTORE_AUTH_UN', 'OSTORE_AUTH_PW', 'OSTORE_AUTH_URI',
-              'VCAP_SERVICES'
-            ].map( envClean );
+            MODIFIED_ENV.map( envClean );
         });
 
         it( '.config returns a read-only config object', function () {
