@@ -1,3 +1,5 @@
+var request = require('request');
+
 /*
  * Super secret undocumented method.
  *
@@ -10,7 +12,7 @@
  *                  rejects if there was an issue
  */
 var MAX_BULK = 10000;
-Account.prototype._clearContainer = function ( container, confirm ) {
+module.exports.deleteAll = function ( container, confirm ) {
     if ( ! confirm )
         return Promise.reject( new Error( 'bulk delete not confirmed...' ) );
 
@@ -18,16 +20,14 @@ Account.prototype._clearContainer = function ( container, confirm ) {
     var that = this;
 
     var filter = function ( entry ) {
-        return container + "/" + entry.name;
+        return container.name + "/" + entry.name;
     };
 
-    var cont = new Container( container, this );
-
-    return cont.list( { limit: MAX_BULK } )
+    return container.list( { limit: MAX_BULK } )
         .then( function ( list ) {
             list_qty = list.length;
             files = list.map( filter ).join( "\n" );
-            return bulkDelete( files, that );
+            return bulkDelete( files, container );
         })
         .then( function ( result ) {
             var num = parseInt( result["Number Deleted"] );
