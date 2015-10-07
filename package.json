@@ -15,11 +15,11 @@
     "errorhandler": "1.4.1",
     "express": "4.12.x",
     "express-session": "1.7.6",
-    "formidable": "^1.0.17",
     "jade": "^1.11.0",
     "lodash": "^3.10.1",
     "method-override": "2.3.3",
     "morgan": "1.6.1",
+    "multiparty": "^4.1.2",
     "node-uuid": "^1.4.3",
     "promise": "^7.0.4",
     "request": "^2.64.0"
