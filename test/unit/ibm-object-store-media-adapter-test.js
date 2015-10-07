@@ -1,47 +1,49 @@
 /* jshint node: true, mocha: true, expr: true  */
 'use strict';
 
-
-/*
- * IBM Object Store Media Adapter -- Unit Test
- *
- */
-
-
-/* Testing Utilities */
 var expect = require('chai').expect;
-var sinon = require('sinon');
-
-
-/* Other Dependencies */
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
 var Promise = require('promise');
+var sinon = require('sinon');
 
-/* load up IBM Object Storage Service Connectin Secrets */
+var src = path.resolve( __dirname, '../../src' );
+var ObjectStorage = require( path.join( src, 'core/lib/ibm-object-storage' ) );
+var Bulk = require( path.join( src, 'core/lib/ibm-object-storage/bulk' ) );
+var AdapterFactory = require( path.join( src, 'core/adapters' ) );
+
 require('dotenv').config({ path: path.resolve( __dirname, '../../.env' ) });
-var ostore = require( path.join( __dirname, '../../src/core/lib/object-storage-connection.js' ) );
-
-/* Base Project Paths */
-var src_dir = path.resolve( __dirname, '../../src' );
 
 
-/* Helpers */
+/* == Helpers =============================================================== */
 var nameFilter = function ( obj ) { return obj.name; };
 
 
-/* Test Spec */
+/* == Test Spec ============================================================= */
 describe( 'ibm object store media adapter', function () {
-    var stat;
-    var adapterFactory, ibmObjStoreAdapter;
+    var stat, oAccount, oContainer;
+    var adapterFactory, ostoreAdapter;
+    var osAccount, osContainer;
 
     before( function () {
-        adapterFactory = require( path.join( src_dir, 'core/adapters' ) );
+        return ObjectStorage.connect( 'bolo-app' )
+            .then( function ( account ) {
+                osAccount = account;
+                return osAccount.useContainer( 'uploads' );
+            })
+            .then( function ( container ) {
+                osContainer = container;
+                return Promise.resolve( null );
+            })
+            .catch( function ( error ) {
+                throw error;
+            });
     });
 
     beforeEach( function () {
-        ibmObjStoreAdapter = adapterFactory.create( 'media', 'ibm-object-storage' );
+        ostoreAdapter = AdapterFactory.create( 'media', 'ibm-object-storage' );
+        return ostoreAdapter;
     });
 
     describe( 'when saving files', function () {
@@ -55,16 +57,10 @@ describe( 'ibm object store media adapter', function () {
         });
 
         after( function () {
-            this.timeout( 10000 );
-            return ostore
-                .init()
-                .then( function () {
-                    return ostore._cbd( true );
-                });
         });
 
         it( 'returns an empty array if passed an empty array', function () {
-            uuidPromise = ibmObjStoreAdapter.put( [] );
+            uuidPromise = ostoreAdapter.put( [] );
 
             return uuidPromise
                 .then( function ( val ) {
@@ -79,13 +75,13 @@ describe( 'ibm object store media adapter', function () {
             this.timeout( 10000 );
 
             /* act */
-            uuidPromise = ibmObjStoreAdapter.put( [ srcImage ] );
+            uuidPromise = ostoreAdapter.put( [ srcImage ] );
 
             /* assert */
             return uuidPromise
                 .then( function ( metas ) {
                     meta = metas[0];
-                    return ostore.containerList();
+                    return osContainer.list();
                 })
                 .then( function ( list ) {
                     expect( list.map( nameFilter ) ).to.contain( meta.uuid );
@@ -93,31 +89,28 @@ describe( 'ibm object store media adapter', function () {
                 });
         });
 
-        it.skip( 'returns a uuid and the original filename in an object', function () {
+        it( 'returns a uuid and the original filename in an object', function () {
             /* arrange */
-            var expectedFilename = 'file1';
-            var filePromise = fileFactory.create( expectedFilename );
+            var expectedFilename = path.basename( srcImage );
 
             /* act */
-            uuidPromise = ibmObjStoreAdapter.put( [ srcImage ] );
+            uuidPromise = ostoreAdapter.put( [ srcImage ] );
 
             /* assert */
             return uuidPromise
-                .then( function ( value ) {
-                    var fileMeta = value[0];
+                .then( function ( metas ) {
+                    var fileMeta = metas[0];
                     expect( fileMeta.uuid ).to.match(
                         // uuid format
                         /^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
                     );
-                    expect( fileMeta.filename ).to.equal(
-                        expectedFilename + path.extname( srcImage )
-                    );
+                    expect( fileMeta.filename ).to.equal( expectedFilename  );
                 });
         });
 
-        it.skip( 'should handle multiple files', function () {
+        it( 'should handle multiple files', function () {
             /* act */
-            uuidPromise = ibmObjStoreAdapter.put( [ srcImage, srcImage ] );
+            uuidPromise = ostoreAdapter.put( [ srcImage, srcImage ] );
 
             /* assert */
             return uuidPromise
