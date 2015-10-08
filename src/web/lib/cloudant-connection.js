@@ -1,8 +1,12 @@
-var Cloudant = require('cloudant');
+/* jshint node: true */
+'use strict';
+
+var cloudant = require('cloudant');
+var path = require('path');
 
 /* Assume default credentials using dotenv */
 require('dotenv')
-    .config({ path: __dirname + '/../../../.env' });
+    .config({ 'path': path.resolve( __dirname, '../../../.env' ) });
 var dbCredentials = {
     "host"      : process.env.CLOUDANT_HOST,
     "port"      : process.env.CLOUDANT_PORT,
@@ -25,18 +29,9 @@ if ( process.env.VCAP_SERVICES ) {
 }
 
 /* Initialized Cloudant Connection */
-var cloudant = Cloudant( dbCredentials, function( er, cloudant, reply ) {
+module.exports = cloudant( dbCredentials, function( er, cloudant, reply ) {
     if ( er ) {
         throw er;
     }
-
-    console.log('Connected with username: %s', reply.userCtx.name);
 });
 
-// check if DB exists if not create
-//cloudant.db.create(dbCredentials.dbName, function (err, res) {
-//    if (err) { console.log('could not create db ', err); }
-//});
-//db = cloudant.use(dbCredentials.dbName);
-
-module.exports = cloudant;

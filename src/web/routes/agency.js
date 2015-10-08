@@ -96,7 +96,7 @@ router.get('', function(request, response) {
 
 //Delete an agency from the database
 router.delete('', function(request, response) {
-    var agencies = cloudant.db.use('bolo_agencies");')
+    var agencies = cloudant.db.use('bolo_agencies");');
         agencies.get("bolo"+request.body.boloID, function(err, agency) {
 
             if (err) {
@@ -109,7 +109,7 @@ router.delete('', function(request, response) {
 
                 agencies.destroy(name, revisionID, function(error, body) {
                     if (error) {
-                        console.log("Unable to delete "+name+" agency.\n", error)
+                        console.log("Unable to delete "+name+" agency.\n", error);
                             response.json({ Result: 'Failure', Message: 'Unable to delete agency.',
                                 Agency: name});
                     }

@@ -1,7 +1,6 @@
 include includes/mixins
 extends layout
 
-
 //- Template Mixins
 mixin input_text(name, label, placeholder, required, value, type)
   .form-group
@@ -69,7 +68,6 @@ block content
     +input_text("weight", "Weight - Pounds", "", false, bolo?bolo.weight:"")
     +select_options("hair_color", "Hair Color", hair_colors, false, bolo?bolo.height:"")
     +input_textarea("tattoos", "Tattoos", "", false, bolo?bolo.tattoos:"")
-    
     .form-group
       label.control-label(for="image_upload") Image Attachment
       div#form-add-img-group

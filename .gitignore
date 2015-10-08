@@ -1,6 +1,12 @@
 # .gitignore
 
 #
+# General Ignores
+#
+jsdoc
+coverage
+
+#
 # Node.js Ignores
 #
 # Based on:

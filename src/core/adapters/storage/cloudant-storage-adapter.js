@@ -1,28 +1,42 @@
-/*
- * Cloudant Storage Adapter
- *
- * Implements required interface for a Bolo Domain Storage Port for the
- * Cloudant Database.
- */
+/* jshint node: true */
+'use strict';
 
 var cloudant = require('../../lib/cloudant-connection.js');
-var _ = require('lodash-node');
+var _ = require('lodash');
 var Bolo = require('../../domain/bolo.js');
-
-var adapter = function () {};
 var db = cloudant.db.use('bolo');
 
+module.exports = CloudantStorageAdapter;
 
-adapter.prototype.insert = function (data) {
+
+/**
+ * Create a new CloudantStorageAdapter object.
+ *
+ * @class
+ * @memberof module:core/adapters
+ * @classdesc Implements the interface for a Storage Port to expose operations
+ * which interact with th Cloudant Database service.
+ */
+function CloudantStorageAdapter () {
+    // constructor stub
+}
+
+
+/**
+ * Insert data on the Cloudant Database
+ *
+ * @param {Object} - Data to store
+ */
+CloudantStorageAdapter.prototype.insert = function ( data ) {
     db.insert(data, function (err, body) {
         if (err) console.log("cloudant-storage-adapter error: " + err);
     });
 };
 
-adapter.prototype.getBolos = function (callback) {
+CloudantStorageAdapter.prototype.getBolos = function (callback) {
     db.list({include_docs: true},function (err, body) {
         if (err) {
-            console.log("cloudant-storage-adapter error: " + err)
+            console.log("cloudant-storage-adapter error: " + err);
         }
         else
         {
@@ -31,17 +45,15 @@ adapter.prototype.getBolos = function (callback) {
     });
 };
 
-adapter.prototype.getBolo = function (id, callback) {
+CloudantStorageAdapter.prototype.getBolo = function (id, callback) {
     db.get( id,function (err, body) {
         if (err) {
-            console.log("cloudant-storage-adapter error: " + err)
+            console.log("cloudant-storage-adapter error: " + err);
         }
         else
         {
-            bolo = new Bolo();
+            var bolo = new Bolo();
             callback( _.defaultsDeep(bolo, body));
         }
     });
 };
-
-module.exports = adapter;

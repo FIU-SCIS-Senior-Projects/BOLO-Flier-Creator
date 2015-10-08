@@ -3,23 +3,31 @@
   "version": "0.0.1",
   "description": "BOLO Flyer Creator by Pinevrest Police Department",
   "scripts": {
-    "start": "node src/web/app.js"
+    "start": "node src/web/app.js",
+    "pretest": "jshint ./test/** ./src/**",
+    "test": "istanbul cover _mocha --check-leaks ./test/unit/** ./test/functional/**",
+    "unit-test": "mocha --check-leaks ./test/unit/**",
+    "cover": "istanbul cover _mocha -- ./test/unit/** ./test/functional/**",
+    "docs": "jsdoc -r -R README.md -d ./jsdoc ./src"
   },
   "dependencies": {
     "bcrypt": "0.8.x",
     "body-parser": "1.13.2",
     "cfenv": "1.0.x",
     "cloudant": "*",
-    "connect-multiparty": "1.2.5",
     "cookie-parser": "*",
     "dotenv": "^1.2.0",
     "errorhandler": "1.4.1",
     "express": "4.12.x",
     "express-session": "1.7.6",
     "jade": "^1.11.0",
-    "lodash-node": "^3.10.1",
+    "lodash": "^3.10.1",
     "method-override": "2.3.3",
-    "morgan": "1.6.1"
+    "morgan": "1.6.1",
+    "multiparty": "^4.1.2",
+    "node-uuid": "^1.4.3",
+    "promise": "^7.0.4",
+    "request": "^2.64.0"
   },
   "repository": {},
   "engines": {
@@ -27,8 +35,12 @@
   },
   "devDependencies": {
     "chai": "^3.3.0",
+    "istanbul": "^0.3.22",
+    "jsdoc": "^3.3.3",
+    "jshint": "^2.8.0",
     "mocha": "^2.3.3",
     "mockery": "^1.4.0",
+    "nock": "^2.13.0",
     "sinon": "^1.17.0"
   }
 }

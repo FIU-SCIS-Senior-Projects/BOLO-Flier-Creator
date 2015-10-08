@@ -27,6 +27,7 @@ do is save a file named .env in your project root with the needed environment
 variables set. Check the .env.example file to see the format and variables
 used in this project.  **Do not edit the .env.example file and/or commit it.**
 
+
 ### Testing
 This project is using the following libraries for testing:
 
@@ -37,10 +38,15 @@ This project is using the following libraries for testing:
 
 The project is set up for an effective BDD/TDD workflow. Tests are contained
 in the test/ directory which contain directories for unit, functional, and
-accpetance tests.  
+accpetance tests.
 
-To run or functional tests:  
-`mocha test/unit`
+To execute Functional and Unit tests with coverage reports:  
+`npm test`
+
+Coverage reports are stored in `./coverage` directory.
+
+To run individual tests:  
+`mocha test/unit` -or- `npm run unit-test`  
 `mocha test/functional`
 
 The --watch flag can be used to watch for any changes to tests during
@@ -51,3 +57,14 @@ development:
 Note that acceptance tests have not been implemented yet. The project plans
 to use WebDriver for accpetance tests against user story scenarios. Changes
 to these plans will be noted as needed.
+
+
+## Documentation
+
+The project requires all source code to be documented using
+[JSDoc](http://usejsdoc.org) in order to generate documentation.
+
+### Generating Documentation
+Generating the documentation is easy! Make sure that JSDoc is installed by
+using the `npm install` command. Then type `npm run docs` and thats it.
+Open jsdoc/index.html file in your browser to read. Enjoy.
