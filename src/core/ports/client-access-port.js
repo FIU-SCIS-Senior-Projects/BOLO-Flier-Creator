@@ -97,13 +97,13 @@ function processAttachments( attachments, bolo, mediaAdapter ) {
  */
 ClientAccessPort.prototype.getBolos = function (callback, storageAdapter) {
     storageAdapter.getBolos(function (results) {
-        callback(results)
+        callback(results);
     });
 };
 
 ClientAccessPort.prototype.getBolo = function (id, callback, storageAdapter) {
     storageAdapter.getBolo(id,function (results) {
-        callback(results)
+        callback(results);
     });
 };
 
