@@ -17,6 +17,7 @@
     "express": "4.12.x",
     "express-session": "1.7.6",
     "jade": "^1.11.0",
+    "lodash-node": "^3.10.1",
     "method-override": "2.3.3",
     "morgan": "1.6.1"
   },

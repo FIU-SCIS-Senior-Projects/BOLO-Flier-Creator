@@ -10,6 +10,8 @@ html.no-js
     title= title
 
     link(href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css", rel="stylesheet")
+    style
+        include includes/custom.css
     block styles
 
   body
@@ -22,6 +24,7 @@ html.no-js
 
     +nav("BOLO Version 3.0", "dropdown_menu")
       +nav_item("/bolo/create", "") Create BOLO
+      +nav_item("/bolo", "") View BOLOS
 
     block jumbo
 

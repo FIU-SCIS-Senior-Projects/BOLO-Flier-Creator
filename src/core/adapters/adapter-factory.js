@@ -29,6 +29,7 @@ factory.create = function ( port, adapter ) {
         theAdapter = require( "./" + adapter_path );
     }
     catch ( e ) {
+        console.log(e);
         throw new Error(
             "Adapter does not exist: " + __dirname + '/' + adapter_path
         );
