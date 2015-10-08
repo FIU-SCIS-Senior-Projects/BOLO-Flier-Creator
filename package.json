@@ -4,6 +4,10 @@
   "description": "BOLO Flyer Creator by Pinevrest Police Department",
   "scripts": {
     "start": "node src/web/app.js",
+    "pretest": "jshint ./test/** ./src/**",
+    "test": "mocha --check-leaks ./test/unit/** ./test/functional/**",
+    "unit-test": "mocha --check-leaks ./test/unit/**",
+    "cover": "istanbul cover _mocha -- ./test/unit/** ./test/functional/**",
     "docs": "jsdoc -r -R README.md -d ./jsdoc ./src"
   },
   "dependencies": {
@@ -31,7 +35,9 @@
   },
   "devDependencies": {
     "chai": "^3.3.0",
+    "istanbul": "^0.3.22",
     "jsdoc": "^3.3.3",
+    "jshint": "^2.8.0",
     "mocha": "^2.3.3",
     "mockery": "^1.4.0",
     "nock": "^2.13.0",

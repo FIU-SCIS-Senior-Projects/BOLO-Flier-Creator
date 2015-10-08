@@ -31,7 +31,7 @@ function getDateTime() {
     day = (day < 10 ? "0" : "") + day;
     return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
 }
-var clientAccess = new ClientAccess();
+var clientAccess = new ClientAccessPort();
 var cloudantAdapter = AdapterFactory.create('storage', 'cloudant');
 
 
@@ -142,6 +142,7 @@ router.get('/edit/:id', function (req, res) {
 //deletes a bolo
 router.delete('', function (req, res) {
 
+    var fliers = cloudant.db.use('bolo_fliers');
     var results = clientAccess.deleteBolo(function (re) {});
     fliers.get("bolo" + req.body.boloID, function (err, bolo) {
 
