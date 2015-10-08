@@ -2,7 +2,7 @@
 'use strict';
 
 var cloudant = require('../../lib/cloudant-connection.js');
-var _ = require('lodash-node');
+var _ = require('lodash');
 var Bolo = require('../../domain/bolo.js');
 var db = cloudant.db.use('bolo');
 
