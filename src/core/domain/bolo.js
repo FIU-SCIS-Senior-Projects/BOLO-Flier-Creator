@@ -12,6 +12,28 @@ var required = Object.keys( schema ).filter( function ( key ) {
     return schema[key].required;
 });
 
+var boloTemplate = {
+        "_id": "",
+        "_rev": "",
+        "authorFName": "",
+        "authorLName": "",
+        "authorUName": "",
+        "category": "",
+        "firstName": "",
+        "lastName": "",
+        "dob": "",
+        "dlNumber": "",
+        "sex": "",
+        "height": "",
+        "weight": "",
+        "tattoos": "",
+        "videoLink": "",
+        "additional": "",
+        "summary": "",
+        "enteredDT": "",
+        "archive": "",
+        "lastUnknownAddress":""
+    };
 
 /** @module core/domain */
 module.exports = Bolo;
@@ -26,7 +48,7 @@ module.exports = Bolo;
  * @param {Object} data - Object containing Bolo Data properties
  */
 function Bolo ( data ) {
-    this.data = data;
+	this.data = data || boloTemplate;
 }
 
 /**
@@ -79,4 +101,3 @@ Bolo.prototype.attachAudio = function ( meta ) {
     this.data.audio = this.data.audio || [];
     this.data.audio = this.data.audio.concat( meta );
 };
-

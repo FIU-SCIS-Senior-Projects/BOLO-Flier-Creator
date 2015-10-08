@@ -2,32 +2,41 @@ include includes/mixins
 extends layout
 
 //- Template Mixins
-mixin input_text(name, label, placeholder, required)
+mixin input_text(name, label, placeholder, required, value, type)
   .form-group
     label.control-label(for=name)= label
-    input.form-control(name=name type="text" placeholder=placeholder)
-
-mixin input_textarea(name, label, placeholder, required)
+    input.form-control(name=name type=type?type:text placeholder=placeholder, value=value)
+    
+mixin input_textarea(name, label, placeholder, required, value)
   .form-group
     label.control-label(for=name)= label
-    textarea.form-control(name=name type="text" placeholder=placeholder)
-
-mixin select_options(name, label, options, required)
+    textarea.form-control(name=name type="text" placeholder=placeholder)= value
+    
+mixin select_options(name, label, options, required, selectedValue)
   .form-group
     label.control-label(for=name)= label
     select.form-control(name=name)
-      option(disabled selected) Select an option...
+      option() Select an option...
       each val in options
-        +option(val)
+          if selectedValue == val
+            +option(val,true)
+          else
+            +option(val,false)
 
-
+        
+        
 block jumbo
   .jumbotron
     .container
-      h1 Create a BOLO
-      p Fill out the form and submit to create a new BOLO.
-
+        if bolo
+          h1 Edit BOLO
+          p Fill out the form to submit and update an existing bolo
+        else
+          h1 Create a BOLO
+          p Fill out the form and submit to create a new BOLO.
 block content
+
+
   //- Dropdown Box Selections
   -
     var categories = [
@@ -38,33 +47,27 @@ block content
       'THEFT - AUTO', 'THEFT - BOAT', 'THEFT - GRAND', 'THEFT - PETIT',
       'WANTED', 'FIELD INTERVIEW', 'INFORMATION'
     ]
-
     var races = [
       'Hispanic', 'White', 'Asian', 'Black or African American',
       'American Indian or Alaska Native',
       'Native Hawaiian or Other Pacific Islander'
     ]
-
     var hair_colors = [
       'Black','Blonde','Red','Brown','Gray','White','Sandy','Bald (No hair)'
     ]
-
-
   //- Actual Form
   form#create-bolo-form(action="/bolo/create" enctype="multipart/form-data" method="post")
-    +select_options("bolo_category", "Category", categories, true)
-    +input_text("fname", "First Name", "", false)
-    +input_text("lname", "Last Name", "", false)
-    +input_text("dob", "Date of Birth (DD/MM/YYYY)", "DD/MM/YYYY", false)
-    +input_text("dl_number", "Drivers License Number", "", false)
-    +select_options("race", "Race", races, false)
-    +select_options("sex", "Sex", ["Male", "Female"], false)
-    +input_text("height", "Height - Feet-Inches (e.g. 05-09)", "e.g. 05-09", false)
-    +input_text("weight", "Weight - Pounds", "", false)
-    +select_options("hair_color", "Hair Color", hair_colors, false)
-    +input_textarea("tattoos", "Tattoos", "", false)
-    +input_text("last_know_address", "Last Known Address", "", false)
-
+    +select_options("bolo_category", "Category", categories, true, bolo?bolo.category:"")
+    +input_text("fname", "First Name", "", false, bolo?bolo.firstName:"")
+    +input_text("lname", "Last Name", "", false,  bolo?bolo.lastName:"")
+    +input_text("dob", "Date of Birth (DD/MM/YYYY)", "DD/MM/YYYY", false,bolo?bolo.dob:"")
+    +input_text("dl_number", "Drivers License Number", "", false, bolo?bolo.dlNumber:"")
+    +select_options("race", "Race", races, false, bolo?bolo.race:"")
+    +select_options("sex", "Sex", ["Male", "Female"], false, bolo?bolo.sex:"")
+    +input_text("height", "Height - Feet-Inches (e.g. 05-09)", "e.g. 05-09", false  )
+    +input_text("weight", "Weight - Pounds", "", false, bolo?bolo.weight:"")
+    +select_options("hair_color", "Hair Color", hair_colors, false, bolo?bolo.height:"")
+    +input_textarea("tattoos", "Tattoos", "", false, bolo?bolo.tattoos:"")
     .form-group
       label.control-label(for="image_upload") Image Attachment
       div#form-add-img-group
@@ -72,14 +75,9 @@ block content
       a#form-add-img-btn
         span.glyphicon.glyphicon-plus
         | Add Image
-
-    .form-group
-      label.control-label(for="video_url") Video Link
-      input.form-control(name="video_url" type="url")
-
-    +input_textarea("addition_info", "Additional Info", "", false)
-    +input_textarea("summary", "Summary", "", false)
-
+    +input_text("video_url", "Video Link", "", false, bolo?bolo.videoLink:"", "url")
+    +input_textarea("addition_info", "Additional Info", "", false, bolo?bolo.additional:"")
+    +input_textarea("summary", "Summary", "", false, bolo?bolo.summary:"")
     .form-group
       button.btn.btn-primary(type="submit" value="save") Submit
       button.btn.btn-default(type="submit" disabled=true value="preview") Preview

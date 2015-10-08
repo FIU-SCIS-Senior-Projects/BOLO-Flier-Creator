@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 Bolos
+  #bolos
+  div.row
+    for document in bolos
+            div.col-sm-6.col-md-4
+                div.thumbnail
+                    img
+                    div.caption
+                        h3= document.doc.category
+                        p= "Author: " +  document.doc.firstName + " " +  document.doc.lastName
+                        p= document.doc.enteredDT
+                        p
+                             a.btn.btn-primary(href="/bolo/edit/" + document.doc._id, role="button") Edit
+                             a.btn.btn-default(href="#", role="button") Details
+                             a.btn.btn-danger(href="#", role="button") Delete

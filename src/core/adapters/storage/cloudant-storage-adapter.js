@@ -2,7 +2,8 @@
 'use strict';
 
 var cloudant = require('../../lib/cloudant-connection.js');
-
+var _ = require('lodash-node');
+var Bolo = require('../../domain/bolo.js');
 
 module.exports = CloudantStorageAdapter;
 
@@ -26,9 +27,32 @@ function CloudantStorageAdapter () {
  * @param {Object} - Data to store
  */
 CloudantStorageAdapter.prototype.insert = function ( data ) {
-    var db = cloudant.db.use('bolo');
+	var db = cloudant.db.use('bolo');
+    db.insert(data, function (err, body) {
+        if (err) console.log("cloudant-storage-adapter error: " + err);
+    });
+};
+CloudantStorageAdapter.prototype.getBolos = function (callback) {
+    db.list({include_docs: true},function (err, body) {
+        if (err) {
+            console.log("cloudant-storage-adapter error: " + err)
+        }
+        else
+        {
+            callback(body.rows);
+        }
+    });
+};
 
-    db.insert( data, function ( err, body ) {
-        if ( err ) console.log( "cloudant-storage-adapter error: " +  err );
+CloudantStorageAdapter.prototype.getBolo = function (id, callback) {
+    db.get( id,function (err, body) {
+        if (err) {
+            console.log("cloudant-storage-adapter error: " + err)
+        }
+        else
+        {
+            bolo = new Bolo();
+            callback( _.defaultsDeep(bolo, body));
+        }
     });
 };

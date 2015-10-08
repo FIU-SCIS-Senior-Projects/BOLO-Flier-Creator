@@ -91,3 +91,19 @@ function processAttachments( attachments, bolo, mediaAdapter ) {
 
     return Promise.all( [ putImages, putVideos, putAudio ] );
 }
+
+/**
+ * Retrieve a collection of bolos
+ */
+ClientAccessPort.prototype.getBolos = function (callback, storageAdapter) {
+    storageAdapter.getBolos(function (results) {
+        callback(results)
+    });
+};
+
+ClientAccessPort.prototype.getBolo = function (id, callback, storageAdapter) {
+    storageAdapter.getBolo(id,function (results) {
+        callback(results)
+    });
+};
+

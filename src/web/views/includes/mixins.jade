@@ -33,8 +33,10 @@ mixin nav_header
         block
  
 //- End navbar mixins
-
-
 //- Form mixins
-mixin option(value)
-    option(value=value)= value
+mixin option(value, selected)
+    if selected
+        option(value=value, selected)= value
+    else
+         option(value=value)= value
+        
