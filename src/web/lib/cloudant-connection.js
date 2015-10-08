@@ -1,7 +1,7 @@
 /* jshint node: true */
 'use strict';
 
-var Cloudant = require('cloudant');
+var cloudant = require('cloudant');
 var path = require('path');
 
 /* Assume default credentials using dotenv */
@@ -29,10 +29,9 @@ if ( process.env.VCAP_SERVICES ) {
 }
 
 /* Initialized Cloudant Connection */
-var cloudant = Cloudant( dbCredentials, function( er, cloudant, reply ) {
+module.exports = cloudant( dbCredentials, function( er, cloudant, reply ) {
     if ( er ) {
         throw er;
     }
 });
 
-module.exports = cloudant;
