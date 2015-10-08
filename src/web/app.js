@@ -11,9 +11,7 @@ var express = require('express'),
     fs = require('fs');
 
 // Require Route Modules
-var UsersEndpoints = require('./routes/users'),
-    BolosEndpoints = require('./routes/bolos'),
-    AgencyEndpoints = require('./routes/agency');
+var routes = require('./routes');
 
 // Required Third Party Middleware
 var expressSession = require('express-session'),
@@ -47,31 +45,13 @@ app.use(methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
-if ('development' == app.get('env')) {
+if ('development' === app.get('env')) {
     app.use(errorHandler());
 }
 
-app.get('/', function ( req, res ) {
-  res.render( 'index' );
-});
-
-// router middleware to authenticate user before doing any action(s)
-//app.use(['/bolo', '/agency'], function(request, response, next) {
-//    //AUTHENTICATE USER HERE
-//    if (request.cookies.boloUsername) {
-//        //if user is logged in, then continue
-//        console.log("User authenticated!\n");
-//        next();
-//    }
-//    else {
-//        //otherwise, give an error
-//        response.json({Result: 'Failure', Message : 'Please log in to continue'});
-//    }
-//});
-
-app.use("/users", UsersEndpoints);
-app.use('/bolo', BolosEndpoints);
-app.use('/agency', AgencyEndpoints);
+app.use("/users", routes.agency);
+app.use('/bolo', routes.bolos);
+app.use('/agency', routes.agency);
 
 // error handlers
 
