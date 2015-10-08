@@ -38,10 +38,15 @@ This project is using the following libraries for testing:
 
 The project is set up for an effective BDD/TDD workflow. Tests are contained
 in the test/ directory which contain directories for unit, functional, and
-accpetance tests.  
+accpetance tests.
 
-To run or functional tests:  
-`mocha test/unit`  
+To execute Functional and Unit tests with coverage reports:  
+`npm test`
+
+Coverage reports are stored in `./coverage` directory.
+
+To run individual tests:  
+`mocha test/unit` -or- `npm run unit-test`  
 `mocha test/functional`
 
 The --watch flag can be used to watch for any changes to tests during
