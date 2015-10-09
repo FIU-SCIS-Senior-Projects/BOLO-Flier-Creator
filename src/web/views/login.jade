@@ -1,0 +1,9 @@
+include includes/mixins
+extends layout
+
+block content
+    form#login(action="/login" method="post")
+        +input_text("username", "Username", "", true, "", "text")
+        +input_text("password", "Password", "", true, "", "password")
+        .form-group
+             button.btn.btn-primary(type="submit" value="login") Login
