@@ -23,30 +23,36 @@ var routes = require('./routes');
  */
 var app = express();
 
-// Application settings
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
-// Development Specific Middleware
-app.use(logger('dev'));
+/*
+ * Express Settings
+ */
+app.set( 'port', process.env.PORT || 3000 );
+app.set( 'views', path.join( __dirname, 'views' ) );
+app.set( 'view engine', 'jade' );
 
-//use express for setting and tracking cookies
-app.use(cookieParser('Passw0rd'));
-app.use(expressSession({
-    secret: 'Passw0rd',
-    cookie: { secure: true }
-}));
+var isDev = ( 'development' == app.get('env') );
+var sessionSecret = new Buffer( 'passw0rd' ).toString();
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(methodOverride());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
-if ('development' === app.get('env')) {
-    app.use(errorHandler());
+/*
+ * Global Middleware
+ */
+if ( isDev ) {
+    app.use( logger('dev') );
+    app.use( errorHandler() );
 }
+app.use(methodOverride());
+app.use( cookieParser( sessionSecret ) );
+app.use( expressSession({
+    secret: sessionSecret, /* must match cookieParser per documentation */
+    // cookie: { secure: true }
+    /**
+     * @todo Uncomment the above option before going to production. HTTPS is
+     * required for this option or the cookie will not be set per the
+     * documentation.
+     */
+}));
 
 
 /*
@@ -57,26 +63,20 @@ app.use( '/bolo', routes.bolos );
 // app.use( '/agency', routes.agency );
 // app.use( "/users", routes.agency );
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+
+/*
+ * Error Handling
+ */
+if ( isDev ) {
+    app.use( function( err, req, res, next ) {
+        res.status( err.status || 500 );
+        res.render( 'error', { message: err.message, error: err } );
     });
-  });
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+app.use( function( err, req, res, next ) {
+    res.status( err.status || 500 );
+    res.render( 'error', { message: err.message, error: {} } );
 });
 
 
