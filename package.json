@@ -16,6 +16,7 @@
     "cfenv": "1.0.x",
     "cloudant": "*",
     "cookie-parser": "*",
+    "csurf": "^1.8.3",
     "dotenv": "^1.2.0",
     "errorhandler": "1.4.1",
     "express": "4.12.x",

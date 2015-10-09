@@ -3,6 +3,7 @@ extends layout
 
 block content
     form#login(action="/login" method="post")
+        input(type="hidden" name="_csrf" value=loginToken)
         +input_text("username", "Username", "", true, "", "text")
         +input_text("password", "Password", "", true, "", "password")
         .form-group

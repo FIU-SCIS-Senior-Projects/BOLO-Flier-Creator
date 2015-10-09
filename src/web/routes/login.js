@@ -3,6 +3,7 @@
 
 
 var bodyParser = require('body-parser');
+var csrf = require('csurf');
 var router = require('express').Router();
 
 
@@ -10,17 +11,18 @@ module.exports = router;
 
 
 /*
- * Login, Global Middleware
+ * Middleware Setup
  */
-router.use( bodyParser.urlencoded({ extended: true }) );
+var _csrf = csrf({ cookie: true });
+var _bodyparser = bodyParser.urlencoded({ extended: true });
 
 /*
  * GET /
  *
  * Respond with the login page
  */
-router.get( '/', function ( req, res ) {
-    res.render( 'login' );
+router.get( '/', _csrf, function ( req, res ) {
+    res.render( 'login', { loginToken: req.csrfToken() } );
 });
 
 
@@ -29,6 +31,6 @@ router.get( '/', function ( req, res ) {
  *
  * Process Username and Password for Login.
  */
-router.post( '/', function ( req, res ) {
+router.post( '/', _bodyparser, _csrf, function ( req, res ) {
     res.redirect( '/' );
 });
