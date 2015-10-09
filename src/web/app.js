@@ -59,6 +59,7 @@ app.use( expressSession({
  * Routes
  */
 app.use( express.static( path.join( __dirname, 'public' ) ) );
+app.use( '/login', routes.login );
 app.use( '/bolo', routes.bolos );
 // app.use( '/agency', routes.agency );
 // app.use( "/users", routes.agency );
