@@ -23,3 +23,12 @@ router.get( '/', function ( req, res ) {
     res.render( 'login' );
 });
 
+
+/*
+ * POST /
+ *
+ * Process Username and Password for Login.
+ */
+router.post( '/', function ( req, res ) {
+    res.redirect( '/' );
+});
