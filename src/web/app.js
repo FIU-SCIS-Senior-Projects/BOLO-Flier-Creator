@@ -5,20 +5,18 @@
  * BOLO Version 3.0 Web Component
  */
 
-var express = require('express'),
-    http = require('http'),
-    path = require('path'),
-    fs = require('fs');
+var express = require('express');
+var http = require('http');
+var path = require('path');
+
+var cookieParser = require('cookie-parser');
+var errorHandler = require('errorhandler');
+var expressSession = require('express-session');
+var logger = require('morgan');
+var methodOverride = require('method-override');
 
 var routes = require('./routes');
 
-// Required Third Party Middleware
-var expressSession = require('express-session'),
-    bodyParser = require('body-parser'),
-    cookieParser = require('cookie-parser'),
-    methodOverride = require('method-override'),
-    logger = require('morgan'),
-    errorHandler = require('errorhandler');
 
 /*
  * Express Initialization
