@@ -2,11 +2,17 @@
 'use strict';
 
 
+var bodyParser = require('body-parser');
 var router = require('express').Router();
 
 
 module.exports = router;
 
+
+/*
+ * Login, Global Middleware
+ */
+router.use( bodyParser.urlencoded({ extended: true }) );
 
 /*
  * GET /
