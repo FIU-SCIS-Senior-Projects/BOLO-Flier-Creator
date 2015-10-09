@@ -1,30 +1,6 @@
 include includes/mixins
 extends layout
 
-//- Template Mixins
-mixin input_text(name, label, placeholder, required, value, type)
-  .form-group
-    label.control-label(for=name)= label
-    input.form-control(name=name type=type?type:text placeholder=placeholder, value=value)
-    
-mixin input_textarea(name, label, placeholder, required, value)
-  .form-group
-    label.control-label(for=name)= label
-    textarea.form-control(name=name type="text" placeholder=placeholder)= value
-    
-mixin select_options(name, label, options, required, selectedValue)
-  .form-group
-    label.control-label(for=name)= label
-    select.form-control(name=name)
-      option() Select an option...
-      each val in options
-          if selectedValue == val
-            +option(val,true)
-          else
-            +option(val,false)
-
-        
-        
 block jumbo
   .jumbotron
     .container
@@ -34,9 +10,8 @@ block jumbo
         else
           h1 Create a BOLO
           p Fill out the form and submit to create a new BOLO.
+
 block content
-
-
   //- Dropdown Box Selections
   -
     var categories = [
@@ -55,6 +30,7 @@ block content
     var hair_colors = [
       'Black','Blonde','Red','Brown','Gray','White','Sandy','Bald (No hair)'
     ]
+
   //- Actual Form
   form#create-bolo-form(action="/bolo/create" enctype="multipart/form-data" method="post")
     +select_options("bolo_category", "Category", categories, true, bolo?bolo.category:"")
