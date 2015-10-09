@@ -1,8 +1,8 @@
+/* jshint node: true */
+'use strict';
+
 /*
- * BOLO Version 3.0 API Server
- *
- * @author David Vizcaino <david.e.vizcaino@gmail.com>
- *
+ * BOLO Version 3.0 Web Component
  */
 
 var express = require('express'),
@@ -10,7 +10,6 @@ var express = require('express'),
     path = require('path'),
     fs = require('fs');
 
-// Require Route Modules
 var routes = require('./routes');
 
 // Required Third Party Middleware
@@ -21,7 +20,9 @@ var expressSession = require('express-session'),
     logger = require('morgan'),
     errorHandler = require('errorhandler');
 
-// Initialize
+/*
+ * Express Initialization
+ */
 var app = express();
 
 // Application settings
@@ -53,7 +54,6 @@ app.use("/users", routes.agency);
 app.use('/bolo', routes.bolos);
 app.use('/agency', routes.agency);
 
-// error handlers
 
 // development error handler
 // will print stacktrace
@@ -77,7 +77,10 @@ app.use(function(err, req, res, next) {
   });
 });
 
-//LAUNCH THE SERVER!!!
-http.createServer(app).listen(app.get('port'), function() {
-    console.log('Express server listening on port ' + app.get('port'));
+
+/*
+ * Server Start
+ */
+http.createServer( app ).listen( app.get( 'port' ), function() {
+    console.log( 'Express server listening on port ' + app.get( 'port' ) );
 });
