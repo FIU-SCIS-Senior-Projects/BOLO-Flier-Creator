@@ -63,6 +63,7 @@ app.use( '/login', routes.login );
 app.use( '/bolo', routes.bolos );
 // app.use( '/agency', routes.agency );
 // app.use( "/users", routes.agency );
+app.get( '/', function ( req, res ) { res.render( 'index' ); } );
 
 
 /*
