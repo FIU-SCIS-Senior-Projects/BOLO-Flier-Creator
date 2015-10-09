@@ -48,10 +48,14 @@ if ('development' === app.get('env')) {
     app.use(errorHandler());
 }
 
-app.use("/users", routes.agency);
-app.use('/bolo', routes.bolos);
-app.use('/agency', routes.agency);
 
+/*
+ * Routes
+ */
+app.use( express.static( path.join( __dirname, 'public' ) ) );
+app.use( '/bolo', routes.bolos );
+// app.use( '/agency', routes.agency );
+// app.use( "/users", routes.agency );
 
 // development error handler
 // will print stacktrace
