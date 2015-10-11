@@ -37,6 +37,8 @@ var cloudantAdapter = AdapterFactory.create('storage', 'cloudant');
 
 function setBoloData ( fields ) {
     return {
+        _id             : fields._id                || '',
+        _rev            : fields._rev               || '',
         authorFName     : "temp",
         authorLName     : "user",
         authorUName     : "temp user",
@@ -109,6 +111,31 @@ router.post('/create', function(req, res) {
     })
     .then( function ( _res ) {
         res.send( _res );
+    })
+    .catch( function ( _error ) {
+        res.status( 500 ).send( 'something wrong happened...', _error.stack );
+    });
+
+});
+
+router.post('/edit/:id', function(req, res) {
+    var storageAdapter = AdapterFactory.create( 'storage', 'cloudant' );
+    var mediaAdapter = AdapterFactory.create( 'media', 'ibm-object-storage' );
+    var clientAccess = new ClientAccessPort( storageAdapter, mediaAdapter );
+
+    var imagePathFilter = function ( item ) { return item.path; };
+
+    parseFormData( req )
+    .then( function ( _data ) {
+        var bolodata = setBoloData( _data.fields );
+        var paths = _data.files.map( function ( f ) { return f.path; } );
+        return Promise.all([ bolodata, paths ]);
+    })
+    .then( function ( _data ) {
+        return clientAccess.createBolo( _data[0], { image: _data[1] } );
+    })
+    .then( function ( _res ) {
+        res.status(200).redirect("/bolo" );
     })
     .catch( function ( _error ) {
         res.status( 500 ).send( 'something wrong happened...', _error.stack );

@@ -38,7 +38,7 @@ This project is using the following libraries for testing:
 
 The project is set up for an effective BDD/TDD workflow. Tests are contained
 in the test/ directory which contain directories for unit, functional, and
-accpetance tests.
+acceptance tests.
 
 To execute Functional and Unit tests with coverage reports:  
 `npm test`
@@ -66,5 +66,5 @@ The project requires all source code to be documented using
 
 ### Generating Documentation
 Generating the documentation is easy! Make sure that JSDoc is installed by
-using the `npm install` command. Then type `npm run docs` and thats it.
+using the `npm install` command. Then type `npm run docs` and that's it.
 Open jsdoc/index.html file in your browser to read. Enjoy.
