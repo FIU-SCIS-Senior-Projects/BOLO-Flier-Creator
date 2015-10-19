@@ -32,7 +32,7 @@ app.set( 'views', path.join( __dirname, 'views' ) );
 app.set( 'view engine', 'jade' );
 
 var isDev = ( 'development' == app.get('env') );
-var sessionSecret = new Buffer( 'passw0rd' ).toString();
+var secretKey = new Buffer( process.env.SESSION_SECRET || 'pw0rd' ).toString();
 
 
 /*
@@ -42,11 +42,13 @@ if ( isDev ) {
     app.use( logger('dev') );
     app.use( errorHandler() );
 }
-app.use(methodOverride());
-app.use( cookieParser( sessionSecret ) );
+app.use( methodOverride() );
+app.use( cookieParser( secretKey) );
 app.use( expressSession({
-    secret: sessionSecret, /* must match cookieParser per documentation */
-    // cookie: { secure: true }
+    'secret': secretKey,
+    'resave': true, /** @todo Confim this option */
+    'saveUninitialized': true, /** @todo Confirm this option */
+    // 'cookie': { secure: true }
     /**
      * @todo Uncomment the above option before going to production. HTTPS is
      * required for this option or the cookie will not be set per the
