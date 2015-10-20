@@ -16,6 +16,7 @@ var logger = require('morgan');
 var methodOverride = require('method-override');
 
 var routes = require('./routes');
+var auth = require('./lib/auth.js');
 
 
 /*
@@ -56,12 +57,15 @@ app.use( expressSession({
      */
 }));
 
+app.use( auth.passport.initialize() );
+app.use( auth.passport.session() );
+
 
 /*
  * Routes
  */
 app.use( express.static( path.join( __dirname, 'public' ) ) );
-app.use( '/login', routes.login );
+app.use( '/login', auth.router );
 app.use( '/bolo', routes.bolos );
 // app.use( '/agency', routes.agency );
 // app.use( "/users", routes.agency );
