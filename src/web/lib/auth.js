@@ -36,7 +36,7 @@ passport.deserializeUser( function ( id, done ) {
  *
  * Respond with the login page
  */
-router.get( '/', _csrf, function ( req, res ) {
+router.get( '/login', _csrf, function ( req, res ) {
     res.render( 'login', { loginToken: req.csrfToken() } );
 });
 
@@ -46,7 +46,7 @@ router.get( '/', _csrf, function ( req, res ) {
  *
  * Process Username and Password for Login.
  */
-router.post( '/',
+router.post( '/login',
     _bodyparser,
     _csrf,
     passport.authenticate( 'local', {

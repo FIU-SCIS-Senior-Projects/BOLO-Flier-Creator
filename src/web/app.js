@@ -65,7 +65,7 @@ app.use( auth.passport.session() );
  * Routes
  */
 app.use( express.static( path.join( __dirname, 'public' ) ) );
-app.use( '/login', auth.router );
+app.use( '/', auth.router );
 app.use( '/bolo', routes.bolos );
 // app.use( '/agency', routes.agency );
 // app.use( "/users", routes.agency );
