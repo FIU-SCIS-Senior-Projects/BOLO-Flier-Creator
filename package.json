@@ -27,6 +27,8 @@
     "morgan": "1.6.1",
     "multiparty": "^4.1.2",
     "node-uuid": "^1.4.3",
+    "passport": "^0.3.0",
+    "passport-local": "^1.0.0",
     "promise": "^7.0.4",
     "request": "^2.64.0"
   },
