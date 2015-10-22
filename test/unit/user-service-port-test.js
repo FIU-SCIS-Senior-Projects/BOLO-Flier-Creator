@@ -94,7 +94,7 @@ describe( 'user service port', function () {
             user = UserFixture.create();
         });
 
-        it( 'promises user entity object for valid ids', function () {
+        it( 'promises User object for valid ids', function () {
             /* arrange */
             var id = user.data.id = 'abc123';
 
