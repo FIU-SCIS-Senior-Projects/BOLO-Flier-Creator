@@ -47,12 +47,7 @@ CloudantUserStorageAdapter.prototype.getById = function ( id ) {
     return db.get( id )
         .then( function ( data ) {
             if ( !data._id ) throw new Error( data );
-
-            data.id = data._id;
-            delete data._id;
-            delete data._rev;
-            delete data.Type;
-
+            userTransform( data );
             return Promise.resolve( new User( data ) );
         })
         .catch( function ( error ) {
