@@ -37,7 +37,10 @@ describe( 'account service port', function () {
             var response = accountService.authenticate( username, password );
 
             /* assert */
-            expect( response ).to.equal( user );
+            return response
+                .then( function ( authUser ) {
+                    expect( authUser ).to.equal( user );
+                });
         });
 
         it.skip( 'promises a null for invalid credentials', function () {
