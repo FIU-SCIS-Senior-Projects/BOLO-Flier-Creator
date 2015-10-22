@@ -27,13 +27,13 @@ function CloudantUserStorageAdapter () {
  */
 CloudantUserStorageAdapter.prototype.insert = function ( user ) {
     var newuser = new User( user.data );
-    newuser.data.doctype = DOCTYPE;
+    newuser.data.Type = DOCTYPE;
 
     return db.insert( newuser.data )
         .then( function ( response ) {
             if ( !response.ok ) throw new Error( 'Problem adding user' );
 
-            delete newuser.data.doctype;
+            delete newuser.data.Type;
             newuser.data.id = response.id;
 
             return Promise.resolve( newuser );
@@ -51,7 +51,7 @@ CloudantUserStorageAdapter.prototype.getById = function ( id ) {
             data.id = data._id;
             delete data._id;
             delete data._rev;
-            delete data.doctype;
+            delete data.Type;
 
             return Promise.resolve( new User( data ) );
         })
