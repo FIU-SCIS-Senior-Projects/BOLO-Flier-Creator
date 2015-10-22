@@ -87,4 +87,30 @@ describe( 'account service port', function () {
         });
     }); /* end describe: authenticates user credentials */
 
+    describe( 'deserializes user ids', function () {
+        var user;
+
+        beforeEach( function () {
+            user = UserFixture.create();
+        });
+
+        it( 'promises user entity object for valid ids', function () {
+            /* arrange */
+            var id = user.data.id = 'abc123';
+
+            mockUserRepo.getById = sinon.stub()
+                .withArgs( id )
+                .returns( Promise.resolve( user ) );
+
+            /* act */
+            var response = accountService.deserializeUser( id );
+
+            /* assert */
+            return response
+                .then( function ( found ) {
+                    expect( found.data.id ).to.equal( id );
+                });
+        });
+    }); /* end describe: retrieves user accounts */
+
 });
