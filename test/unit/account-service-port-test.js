@@ -111,6 +111,24 @@ describe( 'account service port', function () {
                     expect( found.data.id ).to.equal( id );
                 });
         });
+
+        it( 'promises null object for invalid ids', function () {
+            /* arrange */
+            var id = 'abc123';
+
+            mockUserRepo.getById = sinon.stub()
+                .withArgs( id )
+                .returns( Promise.resolve( null ) );
+
+            /* act */
+            var response = accountService.deserializeUser( id );
+
+            /* assert */
+            return response
+                .then( function ( found ) {
+                    expect( found ).to.be.null;
+                });
+        });
     }); /* end describe: retrieves user accounts */
 
 });
