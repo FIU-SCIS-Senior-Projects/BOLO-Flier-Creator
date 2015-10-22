@@ -24,3 +24,7 @@ AccountServicePort.prototype.authenticate = function ( username, password ) {
         return Promise.resolve( null );
     });
 };
+
+AccountServicePort.prototype.deserializeUser = function ( id ) {
+    return this.userRepository.getById( id );
+};
