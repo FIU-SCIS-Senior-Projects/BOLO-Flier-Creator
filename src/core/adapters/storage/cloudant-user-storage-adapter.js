@@ -62,6 +62,24 @@ CloudantUserStorageAdapter.prototype.getById = function ( id ) {
         });
 };
 
+CloudantUserStorageAdapter.prototype.getByUsername = function ( id ) {
+    return db
+        .view( 'users', 'by_username', {
+            'key': id,
+            'include_docs': true
+        })
+        .then( function ( found ) {
+            if ( !found.total_rows ) return Promise.resolve( null );
+            userTransform( found.rows[0].doc );
+            return Promise.resolve( new User( found.rows[0].doc ) );
+        })
+        .catch( function ( error ) {
+            return Promise.reject(
+                new Error( "Failed to get user by username" )
+            );
+        });
+};
+
 CloudantUserStorageAdapter.prototype.remove = function ( id ) {
     // **UNDOCUMENTED OPERATION** cloudant/nano library destroys the database
     // if a null/undefined argument is passed into the `docname` argument for
@@ -111,5 +129,26 @@ var db = {
                 reject( err );
             });
         });
+    },
+
+    'view' : function ( designname, viewname, params ) {
+        if ( !params ) params = null;
+        return new Promise( function ( resolve, reject ) {
+            bolodb.view( designname, viewname, params, function ( err, body ) {
+                if ( !err ) resolve( body );
+                reject( err );
+            });
+        });
     }
 };
+
+/**
+ * Transform the user doc to a suitable format for the User entity object.
+ * @private
+ */
+function userTransform ( data ) {
+    data.id = data._id;
+    delete data._id;
+    delete data._rev;
+    delete data.Type;
+}
