@@ -23,9 +23,14 @@ describe( 'account service port', function () {
     });
 
     describe( 'authenticates user credentials', function () {
+        var user;
+
+        beforeEach( function () {
+            user = UserFixture.create();
+        });
+
         it( 'promises a User object for valid credentials', function () {
             /* arrange */
-            var user        = UserFixture.create();
             var username    = user.data.username,
                 password    = user.data.password;
 
@@ -43,7 +48,23 @@ describe( 'account service port', function () {
                 });
         });
 
-        it.skip( 'promises a null for invalid credentials', function () {
+        it( 'promises a null for invalid password', function () {
+            /* arrange */
+            var username    = user.data.username,
+                password    = 'a wrong password';
+
+            mockUserRepo.getByUsername = sinon.stub()
+                .withArgs( user.data.username )
+                .returns( Promise.resolve( user ) );
+
+            /* act */
+            var response = accountService.authenticate( username, password );
+
+            /* assert */
+            return response
+                .then( function ( authUser ) {
+                    expect( authUser ).to.equal( null );
+                });
         });
     }); /* end describe: authenticates user credentials */
 
