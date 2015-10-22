@@ -103,7 +103,7 @@ describe( 'user service port', function () {
                 .returns( Promise.resolve( user ) );
 
             /* act */
-            var response = userService.deserializeUser( id );
+            var response = userService.deserializeId( id );
 
             /* assert */
             return response
@@ -121,7 +121,7 @@ describe( 'user service port', function () {
                 .returns( Promise.resolve( null ) );
 
             /* act */
-            var response = userService.deserializeUser( id );
+            var response = userService.deserializeId( id );
 
             /* assert */
             return response
@@ -129,6 +129,6 @@ describe( 'user service port', function () {
                     expect( found ).to.be.null;
                 });
         });
-    }); /* end describe: retrieves user accounts */
+    }); /* end describe: deserializes ids to user objects  */
 
 });

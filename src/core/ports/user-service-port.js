@@ -4,15 +4,14 @@
 var Promise = require('promise');
 
 
-module.exports = AccountServicePort;
+module.exports = UserServicePort;
 
 
-function AccountServicePort ( userRepository ) {
+function UserServicePort ( userRepository ) {
     this.userRepository = userRepository;
 }
 
-
-AccountServicePort.prototype.authenticate = function ( username, password ) {
+UserServicePort.prototype.authenticate = function ( username, password ) {
     var userPromise = this.userRepository.getByUsername( username );
 
     return userPromise
@@ -25,6 +24,6 @@ AccountServicePort.prototype.authenticate = function ( username, password ) {
     });
 };
 
-AccountServicePort.prototype.deserializeUser = function ( id ) {
+UserServicePort.prototype.deserializeId = function ( id ) {
     return this.userRepository.getById( id );
 };
