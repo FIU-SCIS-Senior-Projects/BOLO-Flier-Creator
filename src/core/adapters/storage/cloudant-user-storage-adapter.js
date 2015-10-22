@@ -64,7 +64,7 @@ CloudantUserStorageAdapter.prototype.getByUsername = function ( id ) {
             'include_docs': true
         })
         .then( function ( found ) {
-            if ( !found.total_rows ) return Promise.resolve( null );
+            if ( !found.rows.length ) return Promise.resolve( null );
             userTransform( found.rows[0].doc );
             return Promise.resolve( new User( found.rows[0].doc ) );
         })
