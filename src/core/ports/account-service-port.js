@@ -20,5 +20,7 @@ AccountServicePort.prototype.authenticate = function ( username, password ) {
         if ( user.data.password == password ) {
             return Promise.resolve( user );
         }
+
+        return Promise.resolve( null );
     });
 };
