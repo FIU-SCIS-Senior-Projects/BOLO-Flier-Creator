@@ -66,6 +66,25 @@ describe( 'account service port', function () {
                     expect( authUser ).to.equal( null );
                 });
         });
+
+        it( 'promises a null for invlid usernames', function () {
+            /* arrange */
+            var username    = 'nonexistent_username',
+                password    = user.data.password;
+
+            mockUserRepo.getByUsername = sinon.stub()
+                .withArgs( username )
+                .returns( Promise.resolve( null ) );
+
+            /* act */
+            var response = accountService.authenticate( username, password );
+
+            /* assert */
+            return response
+                .then( function ( authUser ) {
+                    expect( authUser ).to.equal( null );
+                });
+        });
     }); /* end describe: authenticates user credentials */
 
 });
