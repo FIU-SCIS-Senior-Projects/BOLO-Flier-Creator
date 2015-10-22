@@ -26,11 +26,11 @@ describe( 'account service port', function () {
         it( 'promises a User object for valid credentials', function () {
             /* arrange */
             var user        = UserFixture.create();
-            var username    = 'superhacker',
-                password    = 'hackersuper';
+            var username    = user.data.username,
+                password    = user.data.password;
 
             mockUserRepo.getByUsername = sinon.stub()
-                .withArgs( sinon.match.string )
+                .withArgs( user.data.username )
                 .returns( Promise.resolve( user ) );
 
             /* act */
