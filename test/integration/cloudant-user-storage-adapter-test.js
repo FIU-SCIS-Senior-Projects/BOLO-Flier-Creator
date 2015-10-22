@@ -47,8 +47,8 @@ describe( 'cloudant user storage adapter', function () {
 
         /* assert */
         return userPromise
-            .then( function ( user ) {
-                expect( user.data.id ).to.equal( insertedUserID );
+            .then( function ( found ) {
+                expect( found.data.id ).to.equal( insertedUserID );
             });
     });
 
