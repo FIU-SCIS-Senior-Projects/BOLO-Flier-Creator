@@ -17,7 +17,7 @@ AccountServicePort.prototype.authenticate = function ( username, password ) {
 
     return userPromise
     .then( function ( user ) {
-        if ( user.data.password == password ) {
+        if ( user && user.data.password == password ) {
             return Promise.resolve( user );
         }
 
