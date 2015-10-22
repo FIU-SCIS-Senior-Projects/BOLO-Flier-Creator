@@ -8,18 +8,18 @@ var path = require('path');
 var Promise = require('promise');
 
 var src = path.resolve( __dirname, '../../src' );
-var AccountService = require( path.join( src, 'core/ports/user-service-port' ) );
+var UserService = require( path.join( src, 'core/ports/user-service-port' ) );
 var UserFixture = require( '../lib/user-entity-fixture' );
 
 
-describe( 'account service port', function () {
+describe( 'user service port', function () {
 
-    var accountService;
+    var userService;
     var mockUserRepo;
 
     beforeEach( function () {
         mockUserRepo = {};
-        accountService = new AccountService( mockUserRepo );
+        userService = new UserService( mockUserRepo );
     });
 
     describe( 'authenticates user credentials', function () {
@@ -39,7 +39,7 @@ describe( 'account service port', function () {
                 .returns( Promise.resolve( user ) );
 
             /* act */
-            var response = accountService.authenticate( username, password );
+            var response = userService.authenticate( username, password );
 
             /* assert */
             return response
@@ -58,7 +58,7 @@ describe( 'account service port', function () {
                 .returns( Promise.resolve( user ) );
 
             /* act */
-            var response = accountService.authenticate( username, password );
+            var response = userService.authenticate( username, password );
 
             /* assert */
             return response
@@ -77,7 +77,7 @@ describe( 'account service port', function () {
                 .returns( Promise.resolve( null ) );
 
             /* act */
-            var response = accountService.authenticate( username, password );
+            var response = userService.authenticate( username, password );
 
             /* assert */
             return response
@@ -103,7 +103,7 @@ describe( 'account service port', function () {
                 .returns( Promise.resolve( user ) );
 
             /* act */
-            var response = accountService.deserializeUser( id );
+            var response = userService.deserializeUser( id );
 
             /* assert */
             return response
@@ -121,7 +121,7 @@ describe( 'account service port', function () {
                 .returns( Promise.resolve( null ) );
 
             /* act */
-            var response = accountService.deserializeUser( id );
+            var response = userService.deserializeUser( id );
 
             /* assert */
             return response
