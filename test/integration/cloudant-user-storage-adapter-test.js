@@ -52,6 +52,24 @@ describe( 'cloudant user storage adapter', function () {
             });
     });
 
+    /*
+     * Assumption: usernames are unique.
+     *
+     * This may be an issue when trying to deal with usernames for
+     * different agencies that 'might' need to preserve uesrnames from
+     * other systems.
+     */
+    it( 'queries by username', function () {
+        /* act */
+        var userPromise = userRepository.getByUsername( user.data.username );
+
+        /* assert */
+        return userPromise
+            .then( function ( found ) {
+                expect( found.data.username ).to.equal( user.data.username );
+            });
+    });
+
     it( 'removes a user', function () {
         /* act */
         var responsePromise = userRepository.remove( insertedUserID );
