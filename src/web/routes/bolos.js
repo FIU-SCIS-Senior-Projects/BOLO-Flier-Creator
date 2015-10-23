@@ -35,31 +35,32 @@ var clientAccess = new ClientAccessPort();
 var cloudantAdapter = AdapterFactory.create('storage', 'cloudant');
 
 
-function setBoloData ( fields ) {
+function setBoloData(fields) {
     return {
-        _id             : fields._id                || '',
-        _rev            : fields._rev               || '',
-        authorFName     : "temp",
-        authorLName     : "user",
-        authorUName     : "temp user",
-        agency          : "temp agency",
-        category        : fields.bolo_category      || '',
-        firstName       : fields.fname              || '',
-        lastName        : fields.lname              || '',
-        dob             : fields.dob                || '',
-        dlNumber        : fields.dl_number          || '',
-        race            : fields.race               || '',
-        sex             : fields.sex                || '',
-        height          : fields.height             || '',
-        weight          : fields.weight             || '',
-        hairColor       : fields.hair_color         || '',
-        tattoos         : fields.tattoos            || '',
-        address         : fields.address            || '',
-        image           : fields.images             || [],
-        video_url       : fields.video_url          || '',
-        additional      : fields.last_known_address || '',
-        summary         : fields.summary            || '',
-        archive         : false
+        _id: fields._id || '',
+        _rev: fields._rev || '',
+        authorFName: "temp",
+        authorLName: "user",
+        authorUName: "temp user",
+        agency: "temp agency",
+        category: fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
+        firstName: fields.fname || '',
+        lastName: fields.lname || '',
+        dob: fields.dob || '',
+        dlNumber: fields.dl_number || '',
+        race: fields.race || '',
+        sex: fields.sex != 'Select an option...' ? fields.sex : '',
+        height: fields.height || '',
+        weight: fields.weight || '',
+        hairColor: fields.hair_color != 'Select an option...' ? fields.hair_color : '',
+        tattoos: fields.tattoos || '',
+        address: fields.address || '',
+        image: fields.images || [],
+        video_url: fields.video_url || '',
+        additional: fields.last_known_address || '',
+        summary: fields.summary || '',
+        archive: false,
+        enteredDT: fields.enteredDT ? fields.enteredDT : getDateTime()
     };
 }
 
@@ -117,93 +118,91 @@ router.post('/create', function(req, res) {
     });
 
 });
+router.post('/edit/:id', function (req, res) {
+    var storageAdapter = AdapterFactory.create('storage', 'cloudant');
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage');
+    var clientAccess = new ClientAccessPort(storageAdapter, mediaAdapter);
 
-router.post('/edit/:id', function(req, res) {
-    var storageAdapter = AdapterFactory.create( 'storage', 'cloudant' );
-    var mediaAdapter = AdapterFactory.create( 'media', 'ibm-object-storage' );
-    var clientAccess = new ClientAccessPort( storageAdapter, mediaAdapter );
+    var imagePathFilter = function (item) {
+        return item.path;
+    };
 
-    var imagePathFilter = function ( item ) { return item.path; };
-
-    parseFormData( req )
-    .then( function ( _data ) {
-        var bolodata = setBoloData( _data.fields );
-        var paths = _data.files.map( function ( f ) { return f.path; } );
-        return Promise.all([ bolodata, paths ]);
-    })
-    .then( function ( _data ) {
-        return clientAccess.createBolo( _data[0], { image: _data[1] } );
-    })
-    .then( function ( _res ) {
-        res.status(200).redirect("/bolo" );
-    })
-    .catch( function ( _error ) {
-        res.status( 500 ).send( 'something wrong happened...', _error.stack );
-    });
+    parseFormData(req)
+        .then(function (_data) {
+            var bolodata = setBoloData(_data.fields);
+            var paths = _data.files.map(function (f) {
+                return f.path;
+            });
+            return Promise.all([bolodata, paths]);
+        })
+        .then(function (_data) {
+            clientAccess.createBolo(_data[0], {
+                image: _data[1]
+            })
+        })
+        .then(function (_res) {
+            clientAccess.getBolos()
+                .then(function (bolos) {
+                    res.render('bolo-list', {
+                        bolos: bolos
+                    });
+                });
+        })
+        .catch(function (_error) {
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
 
 });
 
 router.get('', function (req, res) {
-    var results = clientAccess.getBolos(
-        function (results) {
+    var storageAdapter = AdapterFactory.create('storage', 'cloudant');
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage');
+    var clientAccess = new ClientAccessPort(storageAdapter, mediaAdapter);
+
+    clientAccess.getBolos()
+        .then(function (bolos) {
             res.render('bolo-list', {
-                bolos: results
+                bolos: bolos
             });
-        }, cloudantAdapter);
+        });
 });
 
 router.get('/edit/:id', function (req, res) {
 
-    var results = clientAccess.getBolo(req.params.id,
-        function (result) {
-            if (result) {
-                res.render('create-bolo-form', {
-                    bolo: result
-                });
-            } else {
-                res.status(404).send("Bolo not found");
-            }
-        }, cloudantAdapter);
+    var storageAdapter = AdapterFactory.create('storage', 'cloudant');
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage');
+    var clientAccess = new ClientAccessPort(storageAdapter, mediaAdapter);
+
+    clientAccess.getBolo(req.params.id)
+        .then(function (bolo) {
+            res.render('create-bolo-form', {
+                bolo: bolo
+            })
+        })
+        .catch(function (_error) {
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
 });
-
 //deletes a bolo
-router.delete('', function (req, res) {
+router.post('/delete/:id', function (req, res) {
+    var storageAdapter = AdapterFactory.create('storage', 'cloudant');
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage');
+    var clientAccess = new ClientAccessPort(storageAdapter, mediaAdapter);
 
-    var fliers = cloudant.db.use('bolo_fliers');
-    var results = clientAccess.deleteBolo(function (re) {});
-    fliers.get("bolo" + req.body.boloID, function (err, bolo) {
+    var bolo;
+    clientAccess.getBolo(req.params.id)
+        .then(function (result) {
+            this.bolo = result;
+        })
+        .then(function (_res) {
+            clientAccess.removeBolo(bolo._id, bolo._rev)
+                .then(function (res) {
+                    alert('Success');
+                })
+        })
+        .catch(function (_error) {
 
-        if (err) {
-            res.json({
-                Result: 'Failure',
-                Message: 'Bolo not found'
-            });
-        } else {
-            var revisionID = bolo._rev;
-            var boloID = req.body.boloID;
-            console.log("Deleting bolo with ID#" + boloID + "\n");
-
-            fliers.destroy("bolo" + boloID, revisionID, function (error, body) {
-                if (error) {
-                    console.log("Unable to delete bolo with ID#" + boloID + ".\n", error);
-                    res.json({
-                        Result: 'Failure',
-                        Message: 'Unable to delete bolo.',
-                        boloID: boloID
-                    });
-                } else {
-                    console.log("Successfully deleted bolo with ID#" + boloID + "\n");
-                    res.json({
-                        Result: 'Success',
-                        Message: 'Bolo has been deleted.',
-                        boloID: boloID
-                    });
-                }
-            }); //end of destroy
-
-        }
-    }); //end flier.get currentUserCount
-
+        })
 });
 
 //updates a field in a bolo
