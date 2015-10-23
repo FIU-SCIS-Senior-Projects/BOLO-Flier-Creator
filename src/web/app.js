@@ -1,103 +1,104 @@
+/* jshint node: true */
+'use strict';
+
 /*
- * BOLO Version 3.0 API Server
- *
- * @author David Vizcaino <david.e.vizcaino@gmail.com>
- *
+ * BOLO Version 3.0 Web Component
  */
 
-var express = require('express'),
-    http = require('http'),
-    path = require('path'),
-    fs = require('fs');
+var express = require('express');
+var http = require('http');
+var path = require('path');
 
-// Require Route Modules
-var UsersEndpoints = require('./routes/users'),
-    BolosEndpoints = require('./routes/bolos'),
-    AgencyEndpoints = require('./routes/agency');
+var cookieParser = require('cookie-parser');
+var errorHandler = require('errorhandler');
+var expressSession = require('express-session');
+var flash = require('connect-flash');
+var logger = require('morgan');
+var methodOverride = require('method-override');
 
-// Required Third Party Middleware
-var expressSession = require('express-session'),
-    bodyParser = require('body-parser'),
-    cookieParser = require('cookie-parser'),
-    methodOverride = require('method-override'),
-    logger = require('morgan'),
-    errorHandler = require('errorhandler');
+var routes = require('./routes');
+var auth = require('./lib/auth.js');
 
-// Initialize
+
+/*
+ * Express Initialization
+ */
 var app = express();
 
-// Application settings
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
-// Development Specific Middleware
-app.use(logger('dev'));
+/*
+ * Express Settings
+ */
+app.set( 'port', process.env.PORT || 3000 );
+app.set( 'views', path.join( __dirname, 'views' ) );
+app.set( 'view engine', 'jade' );
 
-//use express for setting and tracking cookies
-app.use(cookieParser('Passw0rd'));
-app.use(expressSession({
-    secret: 'Passw0rd',
-    cookie: { secure: true }
+var isDev = ( 'development' == app.get('env') );
+var secretKey = new Buffer( process.env.SESSION_SECRET || 'pw0rd' ).toString();
+
+
+/*
+ * Global Middleware
+ */
+if ( isDev ) {
+    app.use( logger('dev') );
+    app.use( errorHandler() );
+}
+app.use( methodOverride() );
+app.use( cookieParser( secretKey) );
+app.use( expressSession({
+    'secret': secretKey,
+    'resave': true, /** @todo Confim this option */
+    'saveUninitialized': true, /** @todo Confirm this option */
+    // 'cookie': { secure: true }
+    /**
+     * @todo Uncomment the above option before going to production. HTTPS is
+     * required for this option or the cookie will not be set per the
+     * documentation.
+     */
 }));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(methodOverride());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use( flash() );
+app.use( auth.passport.initialize() );
+app.use( auth.passport.session() );
 
-// development only
-if ('development' == app.get('env')) {
-    app.use(errorHandler());
-}
 
-app.get('/', function ( req, res ) {
-  res.render( 'index' );
-});
+/*
+ * Routes
+ */
+var isAuthenticated = function ( req, res, next ) {
+    if ( ! req.isAuthenticated() ) {
+        res.redirect( '/login' );
+    }
+    next();
+};
+app.use( express.static( path.join( __dirname, 'public' ) ) );
+app.use( '/', auth.router );
+app.use( '/bolo', isAuthenticated, routes.bolos );
+// app.use( '/agency', routes.agency );
+// app.use( "/users", routes.agency );
+app.get( '/', isAuthenticated, function ( req, res ) { res.render( 'index' ); } );
 
-// router middleware to authenticate user before doing any action(s)
-//app.use(['/bolo', '/agency'], function(request, response, next) {
-//    //AUTHENTICATE USER HERE
-//    if (request.cookies.boloUsername) {
-//        //if user is logged in, then continue
-//        console.log("User authenticated!\n");
-//        next();
-//    }
-//    else {
-//        //otherwise, give an error
-//        response.json({Result: 'Failure', Message : 'Please log in to continue'});
-//    }
-//});
 
-app.use("/users", UsersEndpoints);
-app.use('/bolo', BolosEndpoints);
-app.use('/agency', AgencyEndpoints);
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+/*
+ * Error Handling
+ */
+if ( isDev ) {
+    app.use( function( err, req, res, next ) {
+        res.status( err.status || 500 );
+        res.render( 'error', { message: err.message, error: err } );
     });
-  });
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+app.use( function( err, req, res, next ) {
+    res.status( err.status || 500 );
+    res.render( 'error', { message: err.message, error: {} } );
 });
 
-//LAUNCH THE SERVER!!!
-http.createServer(app).listen(app.get('port'), function() {
-    console.log('Express server listening on port ' + app.get('port'));
+
+/*
+ * Server Start
+ */
+http.createServer( app ).listen( app.get( 'port' ), function() {
+    console.log( 'Express server listening on port ' + app.get( 'port' ) );
 });
