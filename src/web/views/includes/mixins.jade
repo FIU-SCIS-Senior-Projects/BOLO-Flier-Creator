@@ -61,3 +61,10 @@ mixin select_options(name, label, options, required, selectedValue)
             +option(val,true)
           else
             +option(val,false)
+
+mixin alert_box(msg)
+    .alert.alert-warning.alert-dismissable(role="alert")
+        button.close(type="button" data-dismiss="alert" aria-lable="Close")
+            span(aria-hidden="true") &times;
+        = msg
+
