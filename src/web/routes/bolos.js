@@ -138,7 +138,7 @@ router.post('/edit/:id', function (req, res) {
         .then(function (_data) {
             clientAccess.createBolo(_data[0], {
                 image: _data[1]
-            })
+            });
         })
         .then(function (_res) {
             clientAccess.getBolos()
@@ -177,7 +177,7 @@ router.get('/edit/:id', function (req, res) {
         .then(function (bolo) {
             res.render('create-bolo-form', {
                 bolo: bolo
-            })
+            });
         })
         .catch(function (_error) {
             res.status(500).send('something wrong happened...', _error.stack);
@@ -195,14 +195,11 @@ router.post('/delete/:id', function (req, res) {
             this.bolo = result;
         })
         .then(function (_res) {
-            clientAccess.removeBolo(bolo._id, bolo._rev)
-                .then(function (res) {
-                    alert('Success');
-                })
+            clientAccess.removeBolo(bolo._id, bolo._rev);
         })
         .catch(function (_error) {
 
-        })
+        });
 });
 
 //updates a field in a bolo

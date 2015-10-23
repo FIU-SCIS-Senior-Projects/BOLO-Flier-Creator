@@ -27,7 +27,6 @@ exports.create = function ( port, adapter ) {
         AdapterObject = require( adapterPath );
     }
     catch ( e ) {
-        console.log(e);
         throw new Error(
             "Adapter does not exist: " +  adapterPath
         );

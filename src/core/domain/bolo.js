@@ -60,9 +60,7 @@ module.exports = Bolo;
  * @param {Object} data - Object containing Bolo Data properties
  */
 function Bolo(data) {
-
     this.data = data || boloTemplate;
-    console.log("This is the data value:", this.data);
 }
 
 /**
