@@ -1,6 +1,8 @@
 /* jshint node: true, mocha: true, expr: true */
 'use strict';
 
+var _ = require('lodash');
+
 var schema = {
     authorFName: {
         required: true,
@@ -25,26 +27,28 @@ var required = Object.keys(schema).filter(function (key) {
 });
 
 var boloTemplate = {
-    "_id": "",
-    "_rev": "",
-    "authorFName": "",
-    "authorLName": "",
-    "authorUName": "",
-    "category": "",
-    "firstName": "",
-    "lastName": "",
-    "dob": "",
-    "dlNumber": "",
-    "sex": "",
-    "height": "",
-    "weight": "",
-    "tattoos": "",
-    "videoLink": "",
-    "additional": "",
-    "summary": "",
-    "enteredDT": "",
-    "archive": "",
-    "lastUnknownAddress": ""
+    id              : '',
+    creationDate    : '',
+    lastUpdate      : '',
+    agency          : '',
+    authorFName     : '',
+    authorLName     : '',
+    authorUName     : '',
+    category        : '',
+    firstName       : '',
+    lastName        : '',
+    dob             : '',
+    dlNumber        : '',
+    race            : '',
+    sex             : '',
+    height          : '',
+    weight          : '',
+    hairColor       : '',
+    tattoos         : '',
+    address         : '',
+    additional      : '',
+    summary         : '',
+    archive         : false,
 };
 
 /** @module core/domain */
@@ -59,8 +63,8 @@ module.exports = Bolo;
  *
  * @param {Object} data - Object containing Bolo Data properties
  */
-function Bolo(data) {
-    this.data = data || boloTemplate;
+function Bolo( data ) {
+    this.data = _.extend( {}, boloTemplate, data );
 }
 
 /**
@@ -112,4 +116,27 @@ Bolo.prototype.attachVideo = function (meta) {
 Bolo.prototype.attachAudio = function (meta) {
     this.data.audio = this.data.audio || [];
     this.data.audio = this.data.audio.concat(meta);
+};
+
+/**
+ * Check if the supplied bolo object has the same data attribute values as the
+ * source bolo object's own enumerable data attribute values.
+ *
+ * @param {Bolo} - the other bolo object to compare to
+ */
+Bolo.prototype.same = function ( other ) {
+    return 0 === this.diff( other ).length;
+};
+
+/**
+ * Returns an array of keys differing from the source user object.
+ *
+ * @param {Bolo} - the other bolo to compare to
+ */
+Bolo.prototype.diff = function ( other ) {
+    var source = this;
+    return Object.getOwnPropertyNames( source.data )
+        .filter( function ( key ) {
+            return source.data[key] !== other.data[key];
+        });
 };
