@@ -8,8 +8,10 @@ block jumbo
             p Please log in to use the system.
 
 block content
+    each msg in messages
+        +alert_info(msg)
     each err in error
-        +alert_box(err)
+        +alert_warning(err)
     form#login(action="/login" method="post")
         input(type="hidden" name="_csrf" value=loginToken)
         +input_text("username", "Username", "", true, "", "text")

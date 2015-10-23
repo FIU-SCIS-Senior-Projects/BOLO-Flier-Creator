@@ -72,12 +72,22 @@ var isAuthenticated = function ( req, res, next ) {
     }
     next();
 };
+app.use( function ( req, res, next ) {
+    if ( req.user ) res.locals.userLoggedIn = true;
+    next();
+});
 app.use( express.static( path.join( __dirname, 'public' ) ) );
 app.use( '/', auth.router );
 app.use( '/bolo', isAuthenticated, routes.bolos );
 // app.use( '/agency', routes.agency );
 // app.use( "/users", routes.agency );
-app.get( '/', isAuthenticated, function ( req, res ) { res.render( 'index' ); } );
+app.get( '/',
+    isAuthenticated,
+    function ( req, res ) {
+        res.render( 'index', {
+            'message': req.session.messages
+        });
+    });
 
 
 /*
