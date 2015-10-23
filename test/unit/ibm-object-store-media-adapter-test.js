@@ -27,6 +27,7 @@ describe( 'ibm object store media adapter', function () {
     var osAccount, osContainer;
 
     before( function () {
+         this.timeout( 100000 );
         return ObjectStorage.connect( 'bolo-app' )
             .then( function ( account ) {
                 osAccount = account;
@@ -72,7 +73,7 @@ describe( 'ibm object store media adapter', function () {
             /* arrange */
             var uploadContainer = process.env.OSTORE_BOLO_CONT;
             var meta;
-            this.timeout( 10000 );
+            this.timeout( 100000 );
 
             /* act */
             uuidPromise = ostoreAdapter.put( [ srcImage ] );

@@ -95,15 +95,17 @@ function processAttachments( attachments, bolo, mediaAdapter ) {
 /**
  * Retrieve a collection of bolos
  */
-ClientAccessPort.prototype.getBolos = function (callback, storageAdapter) {
-    storageAdapter.getBolos(function (results) {
-        callback(results);
-    });
+ClientAccessPort.prototype.getBolos = function () {
+    var ctx = this;
+    return ctx.storageAdapter.getBolos();
 };
 
-ClientAccessPort.prototype.getBolo = function (id, callback, storageAdapter) {
-    storageAdapter.getBolo(id,function (results) {
-        callback(results);
-    });
+ClientAccessPort.prototype.getBolo = function (id) {
+    var ctx = this;
+    return ctx.storageAdapter.getBolo(id);
 };
 
+ClientAccessPort.prototype.removeBolo = function (id, rev, callback, storageAdapter) {
+    var ctx = this;
+    return ctx.storageAdapter.removeBolo(id, rev);
+};

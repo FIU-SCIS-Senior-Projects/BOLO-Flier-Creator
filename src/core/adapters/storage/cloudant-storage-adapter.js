@@ -5,6 +5,7 @@ var cloudant = require('../../lib/cloudant-connection.js');
 var _ = require('lodash');
 var Bolo = require('../../domain/bolo.js');
 var db = cloudant.db.use('bolo');
+var Promise = require('promise');
 
 module.exports = CloudantStorageAdapter;
 
@@ -33,27 +34,42 @@ CloudantStorageAdapter.prototype.insert = function ( data ) {
     });
 };
 
-CloudantStorageAdapter.prototype.getBolos = function (callback) {
-    db.list({include_docs: true},function (err, body) {
-        if (err) {
-            console.log("cloudant-storage-adapter error: " + err);
-        }
-        else
-        {
-            callback(body.rows);
-        }
+CloudantStorageAdapter.prototype.getBolos = function () {
+    return new Promise(function (fulfill, reject) {
+        db.list({
+            include_docs: true
+        }, function (err, body) {
+            if (err) {
+                reject(err);
+            } else {
+                fulfill(body.rows);
+            }
+        });
+    });
+
+};
+
+CloudantStorageAdapter.prototype.getBolo = function (id) {
+    return new Promise(function (fulfill, reject) {
+        db.get(id, function (err, body) {
+            if (err) {
+                reject(err);
+            } else {
+                var bolo = new Bolo();
+                fulfill(_.defaultsDeep(bolo, body));
+            }
+        });
     });
 };
 
-CloudantStorageAdapter.prototype.getBolo = function (id, callback) {
-    db.get( id,function (err, body) {
-        if (err) {
-            console.log("cloudant-storage-adapter error: " + err);
-        }
-        else
-        {
-            var bolo = new Bolo();
-            callback( _.defaultsDeep(bolo, body));
-        }
+CloudantStorageAdapter.prototype.removeBolo = function (id, rev) {
+    return new Promise(function (fulfill, reject) {
+        db.destroy(id, rev, function (err, body) {
+            if (err) {
+                reject(err);
+            } else {
+                fulfill(body);
+            }
+        });
     });
 };

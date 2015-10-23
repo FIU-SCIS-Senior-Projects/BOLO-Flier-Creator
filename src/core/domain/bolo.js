@@ -2,38 +2,50 @@
 'use strict';
 
 var schema = {
-    authorFName     : { required: true, type: 'string' },
-    authorLName     : { required: true, type: 'string' },
-    authorUName     : { required: true, type: 'string' },
-    agency          : { required: true, type: 'string' }
+    authorFName: {
+        required: true,
+        type: 'string'
+    },
+    authorLName: {
+        required: true,
+        type: 'string'
+    },
+    authorUName: {
+        required: true,
+        type: 'string'
+    },
+    agency: {
+        required: true,
+        type: 'string'
+    }
 };
 
-var required = Object.keys( schema ).filter( function ( key ) {
+var required = Object.keys(schema).filter(function (key) {
     return schema[key].required;
 });
 
 var boloTemplate = {
-        "_id": "",
-        "_rev": "",
-        "authorFName": "",
-        "authorLName": "",
-        "authorUName": "",
-        "category": "",
-        "firstName": "",
-        "lastName": "",
-        "dob": "",
-        "dlNumber": "",
-        "sex": "",
-        "height": "",
-        "weight": "",
-        "tattoos": "",
-        "videoLink": "",
-        "additional": "",
-        "summary": "",
-        "enteredDT": "",
-        "archive": "",
-        "lastUnknownAddress":""
-    };
+    "_id": "",
+    "_rev": "",
+    "authorFName": "",
+    "authorLName": "",
+    "authorUName": "",
+    "category": "",
+    "firstName": "",
+    "lastName": "",
+    "dob": "",
+    "dlNumber": "",
+    "sex": "",
+    "height": "",
+    "weight": "",
+    "tattoos": "",
+    "videoLink": "",
+    "additional": "",
+    "summary": "",
+    "enteredDT": "",
+    "archive": "",
+    "lastUnknownAddress": ""
+};
 
 /** @module core/domain */
 module.exports = Bolo;
@@ -47,8 +59,10 @@ module.exports = Bolo;
  *
  * @param {Object} data - Object containing Bolo Data properties
  */
-function Bolo ( data ) {
-	this.data = data || boloTemplate;
+function Bolo(data) {
+
+    this.data = data || boloTemplate;
+    console.log("This is the data value:", this.data);
 }
 
 /**
@@ -61,12 +75,12 @@ Bolo.prototype.isValid = function () {
     // library like Joi. It might be useful to implement validation with a
     // Bolo Template object
     var data = this.data;
-    var result = required.reduce( function ( reqs, key ) {
-        if ( data[key] && typeof data[key] === schema[key].type )
-            return reqs.concat( key );
-    }, [] ) || [];
+    var result = required.reduce(function (reqs, key) {
+        if (data[key] && typeof data[key] === schema[key].type)
+            return reqs.concat(key);
+    }, []) || [];
     // if all required keys were pushed, then valid
-    return ( result.length === required.length );
+    return (result.length === required.length);
 };
 
 /**
@@ -75,9 +89,9 @@ Bolo.prototype.isValid = function () {
  *
  * @param {Object} - Meta data object containing a UUID and filename
  */
-Bolo.prototype.attachImage = function ( meta ) {
+Bolo.prototype.attachImage = function (meta) {
     this.data.image = this.data.image || [];
-    this.data.image = this.data.image.concat( meta );
+    this.data.image = this.data.image.concat(meta);
 };
 
 /**
@@ -86,9 +100,9 @@ Bolo.prototype.attachImage = function ( meta ) {
  *
  * @param {Object} - Meta data object containing a UUID and filename
  */
-Bolo.prototype.attachVideo = function ( meta ) {
+Bolo.prototype.attachVideo = function (meta) {
     this.data.video = this.data.video || [];
-    this.data.video = this.data.video.concat( meta );
+    this.data.video = this.data.video.concat(meta);
 };
 
 /**
@@ -97,7 +111,7 @@ Bolo.prototype.attachVideo = function ( meta ) {
  *
  * @param {Object} - Meta data object containing a UUID and filename
  */
-Bolo.prototype.attachAudio = function ( meta ) {
+Bolo.prototype.attachAudio = function (meta) {
     this.data.audio = this.data.audio || [];
-    this.data.audio = this.data.audio.concat( meta );
+    this.data.audio = this.data.audio.concat(meta);
 };
