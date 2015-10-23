@@ -45,7 +45,7 @@ passport.deserializeUser( function ( id, done ) {
 
 
 /*
- * GET /
+ * GET /login
  *
  * Respond with the login page
  */
@@ -61,13 +61,14 @@ router.get( '/login',
     function ( req, res ) {
         res.render( 'login', {
             'loginToken': req.csrfToken(),
-            'error': req.flash( 'error' )
+            'error': req.flash( 'error' ),
+            'messages': req.flash( 'messages' )
         });
     });
 
 
 /*
- * POST /
+ * POST /login
  *
  * Process Username and Password for Login.
  */
@@ -80,6 +81,18 @@ router.post( '/login',
         'failureFlash': true
     }));
 
+
+/*
+ * GET /logout
+ *
+ * Destory any sessions belonging to the requesting client.
+ */
+router.get( '/logout',
+    function ( req, res ) {
+        req.logout();
+        req.flash( 'messages', 'Successfully logged out.' );
+        res.redirect( '/login' );
+    });
 
 
 module.exports.passport = passport;
