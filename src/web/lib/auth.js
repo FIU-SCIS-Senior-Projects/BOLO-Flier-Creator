@@ -11,19 +11,19 @@ var LocalStrategy = require('passport-local').Strategy;
 var core = path.resolve( __dirname, '../../core' );
 var UserService = require( path.join( core, 'ports/user-service-port' ) );
 var AdapterFactory = require( path.join( core, 'adapters' ) );
+var userRepository = AdapterFactory.create( 'storage', 'cloudant-user' );
+var userService = new UserService( userRepository );
 
 var _csrf = csrf({ 'cookie': true });
 var _bodyparser = bodyParser.urlencoded({ 'extended': true });
 
-var userRepository = AdapterFactory.create( 'storage', 'cloudant-user' );
-var userService = new UserService( userRepository );
 
 passport.use( new LocalStrategy(
     function ( username, password, done ) {
         userService.authenticate( username, password )
         .then( function( account ) {
             if ( !account ) {
-                var msg = 'Invalid credentials';
+                var msg = 'Either username or password is incorrect.';
                 return done( null, false, { 'message': msg } );
             }
 
@@ -49,9 +49,21 @@ passport.deserializeUser( function ( id, done ) {
  *
  * Respond with the login page
  */
-router.get( '/login', _csrf, function ( req, res ) {
-    res.render( 'login', { loginToken: req.csrfToken() } );
-});
+router.get( '/login',
+    _csrf,
+    function ( req, res, next ) {
+        if ( req.isAuthenticated() ) {
+            req.session.message = "Already logged in.";
+            res.redirect( '/' );
+        }
+        next();
+    },
+    function ( req, res ) {
+        res.render( 'login', {
+            'loginToken': req.csrfToken(),
+            'error': req.flash( 'error' )
+        });
+    });
 
 
 /*
@@ -64,9 +76,9 @@ router.post( '/login',
     _csrf,
     passport.authenticate( 'local', {
         'successRedirect': '/',
-        'failureRedirect': '/login'
-    })
-);
+        'failureRedirect': '/login',
+        'failureFlash': true
+    }));
 
 
 

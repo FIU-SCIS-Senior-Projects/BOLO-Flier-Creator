@@ -12,6 +12,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var expressSession = require('express-session');
+var flash = require('connect-flash');
 var logger = require('morgan');
 var methodOverride = require('method-override');
 
@@ -57,6 +58,7 @@ app.use( expressSession({
      */
 }));
 
+app.use( flash() );
 app.use( auth.passport.initialize() );
 app.use( auth.passport.session() );
 
@@ -64,12 +66,18 @@ app.use( auth.passport.session() );
 /*
  * Routes
  */
+var isAuthenticated = function ( req, res, next ) {
+    if ( ! req.isAuthenticated() ) {
+        res.redirect( '/login' );
+    }
+    next();
+};
 app.use( express.static( path.join( __dirname, 'public' ) ) );
 app.use( '/', auth.router );
-app.use( '/bolo', routes.bolos );
+app.use( '/bolo', isAuthenticated, routes.bolos );
 // app.use( '/agency', routes.agency );
 // app.use( "/users", routes.agency );
-app.get( '/', function ( req, res ) { res.render( 'index' ); } );
+app.get( '/', isAuthenticated, function ( req, res ) { res.render( 'index' ); } );
 
 
 /*
