@@ -7,10 +7,8 @@ var path = require('path');
 var Promise = require('promise');
 var router = require('express').Router();
 
-var cloudant = require('../lib/cloudant-connection.js');
-
 var core_dir = path.resolve( __dirname + '../../../core/' );
-var ClientAccessPort = require( path.join( core_dir, 'ports/client-access-port') );
+var BoloService = require( path.join( core_dir, 'service/bolo-service') );
 var AdapterFactory = require( path.join( core_dir, 'adapters' ) );
 
 //gets current time; useful for bolo creation and update
@@ -31,8 +29,6 @@ function getDateTime() {
     day = (day < 10 ? "0" : "") + day;
     return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
 }
-var clientAccess = new ClientAccessPort();
-var cloudantAdapter = AdapterFactory.create('storage', 'cloudant');
 
 
 function setBoloData(fields) {
@@ -77,7 +73,7 @@ function parseFormData ( req ) {
         .on( 'field', function ( field, value ) { fields[field] = value; })
         .on( 'file',  function ( name, file )   { files.push( file ); });
         /* TODO
-         * ClientAccessPort expect files to be in a specific structure.
+         * BoloService expect files to be in a specific structure.
          * Filter the type of file and structure files accordingly.
          * format := { image: [], video: [], audio: [] }
          */
@@ -95,9 +91,9 @@ router.get('/create', function (req, res) {
 
 //create a BOLO report
 router.post('/create', function(req, res) {
-    var storageAdapter = AdapterFactory.create( 'storage', 'cloudant' );
-    var mediaAdapter = AdapterFactory.create( 'media', 'ibm-object-storage' );
-    var clientAccess = new ClientAccessPort( storageAdapter, mediaAdapter );
+    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
+    var boloService = new BoloService( storageAdapter, mediaAdapter );
 
     var imagePathFilter = function ( item ) { return item.path; };
 
@@ -108,7 +104,7 @@ router.post('/create', function(req, res) {
         return Promise.all([ bolodata, paths ]);
     })
     .then( function ( _data ) {
-        return clientAccess.createBolo( _data[0], { image: _data[1] } );
+        return boloService.createBolo( _data[0], { image: _data[1] } );
     })
     .then( function ( _res ) {
         res.send( _res );
@@ -119,9 +115,9 @@ router.post('/create', function(req, res) {
 
 });
 router.post('/edit/:id', function (req, res) {
-    var storageAdapter = AdapterFactory.create('storage', 'cloudant');
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage');
-    var clientAccess = new ClientAccessPort(storageAdapter, mediaAdapter);
+    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
+    var boloService = new BoloService(storageAdapter, mediaAdapter);
 
     var imagePathFilter = function (item) {
         return item.path;
@@ -136,12 +132,12 @@ router.post('/edit/:id', function (req, res) {
             return Promise.all([bolodata, paths]);
         })
         .then(function (_data) {
-            clientAccess.createBolo(_data[0], {
+            boloService.createBolo(_data[0], {
                 image: _data[1]
             });
         })
         .then(function (_res) {
-            clientAccess.getBolos()
+            boloService.getBolos()
                 .then(function (bolos) {
                     res.render('bolo-list', {
                         bolos: bolos
@@ -155,11 +151,11 @@ router.post('/edit/:id', function (req, res) {
 });
 
 router.get('', function (req, res) {
-    var storageAdapter = AdapterFactory.create('storage', 'cloudant');
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage');
-    var clientAccess = new ClientAccessPort(storageAdapter, mediaAdapter);
+    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
+    var boloService = new BoloService(storageAdapter, mediaAdapter);
 
-    clientAccess.getBolos()
+    boloService.getBolos()
         .then(function (bolos) {
             res.render('bolo-list', {
                 bolos: bolos
@@ -169,11 +165,11 @@ router.get('', function (req, res) {
 
 router.get('/edit/:id', function (req, res) {
 
-    var storageAdapter = AdapterFactory.create('storage', 'cloudant');
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage');
-    var clientAccess = new ClientAccessPort(storageAdapter, mediaAdapter);
+    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
+    var boloService = new BoloService(storageAdapter, mediaAdapter);
 
-    clientAccess.getBolo(req.params.id)
+    boloService.getBolo(req.params.id)
         .then(function (bolo) {
             res.render('create-bolo-form', {
                 bolo: bolo
@@ -185,83 +181,21 @@ router.get('/edit/:id', function (req, res) {
 });
 //deletes a bolo
 router.post('/delete/:id', function (req, res) {
-    var storageAdapter = AdapterFactory.create('storage', 'cloudant');
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage');
-    var clientAccess = new ClientAccessPort(storageAdapter, mediaAdapter);
+    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
+    var boloService = new BoloService(storageAdapter, mediaAdapter);
 
     var bolo;
-    clientAccess.getBolo(req.params.id)
+    boloService.getBolo(req.params.id)
         .then(function (result) {
             this.bolo = result;
         })
         .then(function (_res) {
-            clientAccess.removeBolo(bolo._id, bolo._rev);
+            boloService.removeBolo(bolo._id, bolo._rev);
         })
         .catch(function (_error) {
 
         });
-});
-
-//updates a field in a bolo
-router.put('', function (req, res) {
-
-    var fliers = cloudant.db.use('bolo_fliers');
-
-    fliers.get("bolo" + req.query.boloID, function (err, bolo) {
-
-        if (err) {
-            res.json({
-                Result: 'Failure',
-                Message: 'Bolo not found'
-            });
-        } else {
-            var revisionID = bolo._rev;
-            var boloID = bolo.boloID;
-            console.log("Updating bolo with ID#" + bolo.boloID + "\n");
-            fliers.insert({
-                _rev: revisionID,
-                lastUpdate: getDateTime(),
-                category: req.body.category,
-                imageURL: req.body.imageURL,
-                videoLink: req.body.videoLink,
-                firstName: req.body.fName,
-                lastName: req.body.lName,
-                dob: req.body.dob,
-                dlNumber: req.body.dlNumber,
-                race: req.body.race,
-                sex: req.body.sex,
-                height: req.body.height,
-                weight: req.body.weight,
-                hairColor: req.body.hairColor,
-                tattoos: req.body.tattoos,
-                address: req.body.address,
-                additional: req.body.additional,
-                summary: req.body.summary,
-                agency: req.body.agency
-            }, "bolo" + req.query.boloID, function (err, doc) {
-                //TODO: fix code below
-                //if user creation failed, log the error and return a message
-                if (err) {
-                    console.log(err);
-                    res.json({
-                        Result: 'Failure',
-                        Message: 'Unable to find BOLO'
-                    });
-                } else {
-                    //if it succeeded, inform the user
-                    console.log("Updated BOLO with ID#" + req.query.boloID);
-
-                    res.json({
-                        Result: 'Success',
-                        Message: 'BOLO Successfully Updated.',
-                        boloID: req.query.boloID
-                    });
-                }
-
-            }); //end flier update
-
-        }
-    }); //end flier.get currentUserCount
 });
 
 
