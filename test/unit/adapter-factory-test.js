@@ -43,7 +43,7 @@ describe('adapter factory', function () {
         // register need mocks
         mockery.registerMock( 'fs', fsMock );
         mockery.registerMock(
-            path.join( src_dir, 'core/adapters/storage/file-storage-adapter.js' ),
+            path.join( src_dir, 'core/adapters/storage/file' ),
             mockAdapter
         );
 
