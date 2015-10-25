@@ -84,31 +84,18 @@ CloudantBoloRepository.prototype.delete = function ( id ) {
 };
 
 CloudantBoloRepository.prototype.getBolos = function () {
-    return new Promise(function (fulfill, reject) {
-        db.db.list({
-            include_docs: true
-        }, function (err, body) {
-            if (err) {
-                reject(err);
-            } else {
-                fulfill(body.rows);
-            }
+    return db.list( { include_docs: true } )
+        .then( function ( result ) {
+            return Promise.resolve( result.rows );
         });
-    });
-
 };
 
 CloudantBoloRepository.prototype.getBolo = function (id) {
-    return new Promise(function (fulfill, reject) {
-        db.db.get(id, function (err, body) {
-            if (err) {
-                reject(err);
-            } else {
+    return db.get(id)
+        .then( function ( result ) {
                 var bolo = new Bolo();
-                fulfill(_.defaultsDeep(bolo, body));
-            }
+                return Promise.resolve(_.defaultsDeep(bolo, result));
         });
-    });
 };
 
 
