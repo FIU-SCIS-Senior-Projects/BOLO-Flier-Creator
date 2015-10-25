@@ -3,7 +3,7 @@
 
 var Promise = require('promise');
 
-var cloudant = require('../../lib/cloudant-connection');
+var db = require('../../lib/cloudant-promise').db.use('bolo');
 var User = require('../../domain/user.js');
 
 var DOCTYPE = 'user';
@@ -92,50 +92,6 @@ CloudantUserRepository.prototype.remove = function ( id ) {
         });
 };
 
-
-var bolodb = cloudant.db.use('bolo');
-
-/*
- * Wrapper for the cloudant db methods which take advantage of Promises.
- */
-var db = {
-    'insert' : function ( doc ) {
-        return new Promise( function ( resolve, reject ) {
-            bolodb.insert( doc, function ( err, body ) {
-                if ( !err ) resolve( body );
-                reject( err );
-            });
-        });
-    },
-
-    'get' : function ( docname ) {
-        return new Promise( function ( resolve, reject ) {
-            bolodb.get( docname, function ( err, body ) {
-                if ( !err ) resolve( body );
-                reject( err );
-            });
-        });
-    },
-
-    'destroy' : function ( docname, rev ) {
-        return new Promise( function ( resolve, reject ) {
-            bolodb.destroy( docname, rev, function ( err, body ) {
-                if ( !err ) resolve( body );
-                reject( err );
-            });
-        });
-    },
-
-    'view' : function ( designname, viewname, params ) {
-        if ( !params ) params = null;
-        return new Promise( function ( resolve, reject ) {
-            bolodb.view( designname, viewname, params, function ( err, body ) {
-                if ( !err ) resolve( body );
-                reject( err );
-            });
-        });
-    }
-};
 
 /**
  * Transform the user doc to a suitable format for the User entity object.
