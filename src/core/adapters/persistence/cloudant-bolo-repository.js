@@ -3,7 +3,6 @@
 
 var _ = require('lodash');
 var Promise = require('promise');
-var toArray = require('stream-to-array');
 
 var db = require('../../lib/cloudant-promise').db.use('bolo');
 var Bolo = require('../../domain/bolo.js');
@@ -39,6 +38,37 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
 };
 
 /**
+ * Updata a BOLO in the BOLO respository
+ *
+ * @param {Bolo} - the bolo to update
+ */
+CloudantBoloRepository.prototype.update = function ( bolo ) {
+    var tmpBolo = new Bolo( bolo.data );
+
+    return db.get( tmpBolo.data.id )
+        .then( function ( data ) {
+            tmpBolo.data._rev = data._rev;
+            tmpBolo.data._id = data._id;
+            tmpBolo.data.Type = DOCTYPE;
+
+            return db.insert( tmpBolo.data );
+        })
+        .then( function ( response ) {
+            if ( !response.ok ) throw new Error( 'Unable to update BOLO' );
+
+            delete tmpBolo.data._id;
+            delete tmpBolo.data._rev;
+            delete tmpBolo.data.Type;
+
+            return Promise.resolve( tmpBolo );
+        })
+        .catch( function ( error ) {
+            return Promise.reject( error );
+        });
+};
+
+
+/**
  * Delete a bolo from the bolo repository.
  *
  * @param {String} - The id of the bolo to delete
@@ -55,7 +85,7 @@ CloudantBoloRepository.prototype.delete = function ( id ) {
 
 CloudantBoloRepository.prototype.getBolos = function () {
     return new Promise(function (fulfill, reject) {
-        db.list({
+        db.db.list({
             include_docs: true
         }, function (err, body) {
             if (err) {
@@ -70,7 +100,7 @@ CloudantBoloRepository.prototype.getBolos = function () {
 
 CloudantBoloRepository.prototype.getBolo = function (id) {
     return new Promise(function (fulfill, reject) {
-        db.get(id, function (err, body) {
+        db.db.get(id, function (err, body) {
             if (err) {
                 reject(err);
             } else {

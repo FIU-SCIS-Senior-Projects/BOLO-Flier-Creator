@@ -116,32 +116,26 @@ router.post('/create', function(req, res) {
 
 router.post('/edit/:id', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(boloRepository, mediaAdapter);
+    var boloService = new BoloService(boloRepository);
 
     var imagePathFilter = function (item) {
         return item.path;
     };
 
-    parseFormData(req)
-        .then(function (_data) {
-            var bolodata = setBoloData(_data.fields);
-            var paths = _data.files.map(function (f) {
-                return f.path;
-            });
-            return Promise.all([bolodata, paths]);
-        })
-        .then(function (_data) {
-            return boloService.createBolo(_data[0], {
-                image: _data[1]
-            });
-        })
-        .then(function (_res) {
-            res.redirect('/bolo');
-        })
-        .catch(function (_error) {
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+    parseFormData( req )
+    .then( function ( _data ) {
+        var bolodata = setBoloData( _data.fields );
+        return Promise.all([ bolodata, _data.files ]);
+    })
+    .then( function ( _data ) {
+        return boloService.createBolo( _data[0], _data[1] );
+    })
+    .then( function ( _res ) {
+        res.redirect( '/bolo' );
+    })
+    .catch( function ( _error ) {
+        res.status( 500 ).send( 'something wrong happened...', _error.stack );
+    });
 
 });
 

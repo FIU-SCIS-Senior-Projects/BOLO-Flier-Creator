@@ -48,6 +48,20 @@ BoloService.prototype.createBolo = function ( boloData, attachments ) {
         });
 };
 
+BoloService.prototype.updateBolo = function ( boloData, attachments ) {
+    var bolo = new Bolo( boloData );
+
+    if ( ! bolo.isValid() ) throw new Error( "invalid bolo data" );
+
+    return this.boloRepository.update( bolo )
+        .then( function ( value ) {
+            return Promise.resolve( { success: true } );
+        })
+        .catch( function ( error ) {
+            return Promise.resolve( { success: false, error: error.message } );
+        });
+};
+
 /**
  * Retrieve a collection of bolos
  */
