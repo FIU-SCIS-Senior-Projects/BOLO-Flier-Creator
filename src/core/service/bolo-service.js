@@ -6,21 +6,21 @@ var Promise = require('promise');
 
 
 /** @module core/ports */
-module.exports = ClientAccessPort;
+module.exports = BoloService;
 
 
 /**
- * Creates a new instance of {ClientAccessPort}.
+ * Creates a new instance of {BoloService}.
  *
  * @class
  * @classdesc Provides an API for client adapters to interact with user facing
  * functionality.
  *
- * @param {StorageAdapter} - Object implementing the Storage Port Interface.
+ * @param {BoloRepository} - Object implementing the Storage Port Interface.
  * @param {MediaAdapter} - Object implementing the Media Port Interface.
  */
-function ClientAccessPort ( storageAdapter, mediaAdapter ) {
-    this.storageAdapter = storageAdapter;
+function BoloService ( boloRepository, mediaAdapter ) {
+    this.boloRepository = boloRepository;
     this.mediaAdapter = mediaAdapter;
 }
 
@@ -32,10 +32,10 @@ function ClientAccessPort ( storageAdapter, mediaAdapter ) {
  * @param {object} attachments - BOLO Attachments
  *                               valid keys = { image, video, audio }
  */
-ClientAccessPort.prototype.createBolo = function ( boloData, attachments ) {
+BoloService.prototype.createBolo = function ( boloData, attachments ) {
     var bolo = new Bolo( boloData );
     var promise;
-    var that = this;
+    var context = this;
 
     promise = processAttachments( attachments, bolo, this.mediaAdapter );
 
@@ -43,14 +43,31 @@ ClientAccessPort.prototype.createBolo = function ( boloData, attachments ) {
         .then( function ( value ) {
             // TODO Include a reason why its invalid ( wrong field? )
             if ( ! bolo.isValid() ) throw new Error( "invalid bolo data" );
-            return that.storageAdapter.insert( bolo.data );
+            return context.boloRepository.insert( bolo.data );
         })
         .then( function ( value ) {
-            return { success: true };
+            return Promise.resolve( { success: true } );
         })
         .catch( function ( error ) {
-            return { success: false, error: error.message };
+            return Promise.resolve( { success: false, error: error.message } );
         });
+};
+
+/**
+ * Retrieve a collection of bolos
+ */
+BoloService.prototype.getBolos = function () {
+    var ctx = this;
+    return ctx.boloRepository.getBolos();
+};
+
+BoloService.prototype.getBolo = function (id) {
+    var ctx = this;
+    return ctx.boloRepository.getBolo(id);
+};
+
+BoloService.prototype.removeBolo = function ( id ) {
+    return this.boloRepository.delete( id );
 };
 
 
@@ -91,21 +108,3 @@ function processAttachments( attachments, bolo, mediaAdapter ) {
 
     return Promise.all( [ putImages, putVideos, putAudio ] );
 }
-
-/**
- * Retrieve a collection of bolos
- */
-ClientAccessPort.prototype.getBolos = function () {
-    var ctx = this;
-    return ctx.storageAdapter.getBolos();
-};
-
-ClientAccessPort.prototype.getBolo = function (id) {
-    var ctx = this;
-    return ctx.storageAdapter.getBolo(id);
-};
-
-ClientAccessPort.prototype.removeBolo = function (id, rev, callback, storageAdapter) {
-    var ctx = this;
-    return ctx.storageAdapter.removeBolo(id, rev);
-};

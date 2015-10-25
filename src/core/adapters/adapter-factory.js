@@ -20,14 +20,12 @@ var path = require('path');
  */
 exports.create = function ( port, adapter ) {
     var AdapterObject;
-    var adapterFile = [adapter, port, 'adapter.js'].join('-');
-    var adapterPath = path.join( __dirname, port, adapterFile );
+    var adapterPath = path.join( __dirname, port, adapter );
 
     try {
         AdapterObject = require( adapterPath );
     }
     catch ( e ) {
-        console.log(e);
         throw new Error(
             "Adapter does not exist: " +  adapterPath
         );

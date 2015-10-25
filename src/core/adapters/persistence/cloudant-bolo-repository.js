@@ -7,18 +7,18 @@ var Bolo = require('../../domain/bolo.js');
 var db = cloudant.db.use('bolo');
 var Promise = require('promise');
 
-module.exports = CloudantStorageAdapter;
+module.exports = CloudantBoloRepository;
 
 
 /**
- * Create a new CloudantStorageAdapter object.
+ * Create a new CloudantBoloRepository object.
  *
  * @class
  * @memberof module:core/adapters
  * @classdesc Implements the interface for a Storage Port to expose operations
  * which interact with th Cloudant Database service.
  */
-function CloudantStorageAdapter () {
+function CloudantBoloRepository () {
     // constructor stub
 }
 
@@ -28,13 +28,13 @@ function CloudantStorageAdapter () {
  *
  * @param {Object} - Data to store
  */
-CloudantStorageAdapter.prototype.insert = function ( data ) {
+CloudantBoloRepository.prototype.insert = function ( data ) {
     db.insert(data, function (err, body) {
         if (err) console.log("cloudant-storage-adapter error: " + err);
     });
 };
 
-CloudantStorageAdapter.prototype.getBolos = function () {
+CloudantBoloRepository.prototype.getBolos = function () {
     return new Promise(function (fulfill, reject) {
         db.list({
             include_docs: true
@@ -49,7 +49,7 @@ CloudantStorageAdapter.prototype.getBolos = function () {
 
 };
 
-CloudantStorageAdapter.prototype.getBolo = function (id) {
+CloudantBoloRepository.prototype.getBolo = function (id) {
     return new Promise(function (fulfill, reject) {
         db.get(id, function (err, body) {
             if (err) {
@@ -62,14 +62,15 @@ CloudantStorageAdapter.prototype.getBolo = function (id) {
     });
 };
 
-CloudantStorageAdapter.prototype.removeBolo = function (id, rev) {
-    return new Promise(function (fulfill, reject) {
-        db.destroy(id, rev, function (err, body) {
-            if (err) {
-                reject(err);
-            } else {
-                fulfill(body);
-            }
+CloudantBoloRepository.prototype.delete = function ( id ) {
+    return this.getBolo( id )
+        .then( function ( body ) {
+            db.destroy(body._id, body._rev, function (err, body) {
+                if (err) {
+                    Promise.reject( err );
+                } else {
+                    Promise.resolve( body.ok );
+                }
+            });
         });
-    });
 };

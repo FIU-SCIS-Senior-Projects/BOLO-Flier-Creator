@@ -34,7 +34,7 @@ $('.delete-bolo').click(function (bolo) {
         url: "/bolo/delete/" + id,
         method:"POST"
     }).done(function () {
-        alert("Done");
+        window.location.assign( window.location.href );
     });
 });
 

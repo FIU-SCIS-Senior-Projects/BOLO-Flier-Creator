@@ -9,9 +9,9 @@ var router = require('express').Router();
 var LocalStrategy = require('passport-local').Strategy;
 
 var core = path.resolve( __dirname, '../../core' );
-var UserService = require( path.join( core, 'ports/user-service-port' ) );
+var UserService = require( path.join( core, 'service/user-service' ) );
 var AdapterFactory = require( path.join( core, 'adapters' ) );
-var userRepository = AdapterFactory.create( 'storage', 'cloudant-user' );
+var userRepository = AdapterFactory.create( 'persistence', 'cloudant-user-repository' );
 var userService = new UserService( userRepository );
 
 var _csrf = csrf({ 'cookie': true });

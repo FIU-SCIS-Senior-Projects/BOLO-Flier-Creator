@@ -8,7 +8,7 @@ var path = require('path');
 var Promise = require('promise');
 
 var src = path.resolve( __dirname, '../../src' );
-var UserService = require( path.join( src, 'core/ports/user-service-port' ) );
+var UserService = require( path.join( src, 'core/service/user-service' ) );
 var UserFixture = require( '../lib/user-entity-fixture' );
 
 

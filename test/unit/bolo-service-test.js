@@ -16,10 +16,7 @@ var Promise = require('promise');
 
 /* Base Project Paths */
 var src_dir = path.join( __dirname, '../../src' );
-
-
-/* Unit Under Test */
-var ClientAccess = require( path.join( src_dir, 'core/ports/client-access-port.js' ) );
+var BoloService = require( path.join( src_dir, 'core/service/bolo-service' ) );
 
 
 /* Fixtures */
@@ -85,7 +82,7 @@ describe('client access port module', function () {
     });
 
     beforeEach( function () {
-        clientAccess = new ClientAccess( mockStorageAdapter, mockMediaAdapter );
+        clientAccess = new BoloService( mockStorageAdapter, mockMediaAdapter );
     });
 
     afterEach( function () {
