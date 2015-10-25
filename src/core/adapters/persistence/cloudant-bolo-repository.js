@@ -1,14 +1,15 @@
 /* jshint node: true */
 'use strict';
 
-var cloudant = require('../../lib/cloudant-connection.js');
 var _ = require('lodash');
-var Bolo = require('../../domain/bolo.js');
-var db = cloudant.db.use('bolo');
 var Promise = require('promise');
 
-module.exports = CloudantBoloRepository;
+var db = require('../../lib/cloudant-promise').db.use('bolo');
+var Bolo = require('../../domain/bolo.js');
 
+var DOCTYPE = 'bolo';
+
+module.exports = CloudantBoloRepository;
 
 /**
  * Create a new CloudantBoloRepository object.
@@ -28,10 +29,37 @@ function CloudantBoloRepository () {
  *
  * @param {Object} - Data to store
  */
-CloudantBoloRepository.prototype.insert = function ( data ) {
-    db.insert(data, function (err, body) {
-        if (err) console.log("cloudant-storage-adapter error: " + err);
-    });
+CloudantBoloRepository.prototype.insert = function ( bolo ) {
+    var newbolo = new Bolo( bolo.data );
+    newbolo.data.Type = DOCTYPE;
+
+    return db.insert( newbolo.data )
+        .then( function ( response ) {
+            if ( !response.ok ) throw new Error( 'Unable to add BOLO' );
+
+            delete newbolo.data.Type;
+            newbolo.data.id = response.id;
+
+            return Promise.resolve( newbolo );
+        })
+        .catch( function ( error ) {
+            return Promise.reject( error );
+        });
+};
+
+/**
+ * Delete a bolo from the bolo repository.
+ *
+ * @param {String} - The id of the bolo to delete
+ */
+CloudantBoloRepository.prototype.delete = function ( id ) {
+    return db.get( id )
+        .then( function ( bolo ) {
+            return db.destroy( bolo._id, bolo._rev );
+        })
+        .catch( function ( error ) {
+            new Error( 'Failed to delete BOLO: ' + error );
+        });
 };
 
 CloudantBoloRepository.prototype.getBolos = function () {
@@ -60,17 +88,4 @@ CloudantBoloRepository.prototype.getBolo = function (id) {
             }
         });
     });
-};
-
-CloudantBoloRepository.prototype.delete = function ( id ) {
-    return this.getBolo( id )
-        .then( function ( body ) {
-            db.destroy(body._id, body._rev, function (err, body) {
-                if (err) {
-                    Promise.reject( err );
-                } else {
-                    Promise.resolve( body.ok );
-                }
-            });
-        });
 };
