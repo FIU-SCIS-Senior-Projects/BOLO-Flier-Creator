@@ -11,7 +11,6 @@
     "docs": "jsdoc -r -R README.md -d ./jsdoc ./src"
   },
   "dependencies": {
-    "bcrypt": "0.8.x",
     "body-parser": "1.13.2",
     "cfenv": "1.0.x",
     "cloudant": "*",
