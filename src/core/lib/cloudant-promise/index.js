@@ -36,6 +36,16 @@ db_wrapper.get = function ( docname ) {
     });
 };
 
+db_wrapper.list = function ( params ) {
+    var context = this;
+    return new Promise( function ( resolve, reject ) {
+        context.db.list( params, function ( err, body ) {
+            if ( !err ) resolve( body );
+            reject( err );
+        });
+    });
+};
+
 db_wrapper.destroy = function ( docname, rev ) {
     var context = this;
     return new Promise( function ( resolve, reject ) {
