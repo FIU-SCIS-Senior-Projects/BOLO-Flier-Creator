@@ -70,12 +70,16 @@ function parseFormData ( req ) {
         .on( 'error', function ( error )        { reject( error ); })
         .on( 'close', function ( )              { resolve( result ); })
         .on( 'field', function ( field, value ) { fields[field] = value; })
-        .on( 'file',  function ( name, file )   { files.push( file ); });
-        /* TODO
-         * BoloService expect files to be in a specific structure.
-         * Filter the type of file and structure files accordingly.
-         * format := { image: [], video: [], audio: [] }
-         */
+        .on( 'part' , function ( part ) {
+            if ( part.filename ) {
+                files.push({
+                    'name': part.filename,
+                    'content_type': part.headers['content-type'],
+                    'data': part
+                });
+            }
+            part.resume();
+        });
 
         form.parse( req );
     });
@@ -91,19 +95,15 @@ router.get('/create', function (req, res) {
 //create a BOLO report
 router.post('/create', function(req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService( boloRepository, mediaAdapter );
-
-    var imagePathFilter = function ( item ) { return item.path; };
+    var boloService = new BoloService( boloRepository );
 
     parseFormData( req )
     .then( function ( _data ) {
         var bolodata = setBoloData( _data.fields );
-        var paths = _data.files.map( function ( f ) { return f.path; } );
-        return Promise.all([ bolodata, paths ]);
+        return Promise.all([ bolodata, _data.files ]);
     })
     .then( function ( _data ) {
-        return boloService.createBolo( _data[0], { image: _data[1] } );
+        return boloService.createBolo( _data[0], _data[1] );
     })
     .then( function ( _res ) {
         res.send( _res );

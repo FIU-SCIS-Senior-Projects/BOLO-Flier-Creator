@@ -19,9 +19,8 @@ module.exports = BoloService;
  * @param {BoloRepository} - Object implementing the Storage Port Interface.
  * @param {MediaAdapter} - Object implementing the Media Port Interface.
  */
-function BoloService ( boloRepository, mediaAdapter ) {
+function BoloService ( boloRepository ) {
     this.boloRepository = boloRepository;
-    this.mediaAdapter = mediaAdapter;
 }
 
 
@@ -34,17 +33,13 @@ function BoloService ( boloRepository, mediaAdapter ) {
  */
 BoloService.prototype.createBolo = function ( boloData, attachments ) {
     var bolo = new Bolo( boloData );
-    var promise;
-    var context = this;
 
-    promise = processAttachments( attachments, bolo, this.mediaAdapter );
+    if ( ! bolo.isValid() ) {
+        Promise.reject( new Error( "invalid bolo data" ) );
+    }
 
-    return promise
-        .then( function ( value ) {
-            // TODO Include a reason why its invalid ( wrong field? )
-            if ( ! bolo.isValid() ) throw new Error( "invalid bolo data" );
-            return context.boloRepository.insert( bolo );
-        })
+    //return this.boloRepository.insert( bolo, attachments )
+    return this.boloRepository.insert( bolo )
         .then( function ( value ) {
             return Promise.resolve( { success: true } );
         })
@@ -70,41 +65,3 @@ BoloService.prototype.removeBolo = function ( id ) {
     return this.boloRepository.delete( id );
 };
 
-
-/*
- * Helper / Utility Methods
- */
-
-/**
- * Process attachments using the supplied mediaAdapter. Meta received from the
- * mediaAdapter attached to the supplied bolo.
- *
- * @private
- * @param {Object} - object with file type as keys and file paths array as value
- * @param {Bolo} - the bolo to attach meta information to
- * @param {MediaAdapter} - media adapter to store to
- */
-function processAttachments( attachments, bolo, mediaAdapter ) {
-    var at = attachments || { image : [], video: [], audio: [] };
-    var putImages, putVideos, putAudio;
-
-    putImages = mediaAdapter
-        .put( at.image )
-        .then( function ( value ) {
-            return bolo.attachImage( value );
-        });
-
-    putVideos = mediaAdapter
-        .put( at.video )
-        .then( function ( value ) {
-            return bolo.attachVideo( value );
-        });
-
-    putAudio = mediaAdapter
-        .put( at.audio )
-        .then( function ( value ) {
-            return bolo.attachAudio( value );
-        });
-
-    return Promise.all( [ putImages, putVideos, putAudio ] );
-}
