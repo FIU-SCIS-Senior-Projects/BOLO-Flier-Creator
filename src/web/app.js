@@ -77,7 +77,7 @@ app.use( function ( req, res, next ) {
     next();
 });
 app.use( express.static( path.join( __dirname, 'public' ) ) );
-app.use( '/', auth.router );
+app.use( auth.router );
 app.use( '/bolo', isAuthenticated, routes.bolos );
 // app.use( '/agency', routes.agency );
 // app.use( "/users", routes.agency );
