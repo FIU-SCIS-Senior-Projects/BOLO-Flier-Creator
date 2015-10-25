@@ -78,8 +78,6 @@ block content
     +input_textarea("summary", "Summary", "", false, bolo?bolo.summary:"")
         input(name="_id" type="hidden")
     .form-group
-      input(name="_id" type="hidden", value= bolo?bolo._id:"")
-      input(name="_rev" type="hidden", value= bolo?bolo._rev:"")
       button.btn.btn-primary(type="submit" value="save") Submit
       button.btn.btn-default(type="submit" disabled=true value="preview") Preview
       button.btn.btn-default(type="submit" disabled=true value="pdf") PDF

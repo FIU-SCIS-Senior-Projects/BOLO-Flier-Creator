@@ -33,8 +33,7 @@ function getDateTime() {
 
 function setBoloData(fields) {
     return {
-        _id: fields._id || '',
-        _rev: fields._rev || '',
+        id: fields.id || '',
         authorFName: "temp",
         authorLName: "user",
         authorUName: "temp user",
@@ -91,9 +90,9 @@ router.get('/create', function (req, res) {
 
 //create a BOLO report
 router.post('/create', function(req, res) {
-    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService( storageAdapter, mediaAdapter );
+    var boloService = new BoloService( boloRepository, mediaAdapter );
 
     var imagePathFilter = function ( item ) { return item.path; };
 
@@ -114,10 +113,11 @@ router.post('/create', function(req, res) {
     });
 
 });
+
 router.post('/edit/:id', function (req, res) {
-    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(storageAdapter, mediaAdapter);
+    var boloService = new BoloService(boloRepository, mediaAdapter);
 
     var imagePathFilter = function (item) {
         return item.path;
@@ -132,17 +132,12 @@ router.post('/edit/:id', function (req, res) {
             return Promise.all([bolodata, paths]);
         })
         .then(function (_data) {
-            boloService.createBolo(_data[0], {
+            return boloService.createBolo(_data[0], {
                 image: _data[1]
             });
         })
         .then(function (_res) {
-            boloService.getBolos()
-                .then(function (bolos) {
-                    res.render('bolo-list', {
-                        bolos: bolos
-                    });
-                });
+            res.redirect('/bolo');
         })
         .catch(function (_error) {
             res.status(500).send('something wrong happened...', _error.stack);
@@ -151,9 +146,9 @@ router.post('/edit/:id', function (req, res) {
 });
 
 router.get('', function (req, res) {
-    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(storageAdapter, mediaAdapter);
+    var boloService = new BoloService(boloRepository, mediaAdapter);
 
     boloService.getBolos()
         .then(function (bolos) {
@@ -165,9 +160,9 @@ router.get('', function (req, res) {
 
 router.get('/edit/:id', function (req, res) {
 
-    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(storageAdapter, mediaAdapter);
+    var boloService = new BoloService(boloRepository, mediaAdapter);
 
     boloService.getBolo(req.params.id)
         .then(function (bolo) {
@@ -181,20 +176,18 @@ router.get('/edit/:id', function (req, res) {
 });
 //deletes a bolo
 router.post('/delete/:id', function (req, res) {
-    var storageAdapter = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(storageAdapter, mediaAdapter);
+    var boloService = new BoloService(boloRepository, mediaAdapter);
 
-    var bolo;
-    boloService.getBolo(req.params.id)
-        .then(function (result) {
-            this.bolo = result;
-        })
-        .then(function (_res) {
-            boloService.removeBolo(bolo._id, bolo._rev);
+    return boloService.removeBolo( req.params.id )
+        .then( function ( success ) {
+            if ( success ) res.redirect( '/bolo' );
+            throw new Error( "Bolo not deleted. Please try again." );
         })
         .catch(function (_error) {
-
+            /** @todo redirect and send flash message with error */
+            res.status(500).send('something wrong happened...', _error.stack);
         });
 });
 
