@@ -3,6 +3,9 @@
 
 var cloudant = require('cloudant');
 
+var MISSING_CREDENTIALS = 'No Cloudant credentials found';
+var FAILED_CONNECTION = 'Cloudant connection failed';
+
 /* Assume default credentials using dotenv */
 var dbCredentials = {
     "host"      : process.env.CLOUDANT_HOST,
@@ -26,9 +29,12 @@ if ( process.env.VCAP_SERVICES ) {
     }
 }
 
+for ( var key in dbCredentials ) {
+    if ( ! dbCredentials[key] ) throw new Error( MISSING_CREDENTIALS );
+}
+
 var done = function ( error, cloudant ) {
-    if ( error )
-        throw new Error( "Cloudant connection failed: " + error.message );
+    if ( error ) throw new Error( FAILED_CONNECTION + ': ' + error.message );
 };
 
 module.exports = cloudant( dbCredentials, done );
