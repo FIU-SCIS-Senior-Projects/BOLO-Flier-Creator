@@ -43,7 +43,7 @@ BoloService.prototype.createBolo = function ( boloData, attachments ) {
         .then( function ( value ) {
             // TODO Include a reason why its invalid ( wrong field? )
             if ( ! bolo.isValid() ) throw new Error( "invalid bolo data" );
-            return context.boloRepository.insert( bolo.data );
+            return context.boloRepository.insert( bolo );
         })
         .then( function ( value ) {
             return Promise.resolve( { success: true } );
