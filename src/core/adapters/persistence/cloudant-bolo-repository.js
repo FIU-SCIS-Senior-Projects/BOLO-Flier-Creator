@@ -84,7 +84,7 @@ CloudantBoloRepository.prototype.delete = function ( id ) {
 };
 
 CloudantBoloRepository.prototype.getBolos = function () {
-    return db.list( { include_docs: true } )
+    return db.view( 'bolo', 'all_active', { include_docs: true } )
         .then( function ( result ) {
             return Promise.resolve( result.rows );
         });
