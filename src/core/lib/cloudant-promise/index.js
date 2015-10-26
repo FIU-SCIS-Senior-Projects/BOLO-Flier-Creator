@@ -26,6 +26,16 @@ db_wrapper.insert = function ( doc ) {
     });
 };
 
+db_wrapper.insertMultipart = function ( doc, attachments, params ) {
+    var context = this;
+    return new Promise( function ( resolve, reject ) {
+        context.db.multipart.insert( doc, attachments, params, function ( err, body ) {
+            if ( !err ) resolve( body );
+            reject( err );
+        });
+    });
+};
+
 db_wrapper.get = function ( docname ) {
     var context = this;
     return new Promise( function ( resolve, reject ) {
