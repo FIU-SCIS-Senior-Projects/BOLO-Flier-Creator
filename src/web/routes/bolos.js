@@ -2,6 +2,7 @@
 'use strict';
 
 /* Module Dependencies */
+var fs = require('fs');
 var multiparty = require('multiparty');
 var path = require('path');
 var Promise = require('promise');
@@ -62,33 +63,34 @@ function setBoloData(fields) {
 function parseFormData ( req ) {
     return new Promise( function ( resolve, reject ) {
         var form = new multiparty.Form();
-        var files = [],
-            fields = {};
+        var files = [];
+        var fields = {};
         var result = { 'files': files, 'fields': fields };
 
-        form
-        .on( 'error', function ( error )        { reject( error ); })
-        .on( 'close', function ( )              { resolve( result ); })
-        .on( 'field', function ( field, value ) { fields[field] = value; })
-        .on( 'part' , function ( part ) {
-            if ( part.filename ) {
-                files.push({
-                    'name': part.filename,
-                    'content_type': part.headers['content-type'],
-                    'data': part
-                });
-            }
-            part.resume();
+        form.on( 'error', function ( error ) { reject( error ); } );
+        form.on( 'close', function () { resolve( result ); } );
+
+        form.on( 'field', function ( field, value ) { fields[field] = value; } );
+        form.on( 'file' , function ( name, file) {
+            files.push({
+                'name': file.originalFilename,
+                'content_type': file.headers['content-type'],
+                'path': file.path
+            });
         });
 
         form.parse( req );
     });
 }
 
+function cleanTemporaryFiles ( files ) {
+    files.forEach( function ( file ) {
+        fs.unlink( file.path );
+    });
+}
 
 // render the bolo create form
 router.get('/create', function (req, res) {
-/** @todo Take a look to this later*/
     res.render( 'create-bolo-form' );
 });
 
