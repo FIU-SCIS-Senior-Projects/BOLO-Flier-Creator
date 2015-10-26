@@ -69,10 +69,8 @@ app.use( auth.passport.session() );
  * Routes
  */
 var isAuthenticated = function ( req, res, next ) {
-    if ( ! req.isAuthenticated() ) {
-        res.redirect( '/login' );
-    }
-    next();
+    if ( req.isAuthenticated() ) next();
+    res.redirect( '/login' );
 };
 app.use( function ( req, res, next ) {
     if ( req.user ) res.locals.userLoggedIn = true;
