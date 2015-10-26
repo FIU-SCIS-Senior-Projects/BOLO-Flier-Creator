@@ -29,7 +29,6 @@ function BoloService ( boloRepository ) {
  *
  * @param {object} boloData - Data for the new BOLO
  * @param {object} attachments - BOLO Attachments
- *                               valid keys = { image, video, audio }
  */
 BoloService.prototype.createBolo = function ( boloData, attachments ) {
     var bolo = new Bolo( boloData );
@@ -38,13 +37,12 @@ BoloService.prototype.createBolo = function ( boloData, attachments ) {
         Promise.reject( new Error( "invalid bolo data" ) );
     }
 
-    //return this.boloRepository.insert( bolo, attachments )
-    return this.boloRepository.insert( bolo )
+    return this.boloRepository.insert( bolo, attachments )
         .then( function ( value ) {
-            return Promise.resolve( { success: true } );
+            return value;
         })
         .catch( function ( error ) {
-            return Promise.resolve( { success: false, error: error.message } );
+            throw new Error( 'Unable to create BOLO.' );
         });
 };
 
@@ -58,7 +56,7 @@ BoloService.prototype.updateBolo = function ( boloData, attachments ) {
             return Promise.resolve( { success: true } );
         })
         .catch( function ( error ) {
-            return Promise.resolve( { success: false, error: error.message } );
+            return Promise.reject( { success: false, error: error.message } );
         });
 };
 
