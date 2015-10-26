@@ -51,8 +51,6 @@ CloudantBoloRepository.prototype.update = function ( bolo ) {
             tmpBolo.data._id = data._id;
             tmpBolo.data.Type = DOCTYPE;
 
-            console.log( '>>>', tmpBolo );
-
             return db.insert( tmpBolo.data );
         })
         .then( function ( response ) {
@@ -88,7 +86,14 @@ CloudantBoloRepository.prototype.delete = function ( id ) {
 CloudantBoloRepository.prototype.getBolos = function () {
     return db.view( 'bolo', 'all_active', { include_docs: true } )
         .then( function ( result ) {
-            return Promise.resolve( result.rows );
+            var bolos = result.rows.map( function ( item ) {
+                var bolo = new Bolo( item.doc );
+                bolo.data.id = bolo.data._id;
+                delete bolo.data._id;
+                delete bolo.data._rev;
+                return bolo;
+            });
+            return Promise.resolve( bolos );
         });
 };
 
@@ -141,8 +146,6 @@ function insertBoloWithAttachments ( bolo, attachments ) {
             newbolo.data.id = response.id;
 
             var promises = [];
-
-            console.log( attachments );
 
             attachments.forEach( function ( att ) {
                 promises.push( insertAttachment( response.id, att ) );
