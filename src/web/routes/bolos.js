@@ -137,8 +137,7 @@ router.post('/edit/:id', function (req, res) {
 
 router.get('', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(boloRepository, mediaAdapter);
+    var boloService = new BoloService(boloRepository);
 
     boloService.getBolos()
         .then(function (bolos) {
@@ -166,13 +165,14 @@ router.get('/edit/:id', function (req, res) {
 //deletes a bolo
 router.post('/delete/:id', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(boloRepository, mediaAdapter);
+    var boloService = new BoloService(boloRepository);
 
     return boloService.removeBolo( req.params.id )
         .then( function ( success ) {
-            if ( success ) res.redirect( '/bolo' );
-            throw new Error( "Bolo not deleted. Please try again." );
+            if ( !success ) {
+                throw new Error( "Bolo not deleted. Please try again." );
+            }
+            res.redirect( '/bolo' );
         })
         .catch(function (_error) {
             /** @todo redirect and send flash message with error */
