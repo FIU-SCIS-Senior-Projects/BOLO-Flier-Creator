@@ -106,7 +106,7 @@ router.post('/create', function(req, res) {
         return boloService.createBolo( _data[0], _data[1] );
     })
     .then( function ( _res ) {
-        res.send( _res );
+        res.redirect( '/bolo ');
     })
     .catch( function ( _error ) {
         res.status( 500 ).send( 'something wrong happened...', _error.stack );
