@@ -114,11 +114,7 @@ CloudantBoloRepository.prototype.getBolos = function () {
     return db.view( 'bolo', 'all_active', { include_docs: true } )
         .then( function ( result ) {
             var bolos = result.rows.map( function ( item ) {
-                var bolo = new Bolo( item.doc );
-                bolo.data.id = bolo.data._id;
-                delete bolo.data._id;
-                delete bolo.data._rev;
-                return bolo;
+                return boloFromCloudant( item.doc );
             });
             return Promise.resolve( bolos );
         });
