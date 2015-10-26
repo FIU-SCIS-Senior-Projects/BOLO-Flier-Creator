@@ -70,7 +70,7 @@ app.use( auth.passport.session() );
  */
 var isAuthenticated = function ( req, res, next ) {
     if ( req.isAuthenticated() ) next();
-    res.redirect( '/login' );
+    else res.redirect( '/login' );
 };
 app.use( function ( req, res, next ) {
     if ( req.user ) res.locals.userLoggedIn = true;

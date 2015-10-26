@@ -15,7 +15,30 @@ The current application stack consists of:
 
 ## How to use
 
-Not much here yet.  Stay tuned!
+This app is designed to be used in a Node.js environment. Version 3 of the BOLO
+Flier Creator is designed to be used in conjunction with the Bluemix PaaS and
+CloudFoundry.
+
+### Using on Bluemix with CloudFoundry
+
+**tl;dr** Add the Cloudant service to your Bluemix, create a manifest.yml file,
+connect your CloudFoundry CLI to the Bluemix API, push your app via the `cf
+push` command.
+
+**Steps**
+
+1. Add the Cloudant service to your Bluemix account:
+    * Reference the [Bluemix Cloudant
+      docs](https://cloudant.com/cloudant-ibm-bluemix-tutorials-and-demos/) for
+      detailed instruction.
+2. Create a `manifest.yml` file using the included manifest.yml.sample file in
+   the project.
+    * Make sure to remove the `.sample` extension from the filename.
+3. Connect your CloudFoundry CLI to the Bluemix API.
+    * Reference the [Bluemix CF CLI
+      docs](https://www.ng.bluemix.net/docs/starters/install_cli.html) for
+      detailed instructions.
+4. Push your app: `cf push`
 
 
 ## Development Notes
