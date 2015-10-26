@@ -89,7 +89,7 @@ function parseFormData ( req ) {
 // render the bolo create form
 router.get('/create', function (req, res) {
 /** @todo Take a look to this later*/
-    res.render('create-bolo-form', {bolo:undefined});
+    res.render( 'create-bolo-form' );
 });
 
 //create a BOLO report
