@@ -94,26 +94,26 @@ router.get('/create', function (req, res) {
     res.render( 'create-bolo-form' );
 });
 
-//create a BOLO report
+// process bolo creation user form input
 router.post('/create', function(req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var boloService = new BoloService( boloRepository );
 
     parseFormData( req )
-    .then( function ( _data ) {
-        var bolodata = setBoloData( _data.fields );
-        return Promise.all([ bolodata, _data.files ]);
+    .then( function ( formDTO ) {
+        var boloDTO = setBoloData( formDTO.fields );
+        var result = boloService.createBolo( boloDTO, formDTO.files );
+        return Promise.all([ result, formDTO ]);
     })
-    .then( function ( _data ) {
-        return boloService.createBolo( _data[0], _data[1] );
-    })
-    .then( function ( _res ) {
-        res.redirect( '/bolo ');
+    .then( function ( pData ) {
+        if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+        res.redirect( '/bolo' );
     })
     .catch( function ( _error ) {
-        res.status( 500 ).send( 'something wrong happened...', _error.stack );
+        /** @todo send back form data with error message */
+        console.error( '>>> create bolo route error: ', _error );
+        res.redirect( '/bolo/create' );
     });
-
 });
 
 router.post('/edit/:id', function (req, res) {
