@@ -9,6 +9,41 @@ var Bolo = require('../../domain/bolo.js');
 
 var DOCTYPE = 'bolo';
 
+/**
+ * Transform the bolo doc to a suitable format for the Bolo entity object.
+ *
+ * @param {Object} - the doc to transform to a bolo
+ * @returns {Bolo} - a bolo in the generic Bolo entity format
+ * @private
+ */
+function boloFromCloudant( bolo_doc ) {
+    var bolo = new Bolo( bolo_doc );
+
+    bolo.id = bolo._id;
+    delete bolo._id;
+    delete bolo._rev;
+    delete bolo.Type;
+
+    return bolo;
+}
+
+/**
+ * Transform the bolo to a format suitable for cloudant.
+ *
+ * @param {Bolo} - the bolo to transform
+ * @returns {Object} - an object suitable for Cloudant
+ * @private
+ */
+function boloToCloudant( bolo ) {
+    var doc = _.assign( {}, bolo.data );
+
+    doc.Type = DOCTYPE;
+    doc._id = doc.id;
+    delete doc.id;
+
+    return doc;
+}
+
 module.exports = CloudantBoloRepository;
 
 /**
