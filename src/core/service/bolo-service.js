@@ -71,8 +71,8 @@ BoloService.prototype.getBolos = function () {
 };
 
 BoloService.prototype.getBolo = function (id) {
-    var ctx = this;
-    return ctx.boloRepository.getBolo(id);
+    var context = this;
+    return context.boloRepository.getBolo(id);
 };
 
 BoloService.prototype.removeBolo = function ( id ) {
