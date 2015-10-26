@@ -78,24 +78,16 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
  * @param {Bolo} - the bolo to update
  */
 CloudantBoloRepository.prototype.update = function ( bolo ) {
-    var tmpBolo = new Bolo( bolo.data );
+    var newdoc = boloToCloudant( bolo );
 
-    return db.get( tmpBolo.data.id )
-        .then( function ( data ) {
-            tmpBolo.data._rev = data._rev;
-            tmpBolo.data._id = data._id;
-            tmpBolo.data.Type = DOCTYPE;
-
-            return db.insert( tmpBolo.data );
+    return db.get( bolo.data.id )
+        .then( function ( doc ) {
+            newdoc._rev = doc._rev;
+            return db.insert( newdoc );
         })
         .then( function ( response ) {
             if ( !response.ok ) throw new Error( 'Unable to update BOLO' );
-
-            delete tmpBolo.data._id;
-            delete tmpBolo.data._rev;
-            delete tmpBolo.data.Type;
-
-            return Promise.resolve( tmpBolo );
+            return Promise.resolve( boloFromCloudant( newdoc ) );
         })
         .catch( function ( error ) {
             return Promise.reject( error );
@@ -212,3 +204,4 @@ function insertAttachment ( docname, attachment ) {
 
     attachment.data.resume();
 }
+
