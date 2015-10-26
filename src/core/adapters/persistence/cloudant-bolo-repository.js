@@ -44,6 +44,32 @@ function boloToCloudant( bolo ) {
     return doc;
 }
 
+/**
+ * Transform attachment DTOs to the Cloudant attachment DTO fomat
+ *
+ * @param {Object} - an attachment DTO
+ * @returns {Promise|Object} - Promise resolving to the transformed DTO
+ * @private
+ */
+function transformAttachment ( original ) {
+    var readFile = Promise.denodeify( fs.readFile );
+
+    var createDTO = function ( readBuffer ) {
+        return {
+            'name': original.name,
+            'content_type': original.content_type,
+            'data': readBuffer
+        };
+    };
+
+    var errorHandler = function ( error ) {
+        var msg = 'Failed to open attachment file path: ' + original.path;
+        throw new Error( msg );
+    };
+
+    return readFile( original.path ).then( createDTO, errorHandler );
+}
+
 module.exports = CloudantBoloRepository;
 
 /**
