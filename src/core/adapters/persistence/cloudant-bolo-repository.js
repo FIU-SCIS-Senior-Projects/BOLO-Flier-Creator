@@ -19,10 +19,10 @@ var DOCTYPE = 'bolo';
 function boloFromCloudant( bolo_doc ) {
     var bolo = new Bolo( bolo_doc );
 
-    bolo.id = bolo._id;
-    delete bolo._id;
-    delete bolo._rev;
-    delete bolo.Type;
+    bolo.data.id = bolo.data._id;
+    delete bolo.data._id;
+    delete bolo.data._rev;
+    delete bolo.data.Type;
 
     return bolo;
 }
