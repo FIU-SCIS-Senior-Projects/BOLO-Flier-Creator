@@ -27,7 +27,7 @@ function boloFromCloudant( bolo_doc ) {
     delete bolo.data.Type;
 
     if ( bolo.data._attachments ) {
-        bolo.data.attachments = attachmentsFromCloudant( bolo.data._attachments );
+        bolo.data.attachments = bolo.data._attachments;
         delete bolo.data._attachments;
     }
 
@@ -82,12 +82,18 @@ function transformAttachment ( original ) {
         };
     };
 
-    var errorHandler = function ( error ) {
+    var readFileErrorHandler = function ( error ) {
         var msg = 'Failed to open attachment file path: ' + original.path;
         throw new Error( msg );
     };
 
-    return readFile( original.path ).then( createDTO, errorHandler );
+    return readFile( original.path ).then( createDTO, readFileErrorHandler );
+}
+
+function createAgencyBoloID ( agencyName ) {
+    var prefix = agencyName.toLowerCase().replace( /\s*/g, '' );
+    var id = uuid.v4().replace( /-/g, '' );
+    return prefix + '_' + id;
 }
 
 module.exports = CloudantBoloRepository;
@@ -109,30 +115,39 @@ function CloudantBoloRepository () {
  * Insert data on the Cloudant Database
  *
  * @param {Object} - Data to store
+ * @param {Array|Object} - Optional array of attachment DTOs containing the
+ * 'name', 'content_type', and 'path' keys.
  */
 CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
+    var context = this;
+    var atts = attachments || [];
+
     var newdoc = boloToCloudant( bolo );
-    newdoc._id = newdoc.agency.toLowerCase().replace( /\s*/g, '' ) + '_' +
-        uuid.v4().replace( /-/g, '' );
+    var docID = createAgencyBoloID( newdoc.agency );
 
-    if ( !attachments ) attachments = [];
+    var handleBoloInsert = function ( attDTOs ) {
+        if ( attDTOs.length ) {
+            return db.insertMultipart( newdoc, attDTOs, docID );
+        } else {
+            newdoc._id = docID;
+            return db.insert( newdoc );
+        }
+    };
 
-    return Promise.all( attachments.map( transformAttachment ) )
-        .then( function ( attDTOs ) {
-            if ( attDTOs.length ) {
-                return db.insertMultipart( newdoc, attDTOs, newdoc._id );
-            } else {
-                return db.insert( newdoc, newdoc._id );
-            }
-        })
-        .then( function ( response ) {
-            if ( !response.ok ) throw new Error( response.error );
-            newdoc._id = response.id;
-            return boloFromCloudant( newdoc );
-        })
-        .catch( function ( error ) {
-            return new Error( 'Unable to create new bolo: ', error.reason );
-        });
+    var handleInsertResponse = function ( response ) {
+        if ( !response.ok ) handleInsertErrorResponse( response.reason );
+        return context.getBolo( response.id );
+    };
+
+    var handleInsertErrorResponse= function ( error ) {
+        return new Error(
+            'Unable to create new document: ' + error.reason
+        );
+    };
+
+    return Promise.all( atts.map( transformAttachment ) )
+        .then( handleBoloInsert )
+        .then( handleInsertResponse, handleInsertErrorResponse );
 };
 
 
@@ -196,14 +211,8 @@ CloudantBoloRepository.prototype.getBolos = function () {
 
 CloudantBoloRepository.prototype.getBolo = function (id) {
     return db.get(id)
-        .then( function ( result ) {
-            var bolo = new Bolo( result );
-
-            bolo.data.id = bolo.data._id;
-            delete bolo.data._id;
-            delete bolo.data._rev;
-
-            return Promise.resolve( bolo );
+        .then( function ( bolo_doc ) {
+            return boloFromCloudant( bolo_doc );
         });
 };
 
