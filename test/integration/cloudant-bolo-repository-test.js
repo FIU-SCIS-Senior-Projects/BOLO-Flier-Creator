@@ -200,7 +200,9 @@ describe( 'BOLO Repository Storage Adapter', function () {
             /* assert */
             return promise
                 .then( function ( response ) {
-                    expect( response ).to.be.instanceOf( Buffer );
+                    expect( response.name ).to.be.equal( 'suspect.png' );
+                    expect( response.content_type ).to.be.equal( 'image/png' );
+                    expect( response.data ).to.be.instanceOf( Buffer );
                 });
         });
     }); /* end describe: #getAttachment method */
