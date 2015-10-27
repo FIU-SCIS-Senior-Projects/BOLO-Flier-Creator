@@ -75,6 +75,23 @@ describe( 'BOLO Repository Storage Adapter', function () {
         });
     }); /* end describe: #insert method */
 
+    describe( '#update method' , function () {
+        it( 'promises to return an updated bolo', function () {
+            /* act */
+            var updatePromise = boloRepository.insert( bolo )
+                .then( function ( currentBolo ) {
+                    currentBolo.data.category = 'some category';
+                    return boloRepository.update( currentBolo );
+                });
+
+            /* assert */
+            return updatePromise
+                .then( function ( updatedBolo ) {
+                    expect( bolo.diff( updatedBolo ) ).to.contain( 'category' );
+                });
+        });
+    }); /* end describe: #update method */
+
     describe( '#delete method', function () {
         it( 'promises an error if the bolo id is not found', function () {
             /* act */
