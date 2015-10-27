@@ -172,4 +172,36 @@ describe( 'BOLO Repository Storage Adapter', function () {
                 });
         });
     }); /* end describe: #delete method */
+
+    describe( '#getAttachment method', function () {
+        it( 'promises an attachment', function () {
+            var boloWithAttachment = imageFactory.create( 'suspect' )
+                .then( function ( imageFixturePath ) {
+                    return [{
+                        'name': 'suspect.png',
+                        'content_type': 'image/png',
+                        'path': imageFixturePath
+                    }];
+                })
+                .then( function ( attachments ) {
+                    return boloRepository.insert( bolo, attachments );
+                })
+                .then( function ( newbolo ) {
+                    cache[newbolo.data.id] = newbolo;
+                    return newbolo;
+                });
+
+            /* act */
+            var promise = boloWithAttachment
+                .then( function ( theBolo ) {
+                    return boloRepository.getAttachment( theBolo.data.id, 'suspect.png' );
+                });
+
+            /* assert */
+            return promise
+                .then( function ( response ) {
+                    expect( response ).to.be.instanceOf( Buffer );
+                });
+        });
+    }); /* end describe: #getAttachment method */
 });
