@@ -15,7 +15,7 @@ require('dotenv').config({ path: path.resolve( __dirname, '../../.env' ) });
 
 describe( 'BOLO Repository Storage Adapter', function () {
     var boloRepository;
-    var bolo, insertedBolos = [];
+    var bolo, cache;
     var imageFactory;
 
     this.timeout( 5000 );
@@ -26,10 +26,13 @@ describe( 'BOLO Repository Storage Adapter', function () {
         imageFactory = new FileFixtureFactory(
             path.resolve( __dirname, '../assets/nodejs.png' )
         );
+
+        cache = {};
     });
 
     after( function () {
-        return Promise.all( insertedBolos.map( boloRepository.delete ) );
+
+        return Promise.all( Object.keys( cache ).map( boloRepository.delete ) );
     });
 
     beforeEach( function () {
@@ -46,7 +49,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
                 .then( function ( newbolo ) {
                     expect( bolo.diff( newbolo ) ).to.be.length( 1 )
                         .and.to.contain( 'id' );
-                    insertedBolos.push( newbolo.data.id );
+                    cache[newbolo.data.id] = newbolo;
                 });
         });
 
@@ -71,7 +74,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
             return boloPromise
                 .then( function ( newbolo ) {
                     expect( newbolo.data.attachments['suspect.png'] ).to.exist;
-                    insertedBolos.push( newbolo.data.id );
+                    cache[newbolo.data.id] = newbolo;
                 });
         });
     }); /* end describe: #insert method */
@@ -81,14 +84,13 @@ describe( 'BOLO Repository Storage Adapter', function () {
             /* arrange */
             var originalBoloPromise = boloRepository.insert( bolo )
                 .then( function ( insertedBolo ) {
-                    insertedBolos.push( insertedBolo );
+                    cache[insertedBolo.data.id] = insertedBolo;
                     return insertedBolo;
                 });
 
             /* act */
             var updatedBoloPromise = originalBoloPromise
                 .then( function ( currentBolo ) {
-                    insertedBolos.push( currentBolo.data.id );
                     currentBolo.data.category = 'some category';
                     return boloRepository.update( currentBolo );
                 });
@@ -102,8 +104,6 @@ describe( 'BOLO Repository Storage Adapter', function () {
 
         it( 'does not clobber attached images on update', function () {
             /* arrange */
-            var cache;
-
             var boloWithAttachment = imageFactory.create( 'suspect' )
                 .then( function ( imageFixturePath ) {
                     return [{
@@ -115,24 +115,25 @@ describe( 'BOLO Repository Storage Adapter', function () {
                 .then( function ( attachments ) {
                     return boloRepository.insert( bolo, attachments );
                 })
-                .then( function ( bolo ) {
-                    insertedBolos.push( bolo.data.id );
-                    return bolo;
+                .then( function ( newbolo ) {
+                    cache[newbolo.data.id] = newbolo;
+                    return newbolo;
                 });
 
             /* act */
             var promise = boloWithAttachment
-                .then( function ( currentBolo ) {
-                    cache = currentBolo;
-                    currentBolo.data.summary = 'some new summary';
-                    return boloRepository.update( currentBolo );
+                .then( function ( original ) {
+                    original.data.summary = 'some new summary';
+                    return boloRepository.update( original );
                 });
 
             /* assert */
             return promise
-                .then( function ( updatedBolo ) {
-                    expect( updatedBolo.data.attachments ).to.deep.equal( cache.data.attachments );
-                    expect( bolo.diff( updatedBolo ) ).to.contain( 'summary' );
+                .then( function ( updated ) {
+                    var original = cache[updated.data.id];
+                    expect( bolo.diff( updated ) ).to.contain( 'summary' );
+                    expect( updated.data.attachments )
+                        .to.deep.equal( original.data.attachments );
                 });
         });
     }); /* end describe: #update method */
@@ -170,5 +171,5 @@ describe( 'BOLO Repository Storage Adapter', function () {
                     expect( response.id ).to.be.equal( insertedBoloID );
                 });
         });
-    });
+    }); /* end describe: #delete method */
 });
