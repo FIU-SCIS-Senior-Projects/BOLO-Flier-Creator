@@ -128,7 +128,7 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
             return Promise.resolve( boloFromCloudant( newdoc ) );
         })
         .catch( function ( error ) {
-            console.error( 'Cloudant insert error: ', error );
+            console.error( 'Cloudant insert error: ', error.reason );
             throw new Error( 'Cloudant encountered an error inserting a document' );
         });
 };
