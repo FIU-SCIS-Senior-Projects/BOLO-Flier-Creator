@@ -16,11 +16,16 @@ require('dotenv').config({ path: path.resolve( __dirname, '../../.env' ) });
 describe( 'BOLO Repository Storage Adapter', function () {
     var boloRepository;
     var bolo, insertedBolos = [];
+    var imageFactory;
 
     this.timeout( 5000 );
 
     before( function () {
         boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+
+        imageFactory = new FileFixtureFactory(
+            path.resolve( __dirname, '../assets/nodejs.png' )
+        );
     });
 
     after( function () {
@@ -47,10 +52,6 @@ describe( 'BOLO Repository Storage Adapter', function () {
 
         it( 'promises to return a new bolo with attachments', function () {
             /* arrange */
-            var imageFactory = new FileFixtureFactory(
-                path.resolve( __dirname, '../assets/nodejs.png' )
-            );
-
             var attachmentDTO = imageFactory.create( 'suspect' )
                 .then( function ( imageFixturePath ) {
                     return [{
@@ -96,6 +97,42 @@ describe( 'BOLO Repository Storage Adapter', function () {
             return updatedBoloPromise
                 .then( function ( updatedBolo ) {
                     expect( bolo.diff( updatedBolo ) ).to.contain( 'category' );
+                });
+        });
+
+        it( 'does not clobber attached images on update', function () {
+            /* arrange */
+            var cache;
+
+            var boloWithAttachment = imageFactory.create( 'suspect' )
+                .then( function ( imageFixturePath ) {
+                    return [{
+                        'name': 'suspect.png',
+                        'content_type': 'image/png',
+                        'path': imageFixturePath
+                    }];
+                })
+                .then( function ( attachments ) {
+                    return boloRepository.insert( bolo, attachments );
+                })
+                .then( function ( bolo ) {
+                    insertedBolos.push( bolo.data.id );
+                    return bolo;
+                });
+
+            /* act */
+            var promise = boloWithAttachment
+                .then( function ( currentBolo ) {
+                    cache = currentBolo;
+                    currentBolo.data.summary = 'some new summary';
+                    return boloRepository.update( currentBolo );
+                });
+
+            /* assert */
+            return promise
+                .then( function ( updatedBolo ) {
+                    expect( updatedBolo.data.attachments ).to.deep.equal( cache.data.attachments );
+                    expect( bolo.diff( updatedBolo ) ).to.contain( 'summary' );
                 });
         });
     }); /* end describe: #update method */
