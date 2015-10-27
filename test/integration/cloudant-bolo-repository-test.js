@@ -26,19 +26,21 @@ describe( 'BOLO Repository Storage Adapter', function () {
         bolo = BoloFixture.create();
     });
 
-    it( 'promises to #insert a bolo into the repository', function () {
-        /* act */
-        var boloPromise = boloRepository.insert( bolo );
+    describe( '#insert method repository method', function () {
+        it( 'promises to return the bolo', function () {
+            /* act */
+            var boloPromise = boloRepository.insert( bolo );
 
-        /* assert */
-        return boloPromise
-            .then( function ( newbolo ) {
-                expect( bolo.diff( newbolo ) ).to.be.length( 1 )
-                    .and.to.contain( 'id' );
-                insertedBoloID = newbolo.data.id;
-            });
-    });
+            /* assert */
+            return boloPromise
+                .then( function ( newbolo ) {
+                    expect( bolo.diff( newbolo ) ).to.be.length( 1 )
+                        .and.to.contain( 'id' );
+                    insertedBoloID = newbolo.data.id;
+                });
+        });
 
+    }); /* end describe: #insert method */
 
     describe( '#delete method', function () {
         it( 'promises an error if the bolo id is not found', function () {
