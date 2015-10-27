@@ -112,24 +112,26 @@ function CloudantBoloRepository () {
  */
 CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
     var newdoc = boloToCloudant( bolo );
-    newdoc._id = newdoc.agency + uuid.v4().toString();
+    newdoc._id = newdoc.agency.toLowerCase().replace( /\s*/g, '' ) + '_' +
+        uuid.v4().replace( /-/g, '' );
+
+    if ( !attachments ) attachments = [];
 
     return Promise.all( attachments.map( transformAttachment ) )
         .then( function ( attDTOs ) {
             if ( attDTOs.length ) {
                 return db.insertMultipart( newdoc, attDTOs, newdoc._id );
             } else {
-                return db.insert( newdoc );
+                return db.insert( newdoc, newdoc._id );
             }
         })
         .then( function ( response ) {
             if ( !response.ok ) throw new Error( response.error );
             newdoc._id = response.id;
-            return Promise.resolve( boloFromCloudant( newdoc ) );
+            return boloFromCloudant( newdoc );
         })
         .catch( function ( error ) {
-            console.error( 'Cloudant insert error: ', error.reason );
-            throw new Error( 'Cloudant encountered an error inserting a document' );
+            return new Error( 'Unable to create new bolo: ', error.reason );
         });
 };
 
@@ -194,11 +196,4 @@ CloudantBoloRepository.prototype.getBolo = function (id) {
             return Promise.resolve( bolo );
         });
 };
-
-
-/*
- *
- * Helper Methods
- *
- */
 
