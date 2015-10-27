@@ -15,12 +15,16 @@ require('dotenv').config({ path: path.resolve( __dirname, '../../.env' ) });
 
 describe( 'BOLO Repository Storage Adapter', function () {
     var boloRepository;
-    var bolo, insertedBoloID;
+    var bolo, insertedBolos = [];
 
     this.timeout( 5000 );
 
     before( function () {
         boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    });
+
+    after( function () {
+        return Promise.all( insertedBolos.map( boloRepository.delete ) );
     });
 
     beforeEach( function () {
@@ -37,7 +41,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
                 .then( function ( newbolo ) {
                     expect( bolo.diff( newbolo ) ).to.be.length( 1 )
                         .and.to.contain( 'id' );
-                    insertedBoloID = newbolo.data.id;
+                    insertedBolos.push( newbolo.data.id );
                 });
         });
 
@@ -66,6 +70,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
             return boloPromise
                 .then( function ( newbolo ) {
                     expect( newbolo.data.attachments['suspect.png'] ).to.exist;
+                    insertedBolos.push( newbolo.data.id );
                 });
         });
     }); /* end describe: #insert method */
@@ -86,8 +91,15 @@ describe( 'BOLO Repository Storage Adapter', function () {
         });
 
         it( 'promises the id and ok status', function () {
+            /* arrange */
+            var insertedBoloID;
+
             /* act */
-            var responsePromise = boloRepository.delete( insertedBoloID );
+            var responsePromise = boloRepository.insert( bolo )
+                .then( function ( newbolo ) {
+                    insertedBoloID = newbolo.data.id;
+                    return boloRepository.delete( insertedBoloID );
+                });
 
             /* assert */
             return responsePromise
