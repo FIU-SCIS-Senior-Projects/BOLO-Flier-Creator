@@ -9,6 +9,7 @@ var Promise = require('promise');
 var src = path.resolve( __dirname, '../../src' );
 var BoloFixture = require('../lib/bolo-entity-fixture');
 var AdapterFactory = require( path.join( src, 'core/adapters') );
+var FileFixtureFactory = require('../lib/file-fixture-factory.js');
 
 require('dotenv').config({ path: path.resolve( __dirname, '../../.env' ) });
 
@@ -40,6 +41,33 @@ describe( 'BOLO Repository Storage Adapter', function () {
                 });
         });
 
+        it( 'promises to return a new bolo with attachments', function () {
+            /* arrange */
+            var imageFactory = new FileFixtureFactory(
+                path.resolve( __dirname, '../assets/nodejs.png' )
+            );
+
+            var attachmentDTO = imageFactory.create( 'suspect' )
+                .then( function ( imageFixturePath ) {
+                    return [{
+                        'name': 'suspect.png',
+                        'content_type': 'image/png',
+                        'path': imageFixturePath
+                    }];
+                });
+
+            /* act */
+            var boloPromise = attachmentDTO
+                .then( function ( attachments ) {
+                    return boloRepository.insert( bolo, attachments );
+                });
+
+            /* assert */
+            return boloPromise
+                .then( function ( newbolo ) {
+                    expect( newbolo.data.attachments['suspect.png'] ).to.exist;
+                });
+        });
     }); /* end describe: #insert method */
 
     describe( '#delete method', function () {
