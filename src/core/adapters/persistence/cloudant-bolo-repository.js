@@ -26,6 +26,11 @@ function boloFromCloudant( bolo_doc ) {
     delete bolo.data._rev;
     delete bolo.data.Type;
 
+    if ( bolo.data._attachments ) {
+        bolo.data.attachments = attachmentsFromCloudant( bolo.data._attachments );
+        delete bolo.data._attachments;
+    }
+
     return bolo;
 }
 
@@ -44,6 +49,19 @@ function boloToCloudant( bolo ) {
     delete doc.id;
 
     return doc;
+}
+
+/**
+ * Transform an _attachments object from Cloudant into the format expected by
+ * the Bolo object.
+ */
+function attachmentsFromCloudant ( attachments ) {
+    return Object.keys( attachments ).map( function ( key ) {
+        return {
+            'name': key,
+            'content_type': attachments[key].content_type
+        };
+    });
 }
 
 /**
