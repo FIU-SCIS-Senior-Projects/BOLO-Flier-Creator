@@ -221,3 +221,6 @@ CloudantBoloRepository.prototype.getBolo = function (id) {
         });
 };
 
+CloudantBoloRepository.prototype.getAttachment = function ( id, attname ) {
+    return db.getAttachment( id, attname );
+};
