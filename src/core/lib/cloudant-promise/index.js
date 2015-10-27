@@ -46,6 +46,16 @@ db_wrapper.get = function ( docname ) {
     });
 };
 
+db_wrapper.getAttachment = function ( docname, attname, params ) {
+    var context = this;
+    return new Promise( function ( resolve, reject ) {
+        context.db.attachment.get( docname, attname, params, function ( err, body ) {
+            if ( !err ) resolve( body );
+            reject( err );
+        });
+    });
+};
+
 db_wrapper.list = function ( params ) {
     var context = this;
     return new Promise( function ( resolve, reject ) {
