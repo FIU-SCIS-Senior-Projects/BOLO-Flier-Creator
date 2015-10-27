@@ -63,7 +63,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
             return responsePromise
                 .then( function ( response ) {
                     expect( response.ok ).to.be.true;
-                    expect( response.id ).to.be.equal( );
+                    expect( response.id ).to.be.equal( insertedBoloID );
                 });
         });
     });
