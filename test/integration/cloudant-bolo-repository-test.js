@@ -77,15 +77,23 @@ describe( 'BOLO Repository Storage Adapter', function () {
 
     describe( '#update method' , function () {
         it( 'promises to return an updated bolo', function () {
+            /* arrange */
+            var originalBoloPromise = boloRepository.insert( bolo )
+                .then( function ( insertedBolo ) {
+                    insertedBolos.push( insertedBolo );
+                    return insertedBolo;
+                });
+
             /* act */
-            var updatePromise = boloRepository.insert( bolo )
+            var updatedBoloPromise = originalBoloPromise
                 .then( function ( currentBolo ) {
+                    insertedBolos.push( currentBolo.data.id );
                     currentBolo.data.category = 'some category';
                     return boloRepository.update( currentBolo );
                 });
 
             /* assert */
-            return updatePromise
+            return updatedBoloPromise
                 .then( function ( updatedBolo ) {
                     expect( bolo.diff( updatedBolo ) ).to.contain( 'category' );
                 });
