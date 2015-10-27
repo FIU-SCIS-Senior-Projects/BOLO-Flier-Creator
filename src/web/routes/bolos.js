@@ -2,6 +2,7 @@
 'use strict';
 
 /* Module Dependencies */
+var fs = require('fs');
 var multiparty = require('multiparty');
 var path = require('path');
 var Promise = require('promise');
@@ -62,51 +63,73 @@ function setBoloData(fields) {
 function parseFormData ( req ) {
     return new Promise( function ( resolve, reject ) {
         var form = new multiparty.Form();
-        var files = [],
-            fields = {};
+        var files = [];
+        var fields = {};
         var result = { 'files': files, 'fields': fields };
 
-        form
-        .on( 'error', function ( error )        { reject( error ); })
-        .on( 'close', function ( )              { resolve( result ); })
-        .on( 'field', function ( field, value ) { fields[field] = value; })
-        .on( 'file',  function ( name, file )   { files.push( file ); });
-        /* TODO
-         * BoloService expect files to be in a specific structure.
-         * Filter the type of file and structure files accordingly.
-         * format := { image: [], video: [], audio: [] }
-         */
+        form.on( 'error', function ( error ) { reject( error ); } );
+        form.on( 'close', function () { resolve( result ); } );
+
+        form.on( 'field', function ( field, value ) { fields[field] = value; } );
+        form.on( 'file' , function ( name, file) {
+            files.push({
+                'name': file.originalFilename,
+                'content_type': file.headers['content-type'],
+                'path': file.path
+            });
+        });
 
         form.parse( req );
     });
 }
 
+function cleanTemporaryFiles ( files ) {
+    files.forEach( function ( file ) {
+        fs.unlink( file.path );
+    });
+}
 
 // render the bolo create form
 router.get('/create', function (req, res) {
-/** @todo Take a look to this later*/
-    res.render('create-bolo-form', {bolo:undefined});
+    res.render( 'create-bolo-form' );
 });
 
-//create a BOLO report
+// process bolo creation user form input
 router.post('/create', function(req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService( boloRepository, mediaAdapter );
+    var boloService = new BoloService( boloRepository );
 
-    var imagePathFilter = function ( item ) { return item.path; };
+    parseFormData( req )
+    .then( function ( formDTO ) {
+        var boloDTO = setBoloData( formDTO.fields );
+        var result = boloService.createBolo( boloDTO, formDTO.files );
+        return Promise.all([ result, formDTO ]);
+    })
+    .then( function ( pData ) {
+        if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+        res.redirect( '/bolo' );
+    })
+    .catch( function ( _error ) {
+        /** @todo send back form data with error message */
+        console.error( '>>> create bolo route error: ', _error );
+        res.redirect( '/bolo/create' );
+    });
+});
+
+router.post('/edit/:id', function (req, res) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
 
     parseFormData( req )
     .then( function ( _data ) {
         var bolodata = setBoloData( _data.fields );
-        var paths = _data.files.map( function ( f ) { return f.path; } );
-        return Promise.all([ bolodata, paths ]);
+        return Promise.all([ bolodata, _data.files ]);
     })
     .then( function ( _data ) {
-        return boloService.createBolo( _data[0], { image: _data[1] } );
+        return boloService.updateBolo( _data[0], _data[1] );
     })
     .then( function ( _res ) {
-        res.send( _res );
+        res.redirect( '/bolo' );
     })
     .catch( function ( _error ) {
         res.status( 500 ).send( 'something wrong happened...', _error.stack );
@@ -114,41 +137,9 @@ router.post('/create', function(req, res) {
 
 });
 
-router.post('/edit/:id', function (req, res) {
-    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(boloRepository, mediaAdapter);
-
-    var imagePathFilter = function (item) {
-        return item.path;
-    };
-
-    parseFormData(req)
-        .then(function (_data) {
-            var bolodata = setBoloData(_data.fields);
-            var paths = _data.files.map(function (f) {
-                return f.path;
-            });
-            return Promise.all([bolodata, paths]);
-        })
-        .then(function (_data) {
-            return boloService.createBolo(_data[0], {
-                image: _data[1]
-            });
-        })
-        .then(function (_res) {
-            res.redirect('/bolo');
-        })
-        .catch(function (_error) {
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
-
-});
-
 router.get('', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(boloRepository, mediaAdapter);
+    var boloService = new BoloService(boloRepository);
 
     boloService.getBolos()
         .then(function (bolos) {
@@ -161,8 +152,7 @@ router.get('', function (req, res) {
 router.get('/edit/:id', function (req, res) {
 
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(boloRepository, mediaAdapter);
+    var boloService = new BoloService(boloRepository);
 
     boloService.getBolo(req.params.id)
         .then(function (bolo) {
@@ -177,13 +167,14 @@ router.get('/edit/:id', function (req, res) {
 //deletes a bolo
 router.post('/delete/:id', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var mediaAdapter = AdapterFactory.create('media', 'ibm-object-storage-adapter');
-    var boloService = new BoloService(boloRepository, mediaAdapter);
+    var boloService = new BoloService(boloRepository);
 
     return boloService.removeBolo( req.params.id )
         .then( function ( success ) {
-            if ( success ) res.redirect( '/bolo' );
-            throw new Error( "Bolo not deleted. Please try again." );
+            if ( !success ) {
+                throw new Error( "Bolo not deleted. Please try again." );
+            }
+            res.redirect( '/bolo' );
         })
         .catch(function (_error) {
             /** @todo redirect and send flash message with error */

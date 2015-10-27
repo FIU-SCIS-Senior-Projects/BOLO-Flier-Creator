@@ -3,13 +3,14 @@
 
 var expect = require('chai').expect;
 
-var fs = require('fs');
 var path = require('path');
 var Promise = require('promise');
 
-var src = path.resolve( __dirname, '../../src' );
+var src = path.resolve( '../../src' );
 var UserFixture = require('../lib/user-entity-fixture');
 var AdapterFactory = require( path.join( src, 'core/adapters' ) );
+
+require('dotenv').config({ path: path.resolve( '../../.env' ) });
 
 
 /* == Test Spec ============================================================= */
@@ -18,7 +19,7 @@ describe( 'cloudant user storage adapter', function () {
     var userRepository;
 
     before( function () {
-        userRepository = AdapterFactory.create( 'storage', 'cloudant-user' );
+        userRepository = AdapterFactory.create( 'persistence', 'cloudant-user-repository' );
     });
 
     after( function () {

@@ -5,6 +5,7 @@
 #
 jsdoc
 coverage
+manifest.yml
 
 #
 # Node.js Ignores
