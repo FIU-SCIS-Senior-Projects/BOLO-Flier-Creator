@@ -48,6 +48,11 @@ function boloToCloudant( bolo ) {
     doc._id = doc.id;
     delete doc.id;
 
+    if ( bolo.data.attachments ) {
+        doc._attachments = _.assign( {}, bolo.data.attachments );
+        delete doc.attachments;
+    }
+
     return doc;
 }
 
