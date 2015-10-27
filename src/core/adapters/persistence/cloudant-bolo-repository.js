@@ -165,12 +165,22 @@ CloudantBoloRepository.prototype.update = function ( bolo ) {
  * @param {String} - The id of the bolo to delete
  */
 CloudantBoloRepository.prototype.delete = function ( id ) {
+    // **UNDOCUMENTED BEHAVIOR**
+    // cloudant/nano library destroys the database if a null/undefined argument
+    // is passed into the `docname` argument for `db.destroy( docname,
+    // callback)`. It seems that passing null to the object provided by
+    // `db.use( dbname )` creates the equivalent database API requests, i.e.
+    // create/read/delete database.
+    if ( !id ) throw new Error( 'id cannot be null or undefined' );
+
     return db.get( id )
         .then( function ( bolo ) {
             return db.destroy( bolo._id, bolo._rev );
         })
         .catch( function ( error ) {
-            new Error( 'Failed to delete BOLO: ' + error );
+            return new Error(
+                'Failed to delete BOLO: ' + error.error + ' / ' + error.reason
+            );
         });
 };
 
