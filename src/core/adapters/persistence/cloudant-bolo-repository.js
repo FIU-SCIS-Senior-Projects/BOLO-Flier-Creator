@@ -222,5 +222,18 @@ CloudantBoloRepository.prototype.getBolo = function (id) {
 };
 
 CloudantBoloRepository.prototype.getAttachment = function ( id, attname ) {
-    return db.getAttachment( id, attname );
+    var bufferPromise = db.getAttachment( id, attname );
+    var docPromise = db.get( id );
+
+    return Promise.all([ bufferPromise, docPromise ])
+    .then( function ( data ) {
+        var buffer = data[0];
+        var attinfo = data[1]._attachments[attname];
+
+        return {
+            'name': attname,
+            'content_type': attinfo.content_type,
+            'data': buffer
+        };
+    });
 };
