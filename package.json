@@ -22,6 +22,7 @@
     "express": "4.12.x",
     "express-session": "1.7.6",
     "jade": "^1.11.0",
+    "jimp": "^0.2.9",
     "lodash": "^3.10.1",
     "method-override": "2.3.3",
     "morgan": "1.6.1",

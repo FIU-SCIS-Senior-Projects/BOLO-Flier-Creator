@@ -3,6 +3,7 @@
 
 var _ = require('lodash');
 var fs = require('fs');
+var Jimp = require('jimp');
 var Promise = require('promise');
 var uuid = require('node-uuid');
 
@@ -77,7 +78,23 @@ function attachmentsFromCloudant ( attachments ) {
  * @private
  */
 function transformAttachment ( original ) {
-    var readFile = Promise.denodeify( fs.readFile );
+    var jimp = new Promise( function ( resolve, reject ) {
+        new Jimp( original.path, function ( err, image ) {
+            if ( err ) {
+                reject( err );
+            }
+            resolve( image.resize( 400, 400 ) );
+        });
+    });
+
+    var getBuffer = function ( image ) {
+        return new Promise( function ( resolve, reject ) {
+            image.getBuffer( original.content_type, function ( err, buffer ) {
+                if ( err ) reject( err );
+                resolve( buffer );
+            });
+        });
+    };
 
     var createDTO = function ( readBuffer ) {
         return {
@@ -87,12 +104,14 @@ function transformAttachment ( original ) {
         };
     };
 
-    var readFileErrorHandler = function ( error ) {
-        var msg = 'Failed to open attachment file path: ' + original.path;
-        throw new Error( msg );
+    var errorHandler = function ( error ) {
+        throw new Error( 'transformAttachment: ', error );
     };
 
-    return readFile( original.path ).then( createDTO, readFileErrorHandler );
+    return jimp
+        .then( getBuffer )
+        .then( createDTO )
+        .catch( errorHandler );
 }
 
 function createAgencyBoloID ( agencyName ) {
