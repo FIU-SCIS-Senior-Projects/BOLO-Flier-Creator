@@ -31,12 +31,12 @@ describe( 'BOLO Repository Storage Adapter', function () {
     });
 
     after( function () {
-
         return Promise.all( Object.keys( cache ).map( boloRepository.delete ) );
     });
 
     beforeEach( function () {
         bolo = BoloFixture.create();
+        delete bolo.data.id;
     });
 
     describe( '#insert method repository method', function () {
