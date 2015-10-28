@@ -81,3 +81,9 @@ block content
       button.btn.btn-primary(type="submit" value="save") Submit
       button.btn.btn-default(type="submit" disabled=true value="preview") Preview
       button.btn.btn-default(type="submit" disabled=true value="pdf") PDF
+
+  .container
+    h2 Attached Images
+    if bolo && bolo.data.attachments
+        each val,key in bolo.data.attachments
+          a(href="/bolo/" + bolo.data.id + "/asset/" + key)= key
