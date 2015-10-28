@@ -47,7 +47,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
             /* assert */
             return boloPromise
                 .then( function ( newbolo ) {
-                    expect( bolo.diff( newbolo ) ).to.be.length( 1 )
+                    expect( newbolo.diff( bolo ) ).to.be.length( 1 )
                         .and.to.contain( 'id' );
                     cache[newbolo.data.id] = newbolo;
                 });
@@ -98,7 +98,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
             /* assert */
             return updatedBoloPromise
                 .then( function ( updatedBolo ) {
-                    expect( bolo.diff( updatedBolo ) ).to.contain( 'category' );
+                    expect( updatedBolo.diff( bolo ) ).to.contain( 'category' );
                 });
         });
 
@@ -131,7 +131,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
             return promise
                 .then( function ( updated ) {
                     var original = cache[updated.data.id];
-                    expect( bolo.diff( updated ) ).to.contain( 'summary' );
+                    expect( updated.diff( bolo ) ).to.contain( 'summary' );
                     expect( updated.data.attachments )
                         .to.deep.equal( original.data.attachments );
                 });
