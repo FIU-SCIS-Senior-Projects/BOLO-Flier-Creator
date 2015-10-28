@@ -7,6 +7,9 @@ block content
     for bolo in bolos
         div.col-sm-6.col-md-4
             div.thumbnail
+                if bolo.data.attachments
+                    - var keys = Object.keys( bolo.data.attachments )
+                    img(src="/bolo/" + bolo.data.id + "/asset/" + keys[0] alt="")
                 div.caption
                     h3= bolo.data.category
                     p= "Author: " +  bolo.data.firstName + " " +  bolo.data.lastName
