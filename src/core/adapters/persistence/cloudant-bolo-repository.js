@@ -98,7 +98,7 @@ function transformAttachment ( original ) {
 function createAgencyBoloID ( agencyName ) {
     var prefix = agencyName.toLowerCase().replace( /\s*/g, '' );
     var id = uuid.v4().replace( /-/g, '' );
-    return prefix + '_' + id;
+    return prefix.concat( '_', id );
 }
 
 module.exports = CloudantBoloRepository;
@@ -143,8 +143,8 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
         return context.getBolo( response.id );
     };
 
-    var handleInsertErrorResponse= function ( error ) {
-        return new Error(
+    var handleInsertErrorResponse = function ( error ) {
+        throw new Error(
             'Unable to create new document: ' + error.reason
         );
     };
