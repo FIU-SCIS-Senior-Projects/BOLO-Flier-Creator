@@ -27,7 +27,7 @@ function boloFromCloudant( bolo_doc ) {
     delete bolo.data.Type;
 
     if ( bolo.data._attachments ) {
-        bolo.data.attachments = attachmentsFromCloudant( bolo.data._attachments );
+        bolo.data.attachments = bolo.data._attachments;
         delete bolo.data._attachments;
     }
 
@@ -47,6 +47,11 @@ function boloToCloudant( bolo ) {
     doc.Type = DOCTYPE;
     doc._id = doc.id;
     delete doc.id;
+
+    if ( bolo.data.attachments ) {
+        doc._attachments = _.assign( {}, bolo.data.attachments );
+        delete doc.attachments;
+    }
 
     return doc;
 }
@@ -82,12 +87,18 @@ function transformAttachment ( original ) {
         };
     };
 
-    var errorHandler = function ( error ) {
+    var readFileErrorHandler = function ( error ) {
         var msg = 'Failed to open attachment file path: ' + original.path;
         throw new Error( msg );
     };
 
-    return readFile( original.path ).then( createDTO, errorHandler );
+    return readFile( original.path ).then( createDTO, readFileErrorHandler );
+}
+
+function createAgencyBoloID ( agencyName ) {
+    var prefix = agencyName.toLowerCase().replace( /\s*/g, '' );
+    var id = uuid.v4().replace( /-/g, '' );
+    return prefix.concat( '_', id );
 }
 
 module.exports = CloudantBoloRepository;
@@ -109,28 +120,39 @@ function CloudantBoloRepository () {
  * Insert data on the Cloudant Database
  *
  * @param {Object} - Data to store
+ * @param {Array|Object} - Optional array of attachment DTOs containing the
+ * 'name', 'content_type', and 'path' keys.
  */
 CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
-    var newdoc = boloToCloudant( bolo );
-    newdoc._id = newdoc.agency + uuid.v4().toString();
+    var context = this;
+    var atts = attachments || [];
 
-    return Promise.all( attachments.map( transformAttachment ) )
-        .then( function ( attDTOs ) {
-            if ( attDTOs.length ) {
-                return db.insertMultipart( newdoc, attDTOs, newdoc._id );
-            } else {
-                return db.insert( newdoc );
-            }
-        })
-        .then( function ( response ) {
-            if ( !response.ok ) throw new Error( response.error );
-            newdoc._id = response.id;
-            return Promise.resolve( boloFromCloudant( newdoc ) );
-        })
-        .catch( function ( error ) {
-            console.error( 'Cloudant insert error: ', error.reason );
-            throw new Error( 'Cloudant encountered an error inserting a document' );
-        });
+    var newdoc = boloToCloudant( bolo );
+    newdoc._id = createAgencyBoloID( newdoc.agency );
+
+    var handleBoloInsert = function ( attDTOs ) {
+        if ( attDTOs.length ) {
+            return db.insertMultipart( newdoc, attDTOs, newdoc._id );
+        } else {
+            return db.insert( newdoc, newdoc._id );
+        }
+    };
+
+    var handleInsertResponse = function ( response ) {
+        if ( !response.ok ) handleInsertErrorResponse( response.reason );
+        return context.getBolo( response.id );
+    };
+
+    var handleInsertErrorResponse = function ( error ) {
+        throw new Error(
+            'Unable to create new document: ' + error.reason
+        );
+    };
+
+    return Promise.all( atts.map( transformAttachment ) )
+        .then( handleBoloInsert )
+        .then( handleInsertResponse )
+        .catch( handleInsertErrorResponse );
 };
 
 
@@ -163,12 +185,22 @@ CloudantBoloRepository.prototype.update = function ( bolo ) {
  * @param {String} - The id of the bolo to delete
  */
 CloudantBoloRepository.prototype.delete = function ( id ) {
+    // **UNDOCUMENTED BEHAVIOR**
+    // cloudant/nano library destroys the database if a null/undefined argument
+    // is passed into the `docname` argument for `db.destroy( docname,
+    // callback)`. It seems that passing null to the object provided by
+    // `db.use( dbname )` creates the equivalent database API requests, i.e.
+    // create/read/delete database.
+    if ( !id ) throw new Error( 'id cannot be null or undefined' );
+
     return db.get( id )
         .then( function ( bolo ) {
             return db.destroy( bolo._id, bolo._rev );
         })
         .catch( function ( error ) {
-            new Error( 'Failed to delete BOLO: ' + error );
+            return new Error(
+                'Failed to delete BOLO: ' + error.error + ' / ' + error.reason
+            );
         });
 };
 
@@ -184,21 +216,24 @@ CloudantBoloRepository.prototype.getBolos = function () {
 
 CloudantBoloRepository.prototype.getBolo = function (id) {
     return db.get(id)
-        .then( function ( result ) {
-            var bolo = new Bolo( result );
-
-            bolo.data.id = bolo.data._id;
-            delete bolo.data._id;
-            delete bolo.data._rev;
-
-            return Promise.resolve( bolo );
+        .then( function ( bolo_doc ) {
+            return boloFromCloudant( bolo_doc );
         });
 };
 
+CloudantBoloRepository.prototype.getAttachment = function ( id, attname ) {
+    var bufferPromise = db.getAttachment( id, attname );
+    var docPromise = db.get( id );
 
-/*
- *
- * Helper Methods
- *
- */
+    return Promise.all([ bufferPromise, docPromise ])
+    .then( function ( data ) {
+        var buffer = data[0];
+        var attinfo = data[1]._attachments[attname];
 
+        return {
+            'name': attname,
+            'content_type': attinfo.content_type,
+            'data': buffer
+        };
+    });
+};

@@ -77,3 +77,14 @@ BoloService.prototype.removeBolo = function ( id ) {
     return this.boloRepository.delete( id );
 };
 
+/**
+ * Get an attachment for a specified Bolo.
+ *
+ * @param {String} - the id of the bolo
+ * @param {String} - the name of the attachment to get
+ * @returns {Object} - a DTO containing the `name` and `content_type` of the
+ * attachment and also the raw `data` as a {Buffer}
+ */
+BoloService.prototype.getAttachment = function ( id, attname ) {
+    return this.boloRepository.getAttachment( id, attname );
+};

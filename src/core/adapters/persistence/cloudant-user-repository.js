@@ -36,10 +36,10 @@ CloudantUserRepository.prototype.insert = function ( user ) {
             delete newuser.data.Type;
             newuser.data.id = response.id;
 
-            return Promise.resolve( newuser );
+            return newuser;
         })
         .catch( function ( error ) {
-            return Promise.reject( error );
+            return error;
         });
 };
 
@@ -48,7 +48,7 @@ CloudantUserRepository.prototype.getById = function ( id ) {
         .then( function ( data ) {
             if ( !data._id ) throw new Error( data );
             userTransform( data );
-            return Promise.resolve( new User( data ) );
+            return new User( data );
         })
         .catch( function ( error ) {
             return Promise.reject(
@@ -66,12 +66,10 @@ CloudantUserRepository.prototype.getByUsername = function ( id ) {
         .then( function ( found ) {
             if ( !found.rows.length ) return Promise.resolve( null );
             userTransform( found.rows[0].doc );
-            return Promise.resolve( new User( found.rows[0].doc ) );
+            return new User( found.rows[0].doc );
         })
         .catch( function ( error ) {
-            return Promise.reject(
-                new Error( "Failed to get user by username" )
-            );
+            return new Error( "Failed to get user by username" );
         });
 };
 
@@ -86,9 +84,7 @@ CloudantUserRepository.prototype.remove = function ( id ) {
             return db.destroy( user._id, user._rev );
         })
         .catch( function ( error ) {
-            return Promise.reject( 
-                new Error( "Failed to delete user: " + error )
-            );
+            return new Error( "Failed to delete user: " + error );
         });
 };
 

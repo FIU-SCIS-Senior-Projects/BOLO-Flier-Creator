@@ -16,8 +16,9 @@ config_wrapper.use = function ( db_name ) {
     });
 };
 
-db_wrapper.insert = function ( doc ) {
+db_wrapper.insert = function ( doc, params ) {
     var context = this;
+    if ( !params ) params = null;
     return new Promise( function ( resolve, reject ) {
         context.db.insert( doc, function ( err, body ) {
             if ( !err ) resolve( body );
@@ -40,6 +41,16 @@ db_wrapper.get = function ( docname ) {
     var context = this;
     return new Promise( function ( resolve, reject ) {
         context.db.get( docname, function ( err, body ) {
+            if ( !err ) resolve( body );
+            reject( err );
+        });
+    });
+};
+
+db_wrapper.getAttachment = function ( docname, attname, params ) {
+    var context = this;
+    return new Promise( function ( resolve, reject ) {
+        context.db.attachment.get( docname, attname, params, function ( err, body ) {
             if ( !err ) resolve( body );
             reject( err );
         });

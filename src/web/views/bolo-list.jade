@@ -5,14 +5,13 @@ block content
   #bolos
   div.row
     for bolo in bolos
-            div.col-sm-6.col-md-4
-                div.thumbnail
-                    img
-                    div.caption
-                        h3= bolo.data.category
-                        p= "Author: " +  bolo.data.firstName + " " +  bolo.data.lastName
-                        p= bolo.data.enteredDT
-                        p
-                             a.btn.btn-primary(href="/bolo/edit/" + bolo.data.id, role="button") Edit
-                             a.btn.btn-default(href="#", role="button") Details
-                             a.btn.btn-danger(role="button", type="submit" class="delete-bolo", id=bolo.data.id) Delete
+        div.col-sm-6.col-md-4
+            div.thumbnail
+                div.caption
+                    h3= bolo.data.category
+                    p= "Author: " +  bolo.data.firstName + " " +  bolo.data.lastName
+                    p= bolo.data.enteredDT
+                    p
+                         a.btn.btn-primary(href="/bolo/edit/" + bolo.data.id, role="button") Edit
+                         a.btn.btn-default(href="#", role="button") Details
+                         a.btn.btn-danger(role="button", type="submit" class="delete-bolo", id=bolo.data.id) Delete
