@@ -16,8 +16,9 @@ config_wrapper.use = function ( db_name ) {
     });
 };
 
-db_wrapper.insert = function ( doc ) {
+db_wrapper.insert = function ( doc, params ) {
     var context = this;
+    if ( !params ) params = null;
     return new Promise( function ( resolve, reject ) {
         context.db.insert( doc, function ( err, body ) {
             if ( !err ) resolve( body );
