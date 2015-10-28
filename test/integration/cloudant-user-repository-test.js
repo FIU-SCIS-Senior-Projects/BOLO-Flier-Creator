@@ -6,11 +6,11 @@ var expect = require('chai').expect;
 var path = require('path');
 var Promise = require('promise');
 
-var src = path.resolve( '../../src' );
+var src = path.resolve( __dirname, '../../src' );
 var UserFixture = require('../lib/user-entity-fixture');
 var AdapterFactory = require( path.join( src, 'core/adapters' ) );
 
-require('dotenv').config({ path: path.resolve( '../../.env' ) });
+require('dotenv').config({ path: path.resolve( __dirname, '../../.env' ) });
 
 
 /* == Test Spec ============================================================= */
@@ -18,11 +18,10 @@ describe( 'cloudant user storage adapter', function () {
     var user, insertedUserID;
     var userRepository;
 
+    this.timeout( 5000 );
+
     before( function () {
         userRepository = AdapterFactory.create( 'persistence', 'cloudant-user-repository' );
-    });
-
-    after( function () {
     });
 
     beforeEach( function () {
@@ -68,6 +67,9 @@ describe( 'cloudant user storage adapter', function () {
         return userPromise
             .then( function ( found ) {
                 expect( found.data.username ).to.equal( user.data.username );
+            })
+            .catch( function ( error ) {
+                throw error;
             });
     });
 
