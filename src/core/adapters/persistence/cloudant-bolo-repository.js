@@ -128,14 +128,13 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
     var atts = attachments || [];
 
     var newdoc = boloToCloudant( bolo );
-    var docID = createAgencyBoloID( newdoc.agency );
+    newdoc._id = createAgencyBoloID( newdoc.agency );
 
     var handleBoloInsert = function ( attDTOs ) {
         if ( attDTOs.length ) {
-            return db.insertMultipart( newdoc, attDTOs, docID );
+            return db.insertMultipart( newdoc, attDTOs, newdoc._id );
         } else {
-            newdoc._id = docID;
-            return db.insert( newdoc );
+            return db.insert( newdoc, newdoc._id );
         }
     };
 
@@ -152,7 +151,8 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
 
     return Promise.all( atts.map( transformAttachment ) )
         .then( handleBoloInsert )
-        .then( handleInsertResponse, handleInsertErrorResponse );
+        .then( handleInsertResponse )
+        .catch( handleInsertErrorResponse );
 };
 
 
