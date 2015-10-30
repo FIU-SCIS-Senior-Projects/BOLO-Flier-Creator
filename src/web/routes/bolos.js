@@ -186,11 +186,12 @@ router.post('/delete/:id', function (req, res) {
         });
 });
 
-router.get( '/:id/asset/:attname', function ( req, res ) {
+// handle requests for bolo attachments
+router.get( '/asset/:boloid/:attname', function ( req, res ) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var boloService = new BoloService(boloRepository);
 
-    boloService.getAttachment( req.params.id, req.params.attname )
+    boloService.getAttachment( req.params.boloid, req.params.attname )
         .then( function ( attDTO ) {
             res.type( attDTO.content_type );
             res.send( attDTO.data );

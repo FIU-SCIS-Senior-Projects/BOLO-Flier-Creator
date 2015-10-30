@@ -86,4 +86,4 @@ block content
     h2 Attached Images
     if bolo && bolo.data.attachments
         each val,key in bolo.data.attachments
-          a(href="/bolo/" + bolo.data.id + "/asset/" + key)= key
+          a(href="/bolo/asset/" + bolo.data.id + "/" + key)= key

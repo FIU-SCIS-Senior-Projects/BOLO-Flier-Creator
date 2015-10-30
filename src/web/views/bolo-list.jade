@@ -9,7 +9,7 @@ block content
             div.thumbnail
                 if bolo.data.attachments
                     - var keys = Object.keys( bolo.data.attachments )
-                    img(src="/bolo/" + bolo.data.id + "/asset/" + keys[0] alt="")
+                    img(src="/bolo/asset/" + bolo.data.id + "/" + keys[0] alt="")
                 div.caption
                     h3= bolo.data.category
                     p= "Author: " +  bolo.data.firstName + " " +  bolo.data.lastName
