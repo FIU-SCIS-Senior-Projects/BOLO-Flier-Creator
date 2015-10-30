@@ -89,6 +89,19 @@ function cleanTemporaryFiles ( files ) {
     });
 }
 
+// list bolos at the root route
+router.get('/', function (req, res) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+
+    boloService.getBolos()
+        .then(function (bolos) {
+            res.render('bolo-list', {
+                bolos: bolos
+            });
+        });
+});
+
 // render the bolo create form
 router.get('/create', function (req, res) {
     res.render( 'create-bolo-form' );
@@ -116,6 +129,24 @@ router.post('/create', function(req, res) {
     });
 });
 
+// handle requests to edit a specific bolo
+router.get('/edit/:id', function (req, res) {
+
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+
+    boloService.getBolo(req.params.id)
+        .then(function (bolo) {
+            res.render('create-bolo-form', {
+                bolo: bolo
+            });
+        })
+        .catch(function (_error) {
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
+});
+
+// handle requests to process edits on a specific bolo
 router.post('/edit/:id', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var boloService = new BoloService(boloRepository);
@@ -137,35 +168,7 @@ router.post('/edit/:id', function (req, res) {
 
 });
 
-router.get('', function (req, res) {
-    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var boloService = new BoloService(boloRepository);
-
-    boloService.getBolos()
-        .then(function (bolos) {
-            res.render('bolo-list', {
-                bolos: bolos
-            });
-        });
-});
-
-
-router.get('/edit/:id', function (req, res) {
-
-    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
-    var boloService = new BoloService(boloRepository);
-
-    boloService.getBolo(req.params.id)
-        .then(function (bolo) {
-            res.render('create-bolo-form', {
-                bolo: bolo
-            });
-        })
-        .catch(function (_error) {
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
-});
-//deletes a bolo
+// handle requests to delete a specific bolo
 router.post('/delete/:id', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var boloService = new BoloService(boloRepository);
