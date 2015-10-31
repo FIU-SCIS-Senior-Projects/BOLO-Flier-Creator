@@ -3,7 +3,7 @@
 
 var Promise = require('promise');
 
-var db = require('../../lib/cloudant-promise').db.use('bolo');
+var db = require('../../lib/cloudant-promise').db.use('bolo_users');
 var User = require('../../domain/user.js');
 
 var DOCTYPE = 'user';
@@ -64,7 +64,7 @@ CloudantUserRepository.prototype.getByUsername = function ( id ) {
             'include_docs': true
         })
         .then( function ( found ) {
-            if ( !found.rows.length ) return Promise.resolve( null );
+                  if ( !found.rows.length ) return Promise.resolve( null );
             userTransform( found.rows[0].doc );
             return new User( found.rows[0].doc );
         })
