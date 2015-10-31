@@ -1,10 +1,10 @@
 
 applications:
 - services:
-  - Cloudant NoSQL DB-tk
+    - <cloudant-service-name>
   disk_quota: 1024M
-  host: bolo-flyer-creator
-  name: BOLO Flyer Creator
+  host: <bluemix-instance-route>
+  name: <bluemix-app-name>
   path: .
   domain: mybluemix.net
   instances: 1

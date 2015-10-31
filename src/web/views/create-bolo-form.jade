@@ -54,18 +54,18 @@ block content
     ]
 
   //- Actual Form
-  form#create-bolo-form(action=bolo?"/bolo/edit/" + bolo._id:"/bolo/create" enctype="multipart/form-data" method="post")
-    +select_options("bolo_category", "Category", categories, true, bolo?bolo.category:"")
-    +input_mx("fname", "First Name", "", false, bolo?bolo.firstName:"")
-    +input_mx("lname", "Last Name", "", false,  bolo?bolo.lastName:"")
-    +input_mx("dob", "Date of Birth (DD/MM/YYYY)", "DD/MM/YYYY", false,bolo?bolo.dob:"")
-    +input_mx("dl_number", "Drivers License Number", "", false, bolo?bolo.dlNumber:"")
-    +select_options("race", "Race", races, false, bolo?bolo.race:"")
-    +select_options("sex", "Sex", ["Male", "Female"], false, bolo?bolo.sex:"")
-    +input_mx("height", "Height - Feet-Inches (e.g. 05-09)", "e.g. 05-09", false  )
-    +input_mx("weight", "Weight - Pounds", "", false, bolo?bolo.weight:"")
-    +select_options("hair_color", "Hair Color", hair_colors, false, bolo?bolo.height:"")
-    +input_textarea("tattoos", "Tattoos", "", false, bolo?bolo.tattoos:"")
+  form#create-bolo-form(action=bolo?"/bolo/edit/" + bolo.data.id:"/bolo/create" enctype="multipart/form-data" method="post")
+    +select_options("bolo_category", "Category", categories, true, bolo?bolo.data.category:"")
+    +input_mx("fname", "First Name", "", false, bolo?bolo.data.firstName:"")
+    +input_mx("lname", "Last Name", "", false,  bolo?bolo.data.lastName:"")
+    +input_mx("dob", "Date of Birth (DD/MM/YYYY)", "DD/MM/YYYY", false, bolo?bolo.data.dob:"")
+    +input_mx("dl_number", "Drivers License Number", "", false, bolo?bolo.data.dlNumber:"")
+    +select_options("race", "Race", races, false, bolo?bolo.data.race:"")
+    +select_options("sex", "Sex", ["Male", "Female"], false, bolo?bolo.data.sex:"")
+    +input_mx("height", "Height - Feet-Inches (e.g. 05-09)", "e.g. 05-09", false, bolo?bolo.data.height:"")
+    +input_mx("weight", "Weight - Pounds", "", false, bolo?bolo.data.weight:"")
+    +select_options("hair_color", "Hair Color", hair_colors, false, bolo?bolo.data.height:"")
+    +input_textarea("tattoos", "Tattoos", "", false, bolo?bolo.data.tattoos:"")
     .form-group
       label.control-label(for="image_upload") Image Attachment
       div#form-add-img-group
@@ -73,11 +73,17 @@ block content
       a#form-add-img-btn
         span.glyphicon.glyphicon-plus
         | Add Image
-    +input_mx("video_url", "Video Link", "", false, bolo?bolo.videoLink:"", "url")
-    +input_textarea("addition_info", "Additional Info", "", false, bolo?bolo.additional:"")
-    +input_textarea("summary", "Summary", "", false, bolo?bolo.summary:"")
-        input(name="_id" type="hidden")
+    +input_mx("video_url", "Video Link", "", false, bolo?bolo.data.videoLink:"", "url")
+    +input_textarea("addition_info", "Additional Info", "", false, bolo?bolo.data.additional:"")
+    +input_textarea("summary", "Summary", "", false, bolo?bolo.data.summary:"")
+    input(name="id" type="hidden" value=bolo?bolo.data.id:"")
     .form-group
       button.btn.btn-primary(type="submit" value="save") Submit
       button.btn.btn-default(type="submit" disabled=true value="preview") Preview
       button.btn.btn-default(type="submit" disabled=true value="pdf") PDF
+
+  .container
+    h2 Attached Images
+    if bolo && bolo.data.attachments
+        each val,key in bolo.data.attachments
+          a(href="/bolo/" + bolo.data.id + "/asset/" + key)= key

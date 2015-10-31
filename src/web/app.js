@@ -16,6 +16,8 @@ var flash = require('connect-flash');
 var logger = require('morgan');
 var methodOverride = require('method-override');
 
+require('dotenv').config({ 'path': path.resolve( __dirname, '../../.env' ) });
+
 var routes = require('./routes');
 var auth = require('./lib/auth.js');
 
@@ -67,10 +69,8 @@ app.use( auth.passport.session() );
  * Routes
  */
 var isAuthenticated = function ( req, res, next ) {
-    if ( ! req.isAuthenticated() ) {
-        res.redirect( '/login' );
-    }
-    next();
+    if ( req.isAuthenticated() ) next();
+    else res.redirect( '/login' );
 };
 app.use( function ( req, res, next ) {
     if ( req.user ) res.locals.userLoggedIn = true;
@@ -79,8 +79,6 @@ app.use( function ( req, res, next ) {
 app.use( express.static( path.join( __dirname, 'public' ) ) );
 app.use( auth.router );
 app.use( '/bolo', isAuthenticated, routes.bolos );
-// app.use( '/agency', routes.agency );
-// app.use( "/users", routes.agency );
 app.get( '/',
     isAuthenticated,
     function ( req, res ) {
@@ -93,17 +91,17 @@ app.get( '/',
 /*
  * Error Handling
  */
-//if ( isDev ) {
-//    app.use( function( err, req, res, next ) {
-//        res.status( err.status || 500 );
-//        res.render( 'error', { message: err.message, error: err } );
-//    });
-//}
+if ( isDev ) {
+    app.use( function( err, req, res, next ) {
+        res.status( err.status || 500 );
+        res.render( 'error', { message: err.message, error: err } );
+    });
+}
 
-//app.use( function( err, req, res, next ) {
-//    res.status( err.status || 500 );
-//    res.render( 'error', { message: err.message, error: {} } );
-//});
+app.use( function( err, req, res, next ) {
+    res.status( err.status || 500 );
+    res.render( 'error', { message: err.message, error: {} } );
+});
 
 
 /*

@@ -3,29 +3,29 @@
 
 var Promise = require('promise');
 
-var cloudant = require('../../lib/cloudant-connection');
+var db = require('../../lib/cloudant-promise').db.use('bolo');
 var User = require('../../domain/user.js');
 
 var DOCTYPE = 'user';
 
-module.exports = CloudantUserStorageAdapter;
+module.exports = CloudantUserRepository;
 
 /**
- * Create a new CloudantUserStorageAdapter object
+ * Create a new CloudantUserRepository object
  *
  * @class
  * @memberof module:core/adapters
  * @classdesc Implements the interface for a User Storage Port to expose
  * operations which interact wht the Cloudant Database service.
  */
-function CloudantUserStorageAdapter () {
+function CloudantUserRepository () {
     // contructor stub
 }
 
 /**
  * Insert a User into the repository
  */
-CloudantUserStorageAdapter.prototype.insert = function ( user ) {
+CloudantUserRepository.prototype.insert = function ( user ) {
     var newuser = new User( user.data );
     newuser.data.Type = DOCTYPE;
 
@@ -36,19 +36,19 @@ CloudantUserStorageAdapter.prototype.insert = function ( user ) {
             delete newuser.data.Type;
             newuser.data.id = response.id;
 
-            return Promise.resolve( newuser );
+            return newuser;
         })
         .catch( function ( error ) {
-            return Promise.reject( error );
+            return error;
         });
 };
 
-CloudantUserStorageAdapter.prototype.getById = function ( id ) {
+CloudantUserRepository.prototype.getById = function ( id ) {
     return db.get( id )
         .then( function ( data ) {
             if ( !data._id ) throw new Error( data );
             userTransform( data );
-            return Promise.resolve( new User( data ) );
+            return new User( data );
         })
         .catch( function ( error ) {
             return Promise.reject(
@@ -57,7 +57,7 @@ CloudantUserStorageAdapter.prototype.getById = function ( id ) {
         });
 };
 
-CloudantUserStorageAdapter.prototype.getByUsername = function ( id ) {
+CloudantUserRepository.prototype.getByUsername = function ( id ) {
     return db
         .view( 'users', 'by_username', {
             'key': id,
@@ -66,16 +66,14 @@ CloudantUserStorageAdapter.prototype.getByUsername = function ( id ) {
         .then( function ( found ) {
             if ( !found.rows.length ) return Promise.resolve( null );
             userTransform( found.rows[0].doc );
-            return Promise.resolve( new User( found.rows[0].doc ) );
+            return new User( found.rows[0].doc );
         })
         .catch( function ( error ) {
-            return Promise.reject(
-                new Error( "Failed to get user by username" )
-            );
+            return new Error( "Failed to get user by username" );
         });
 };
 
-CloudantUserStorageAdapter.prototype.remove = function ( id ) {
+CloudantUserRepository.prototype.remove = function ( id ) {
     // **UNDOCUMENTED OPERATION** cloudant/nano library destroys the database
     // if a null/undefined argument is passed into the `docname` argument for
     // db.destroy( docname, callback )
@@ -86,56 +84,10 @@ CloudantUserStorageAdapter.prototype.remove = function ( id ) {
             return db.destroy( user._id, user._rev );
         })
         .catch( function ( error ) {
-            return Promise.reject( 
-                new Error( "Failed to delete user: " + error )
-            );
+            return new Error( "Failed to delete user: " + error );
         });
 };
 
-
-var bolodb = cloudant.db.use('bolo');
-
-/*
- * Wrapper for the cloudant db methods which take advantage of Promises.
- */
-var db = {
-    'insert' : function ( doc ) {
-        return new Promise( function ( resolve, reject ) {
-            bolodb.insert( doc, function ( err, body ) {
-                if ( !err ) resolve( body );
-                reject( err );
-            });
-        });
-    },
-
-    'get' : function ( docname ) {
-        return new Promise( function ( resolve, reject ) {
-            bolodb.get( docname, function ( err, body ) {
-                if ( !err ) resolve( body );
-                reject( err );
-            });
-        });
-    },
-
-    'destroy' : function ( docname, rev ) {
-        return new Promise( function ( resolve, reject ) {
-            bolodb.destroy( docname, rev, function ( err, body ) {
-                if ( !err ) resolve( body );
-                reject( err );
-            });
-        });
-    },
-
-    'view' : function ( designname, viewname, params ) {
-        if ( !params ) params = null;
-        return new Promise( function ( resolve, reject ) {
-            bolodb.view( designname, viewname, params, function ( err, body ) {
-                if ( !err ) resolve( body );
-                reject( err );
-            });
-        });
-    }
-};
 
 /**
  * Transform the user doc to a suitable format for the User entity object.
