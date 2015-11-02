@@ -137,6 +137,6 @@ Bolo.prototype.diff = function ( other ) {
     var source = this;
     return Object.getOwnPropertyNames( source.data )
         .filter( function ( key ) {
-            return source.data[key] !== other.data[key];
+            return ! _.isEqual( other.data[key], source.data[key] );
         });
 };
