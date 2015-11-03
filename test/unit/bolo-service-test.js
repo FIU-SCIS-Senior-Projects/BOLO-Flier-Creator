@@ -63,7 +63,7 @@ var makeMeta = function ( file ) {
 /* Test Specification */
 describe('client access port module', function () {
     var mockStorageAdapter, mockMediaAdapter;
-    var clientAccess;
+    var boloService;
 
     before( function () {
         /* setup mocks */
@@ -82,27 +82,17 @@ describe('client access port module', function () {
     });
 
     beforeEach( function () {
-        clientAccess = new BoloService( mockStorageAdapter, mockMediaAdapter );
+        boloService = new BoloService( mockStorageAdapter, mockMediaAdapter );
     });
 
     afterEach( function () {
         mockStorageAdapter.record = null;
     });
 
-    it( 'implements the client access port interface', function () {
-        var interface_methods = [
-            'createBolo'
-        ];
-
-        interface_methods.map( function ( method ) {
-            expect( clientAccess ).to.respondTo( method );
-        });
-    });
-
     describe( 'createBolo method', function () {
         it( 'saves valid BOLO data into a Storage Port', function () {
             /* act */
-            var promise = clientAccess.createBolo( validBoloData );
+            var promise = boloService.createBolo( validBoloData );
 
             /* assert */
             var msa = mockStorageAdapter;
@@ -120,7 +110,7 @@ describe('client access port module', function () {
             var msa = mockStorageAdapter;
 
             /* act */
-            var promise = clientAccess
+            var promise = boloService
                 .createBolo( validBoloData, fileAttachments );
 
             /* assert */
