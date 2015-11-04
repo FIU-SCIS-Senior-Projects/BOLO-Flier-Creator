@@ -59,16 +59,29 @@ describe('bolo service module', function () {
             /* arrange */
 
             /* act */
-            var promise = boloService
-                .createBolo( validBoloData, fileAttachments );
+
+            /* assert */
+        });
+    });
+
+    describe( 'updateBolo method', function () {
+        it( 'saves valid bolo edits', function () {
+            /* arrange */
+            var originalBolo = BoloFixture.create();
+            originalBolo.data.id = 'abc123';
+            boloService.createBolo( originalBolo.data );
+
+            var updatedBolo = BoloFixture.copy( originalBolo.data );
+
+            /* act */
+            updatedBolo.data.hairColor = 'Red';
+            var promise = boloService.updateBolo( updatedBolo.data );
 
             /* assert */
             return promise
                 .then( function ( result ) {
-                    expect( msa.record ).to.contain.key( 'image' );
-                    expect( msa.record.image[0] ).to.contain.deep.property(
-                        'filename', path.basename( fa.image[0] )
-                    );
+                    expect( result.diff( originalBolo ) ).to.contain( 'hairColor' );
+                    expect( result.data.hairColor ).to.equal( 'Red' );
                 });
         });
     });
