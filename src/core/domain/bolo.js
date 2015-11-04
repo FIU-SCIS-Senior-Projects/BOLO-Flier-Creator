@@ -48,6 +48,7 @@ var boloTemplate = {
     address         : '',
     additional      : '',
     summary         : '',
+    attachments     : {},
     archive         : false,
 };
 

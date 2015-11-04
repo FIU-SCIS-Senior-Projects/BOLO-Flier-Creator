@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var _ = require('lodash');
 var Bolo = require('../domain/bolo.js');
 var Promise = require('promise');
 
@@ -55,19 +56,23 @@ BoloService.prototype.updateBolo = function ( boloData, attachments ) {
     }
 
     return context.boloRepository.getBolo( updated.data.id )
-        .then( function ( original ) {
-            original.diff( updated ).forEach( function ( key ) {
-                original.data[key] = updated.data[key];
-            });
+    .then( function ( original ) {
+        var atts = _.assign( {}, original.data.attachments );
 
-            return context.boloRepository.update( original );
-        })
-        .then( function ( updated ) {
-            return updated;
-        })
-        .catch( function ( error ) {
-            return Promise.reject( { success: false, error: error.message } );
+        original.diff( updated ).forEach( function ( key ) {
+            original.data[key] = updated.data[key];
         });
+
+        original.data.attachments = atts;
+
+        return context.boloRepository.update( original, attachments );
+    })
+    .then( function ( updated ) {
+        return updated;
+    })
+    .catch( function ( error ) {
+        return Promise.reject( { success: false, error: error.message } );
+    });
 };
 
 /**
