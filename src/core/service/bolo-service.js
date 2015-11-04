@@ -47,13 +47,23 @@ BoloService.prototype.createBolo = function ( boloData, attachments ) {
 };
 
 BoloService.prototype.updateBolo = function ( boloData, attachments ) {
-    var bolo = new Bolo( boloData );
+    var context = this;
+    var updated = new Bolo( boloData );
 
-    if ( ! bolo.isValid() ) throw new Error( "invalid bolo data" );
+    if ( ! updated.isValid() ) {
+        throw new Error( "invalid bolo data" );
+    }
 
-    return this.boloRepository.update( bolo )
-        .then( function ( value ) {
-            return Promise.resolve( { success: true } );
+    return context.boloRepository.getBolo( updated.data.id )
+        .then( function ( original ) {
+            original.diff( updated ).forEach( function ( key ) {
+                original.data[key] = updated.data[key];
+            });
+
+            return context.boloRepository.update( original );
+        })
+        .then( function ( updated ) {
+            return updated;
         })
         .catch( function ( error ) {
             return Promise.reject( { success: false, error: error.message } );
