@@ -18,8 +18,10 @@ describe('bolo service module', function () {
     before( function () {
         /* setup stubs */
         stubBoloRepository = {
-            insert : function ( boloDTO ) {
+            insert : function ( boloDTO, attachments ) {
                 this.record = boloDTO;
+                if ( attachments && attachments['new'] )
+                    this.record.data.attachments = attachments['new'];
                 return Promise.resolve( this.record  );
             },
             getBolo : function ( id ) {
@@ -42,9 +44,14 @@ describe('bolo service module', function () {
     });
 
     describe( 'createBolo method', function () {
+        var bolo;
+
+        beforeEach( function () {
+            bolo = BoloFixture.create();
+        });
+
         it( 'saves valid BOLO data', function () {
             /* act */
-            var bolo = BoloFixture.create();
             var promise = boloService.createBolo( bolo.data );
 
             /* assert */
@@ -55,12 +62,29 @@ describe('bolo service module', function () {
             });
         });
 
-        it.skip( 'inserts file attachments into the BOLO', function () {
+        it( 'inserts file attachments into the BOLO', function () {
             /* arrange */
+            var attachments = { 'new': {
+                'an-image.jpg': {
+                    'content_type': 'image/jpeg',
+                    'path': 'some/path/on/fs'
+                },
+                'an-audio.mp3': {
+                    'content_type': 'audio/mp3',
+                    'path': 'some/path/on/fs'
+                }
+            } };
 
             /* act */
+            var promise = boloService.createBolo( bolo.data, attachments );
 
             /* assert */
+            return promise
+            .then( function ( response ) {
+                expect( response.data.attachments ).to.include.all.keys(
+                    ['an-image.jpg', 'an-audio.mp3']
+                );
+            });
         });
     });
 
