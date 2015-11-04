@@ -29,8 +29,11 @@ describe('bolo service module', function () {
                 var rec = ( id === this.record.data.id ) ? this.record : null;
                 return Promise.resolve( rec );
             },
-            update : function ( bolo ) {
+            update : function ( bolo, attachments ) {
                 this.record = bolo;
+                if ( attachments ) {
+                    this.record.data.attachments = attachments;
+                }
                 return Promise.resolve( this.record );
             }
         };
@@ -93,7 +96,7 @@ describe('bolo service module', function () {
             /* arrange */
             var originalBolo = BoloFixture.create();
             originalBolo.data.id = 'abc123';
-            boloService.createBolo( originalBolo.data );
+            stubBoloRepository.record = originalBolo;
 
             var updatedBolo = BoloFixture.copy( originalBolo.data );
 
@@ -104,8 +107,8 @@ describe('bolo service module', function () {
             /* assert */
             return promise
                 .then( function ( result ) {
-                    expect( result.diff( originalBolo ) ).to.contain( 'hairColor' );
-                    expect( result.data.hairColor ).to.equal( 'Red' );
+                    expect( result ).to.not.equal( updatedBolo );
+                    expect( result.data ).to.deep.equal( updatedBolo.data );
                 });
         });
     }); /* end describe: updateBolo method */
