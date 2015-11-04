@@ -39,3 +39,7 @@ module.exports.collection = function ( qty ) {
     }
     return collection;
 };
+
+module.exports.copy = function ( data ) {
+    return new Bolo( data );
+};
