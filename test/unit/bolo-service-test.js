@@ -18,8 +18,8 @@ describe('bolo service module', function () {
     before( function () {
         /* setup stubs */
         stubBoloRepository = {
-            insert : function ( boloDTO, attachments ) {
-                this.record = boloDTO;
+            insert : function ( bolo, attachments ) {
+                this.record = bolo;
                 this.record.data.id = 'abc123';
                 if ( attachments )
                     this.record.data.attachments = attachments;
@@ -86,7 +86,7 @@ describe('bolo service module', function () {
                 );
             });
         });
-    });
+    }); /* end describe: createBolo method */
 
     describe( 'updateBolo method', function () {
         it( 'saves valid bolo edits', function () {
@@ -108,5 +108,5 @@ describe('bolo service module', function () {
                     expect( result.data.hairColor ).to.equal( 'Red' );
                 });
         });
-    });
+    }); /* end describe: updateBolo method */
 });
