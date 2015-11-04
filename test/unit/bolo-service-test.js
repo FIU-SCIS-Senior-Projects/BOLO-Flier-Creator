@@ -20,8 +20,9 @@ describe('bolo service module', function () {
         stubBoloRepository = {
             insert : function ( boloDTO, attachments ) {
                 this.record = boloDTO;
-                if ( attachments && attachments['new'] )
-                    this.record.data.attachments = attachments['new'];
+                this.record.data.id = 'abc123';
+                if ( attachments )
+                    this.record.data.attachments = attachments;
                 return Promise.resolve( this.record  );
             },
             getBolo : function ( id ) {
@@ -56,9 +57,8 @@ describe('bolo service module', function () {
 
             /* assert */
             return promise
-            .then( function ( result ) {
-                expect( result ).to.deep.equal( bolo );
-                expect( stubBoloRepository.record ).to.deep.equal( result );
+            .then( function ( newbolo ) {
+                expect( newbolo.diff( bolo ) ).to.contain('id');
             });
         });
 
