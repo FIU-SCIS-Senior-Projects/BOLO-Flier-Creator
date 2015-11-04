@@ -1,6 +1,7 @@
 /* jshint node: true, mocha: true, expr:true */
 'use strict';
 
+var _ = require('lodash');
 var expect = require('chai').expect;
 var path = require('path');
 var Promise = require('promise');
@@ -14,6 +15,7 @@ var BoloFixture = require( '../lib/bolo-entity-fixture' );
 describe('bolo service module', function () {
     var stubBoloRepository;
     var boloService;
+    var attachments;
 
     before( function () {
         /* setup stubs */
@@ -32,7 +34,7 @@ describe('bolo service module', function () {
             update : function ( bolo, attachments ) {
                 this.record = bolo;
                 if ( attachments ) {
-                    this.record.data.attachments = attachments;
+                    _.extend( this.record.data.attachments, attachments );
                 }
                 return Promise.resolve( this.record );
             }
@@ -41,6 +43,17 @@ describe('bolo service module', function () {
 
     beforeEach( function () {
         boloService = new BoloService( stubBoloRepository );
+
+        attachments = {
+            'an-image.jpg': {
+                'content_type': 'image/jpeg',
+                'path': 'some/path/on/fs'
+            },
+            'an-audio.mp3': {
+                'content_type': 'audio/mp3',
+                'path': 'some/path/on/fs'
+            }
+        };
     });
 
     afterEach( function () {
@@ -66,18 +79,6 @@ describe('bolo service module', function () {
         });
 
         it( 'inserts file attachments into the BOLO', function () {
-            /* arrange */
-            var attachments = { 'new': {
-                'an-image.jpg': {
-                    'content_type': 'image/jpeg',
-                    'path': 'some/path/on/fs'
-                },
-                'an-audio.mp3': {
-                    'content_type': 'audio/mp3',
-                    'path': 'some/path/on/fs'
-                }
-            } };
-
             /* act */
             var promise = boloService.createBolo( bolo.data, attachments );
 
@@ -92,14 +93,17 @@ describe('bolo service module', function () {
     }); /* end describe: createBolo method */
 
     describe( 'updateBolo method', function () {
-        it( 'saves valid bolo edits', function () {
-            /* arrange */
-            var originalBolo = BoloFixture.create();
+        var originalBolo, updatedBolo;
+
+        beforeEach( function () {
+            originalBolo = BoloFixture.create();
             originalBolo.data.id = 'abc123';
             stubBoloRepository.record = originalBolo;
 
-            var updatedBolo = BoloFixture.copy( originalBolo.data );
+            updatedBolo = BoloFixture.copy( originalBolo.data );
+        });
 
+        it( 'saves valid bolo edits', function () {
             /* act */
             updatedBolo.data.hairColor = 'Red';
             var promise = boloService.updateBolo( updatedBolo.data );
@@ -110,6 +114,24 @@ describe('bolo service module', function () {
                     expect( result ).to.not.equal( updatedBolo );
                     expect( result.data ).to.deep.equal( updatedBolo.data );
                 });
+        });
+
+        it( 'adds new attachments to existing attachments', function () {
+            /* arrange */
+            originalBolo.data.attachments = {
+                'some-image.jpg' : { 'content_type': 'image/jpeg' }
+            };
+
+            /* act */
+            var promise = boloService.updateBolo( updatedBolo.data, attachments );
+
+            /* assert */
+            return promise
+            .then( function ( response ) {
+                expect( response.data.attachments ).to.include.all.keys(
+                    ['some-image.jpg', 'an-image.jpg', 'an-audio.mp3']
+                );
+            });
         });
     }); /* end describe: updateBolo method */
 });
