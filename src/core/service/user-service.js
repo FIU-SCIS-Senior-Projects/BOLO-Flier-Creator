@@ -2,6 +2,7 @@
 'use strict';
 
 var Promise = require('promise');
+var User = require('../domain/user');
 
 
 /** @module core/ports */
@@ -53,4 +54,14 @@ UserServicePort.prototype.authenticate = function ( username, password ) {
  */
 UserServicePort.prototype.deserializeId = function ( id ) {
     return this.userRepository.getById( id );
+};
+
+UserServicePort.prototype.registerUser = function ( userDTO ) {
+    var user = new User( userDTO );
+
+    if ( ! user.isValid() ) {
+        throw new Error( 'User registration invalid' );
+    }
+
+    return this.userRepository.insert( user );
 };
