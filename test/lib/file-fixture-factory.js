@@ -42,21 +42,38 @@ function FileFactory ( fp ) {
     }
     this.src = fp;
     this.parts = path.parse( fp );
+    this.created = [];
 }
 
 FileFactory.prototype.create = function ( name ) {
-    var srcFile = this.src;
-    var parts = this.parts;
+    var context = this;
+    return copy( this.src, targetPath( name, this.parts ) )
+        .then( function ( path ) {
+            context.created.push( path );
+            return path;
+        });
 
-    if ( ! lodash.isArray( name ) ) {
-        return copy( srcFile, targetPath( name, parts ) );
-    }
+};
 
-    var promises = name.map( function ( _name ) {
-        return copy( srcFile, targetPath( _name, parts ) );
-    });
+FileFactory.prototype.createBulk = function ( names ) {
+    var context = this;
 
-    return Promise.all( promises );
+    return Promise.all( names.map( function ( name ) {
+        return copy( context.src, targetPath( name, context.parts ) )
+            .then( function ( path ) {
+                context.created.push( path );
+                return path;
+            });
+    }));
+};
+
+FileFactory.prototype.shutitdown = function () {
+    var context = this;
+    var unlink = Promise.denodeify( fs.unlink );
+
+    return Promise.all( context.created.map( function ( path ) {
+        return unlink( path );
+    }));
 };
 
 module.exports = FileFactory;
