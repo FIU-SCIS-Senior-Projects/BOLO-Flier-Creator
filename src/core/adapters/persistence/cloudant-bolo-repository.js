@@ -182,13 +182,26 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
  *
  * @param {Bolo} - the bolo to update
  */
-CloudantBoloRepository.prototype.update = function ( bolo ) {
+CloudantBoloRepository.prototype.update = function ( bolo, attachments ) {
     var newdoc = boloToCloudant( bolo );
+    var atts = attachments || [];
 
-    return db.get( bolo.data.id )
-        .then( function ( doc ) {
+    var currentBoloRev = db.get( bolo.data.id );
+    var attsPromise = Promise.all( atts.map( transformAttachment ) );
+
+    return Promise.all([ currentBoloRev, attsPromise ])
+        .then( function ( data ) {
+            var doc = data[0],
+                attDTOs = data[1];
+
             newdoc._rev = doc._rev;
-            return db.insert( newdoc );
+            newdoc._attachments = doc._attachments || {};
+
+            if ( attDTOs.length ) {
+                return db.insertMultipart( newdoc, attDTOs, newdoc._id );
+            } else {
+                return db.insert( newdoc );
+            }
         })
         .then( function ( response ) {
             if ( !response.ok ) throw new Error( 'Unable to update BOLO' );
