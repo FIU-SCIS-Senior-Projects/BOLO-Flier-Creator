@@ -25,6 +25,7 @@ function boloFromCloudant( bolo_doc ) {
     bolo.data.id = bolo.data._id;
     delete bolo.data._id;
     delete bolo.data._rev;
+    delete bolo.data.Type;
 
     if ( bolo.data._attachments ) {
         bolo.data.attachments = bolo.data._attachments;
@@ -44,7 +45,7 @@ function boloFromCloudant( bolo_doc ) {
 function boloToCloudant( bolo ) {
     var doc = _.assign( {}, bolo.data );
 
-    doc.type = DOCTYPE;
+    doc.Type = DOCTYPE;
     doc._id = doc.id;
 
     delete doc.id;
