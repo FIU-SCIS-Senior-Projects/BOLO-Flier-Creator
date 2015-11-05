@@ -8,6 +8,7 @@ var path = require('path');
 var Promise = require('promise');
 
 var src = path.resolve( __dirname, '../../src' );
+var User = require( path.join( src, 'core/domain/user' ) );
 var UserService = require( path.join( src, 'core/service/user-service' ) );
 var UserFixture = require( '../lib/user-entity-fixture' );
 
@@ -120,5 +121,22 @@ describe( 'user service port', function () {
                 });
         });
     }); /* end describe: deserializes ids to user objects  */
+
+    describe( 'registers new users', function () {
+        it( 'promises User object for valid registrations', function () {
+            /* arrange */
+            var userDTO = user.data;
+
+            /* act */
+            var registrationPromise = userService.registerUser( userDTO );
+
+            /* assert */
+            return registrationPromise
+                .then( function ( response ) {
+                    expect( response ).to.be.instanceOf( User );
+                    expect( response.diff( user ) ).to.contain( 'id' );
+                });
+        });
+    }); /* end describe: registers new users */
 
 });
