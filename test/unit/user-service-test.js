@@ -16,19 +16,15 @@ describe( 'user service port', function () {
 
     var userService;
     var mockUserRepo;
+    var user;
 
     beforeEach( function () {
         mockUserRepo = {};
         userService = new UserService( mockUserRepo );
+        user = UserFixture.create();
     });
 
     describe( 'authenticates user credentials', function () {
-        var user;
-
-        beforeEach( function () {
-            user = UserFixture.create();
-        });
-
         it( 'promises a User object for valid credentials', function () {
             /* arrange */
             var username    = user.data.username,
@@ -88,12 +84,6 @@ describe( 'user service port', function () {
     }); /* end describe: authenticates user credentials */
 
     describe( 'deserializes user ids', function () {
-        var user;
-
-        beforeEach( function () {
-            user = UserFixture.create();
-        });
-
         it( 'promises User object for valid ids', function () {
             /* arrange */
             var id = user.data.id = 'abc123';
