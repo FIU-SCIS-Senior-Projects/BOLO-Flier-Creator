@@ -31,6 +31,7 @@ describe( 'BOLO Repository Storage Adapter', function () {
     });
 
     after( function () {
+        imageFactory.shutitdown();
         return Promise.all( Object.keys( cache ).map( boloRepository.delete ) );
     });
 
