@@ -136,6 +136,50 @@ describe( 'BOLO Repository Storage Adapter', function () {
                         .to.deep.equal( original.data.attachments );
                 });
         });
+
+        it( 'adds attachments to pre-existing attachments', function () {
+            /* arrange */
+            var boloWithAttachment = imageFactory.create( 'suspect' )
+                .then( function ( imageFixturePath ) {
+                    return [{
+                        'name': 'suspect.png',
+                        'content_type': 'image/png',
+                        'path': imageFixturePath
+                    }];
+                })
+                .then( function ( attachments ) {
+                    return boloRepository.insert( bolo, attachments );
+                })
+                .then( function ( newbolo ) {
+                    cache[newbolo.data.id] = newbolo;
+                    return newbolo;
+                });
+
+            var newImageAttachment = imageFactory.create( 'other-suspect' )
+                .then( function ( imageFixturePath ) {
+                    return [{
+                        'name': 'other-suspect.png',
+                        'content_type': 'image/png',
+                        'path': imageFixturePath
+                    }];
+                });
+
+            /* act */
+            var promise = Promise.all([ boloWithAttachment, newImageAttachment ])
+                .then( function ( data ) {
+                    var original = data[0],
+                        attachments = data[1];
+                    original.data.summary = 'some new summary';
+                    return boloRepository.update( original, attachments );
+                });
+
+            /* assert */
+            return promise
+                .then( function ( updated ) {
+                    expect( updated.data.attachments ).to.have.all
+                        .keys([ 'suspect.png', 'other-suspect.png' ]);
+                });
+        });
     }); /* end describe: #update method */
 
     describe( '#delete method', function () {
