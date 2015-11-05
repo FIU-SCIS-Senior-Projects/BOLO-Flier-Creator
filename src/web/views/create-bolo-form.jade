@@ -84,6 +84,8 @@ block content
 
   .container
     h2 Attached Images
-    if bolo && bolo.data.attachments
+    ul.list-group
+      if bolo && bolo.data.attachments
         each val,key in bolo.data.attachments
-          a(href="/bolo/asset/" + bolo.data.id + "/" + key)= key
+          li.list-group-item
+            a(href="/bolo/asset/" + bolo.data.id + "/" + key)= key
