@@ -1,137 +1,137 @@
 /* jshint node: true, mocha: true, expr:true */
 'use strict';
 
-/*
- * Unit Test: Client Access Port
- *
- */
-
-
-/* Testing Utilities */
+var _ = require('lodash');
 var expect = require('chai').expect;
-var sinon = require('sinon');
 var path = require('path');
-
 var Promise = require('promise');
 
-/* Base Project Paths */
 var src_dir = path.join( __dirname, '../../src' );
 var BoloService = require( path.join( src_dir, 'core/service/bolo-service' ) );
-
-
-/* Fixtures */
-var validBoloData = {
-    creationDate    : ( new Date() ).toString(),
-    lastUpdate      : '',
-    agency          : 'Pinecrest',
-    authorFName     : 'Jason',
-    authorLName     : 'Cohen',
-    authorUName     : 'jcohen',
-    category        : 'ROBBERY',
-    firstName       : 'Barry',
-    lastName        : 'Badman',
-    dob             : '01-23-1945',
-    dlNumber        : 'D123-456-78-900-0',
-    race            : 'Asian',
-    sex             : 'M',
-    height          : '6-01',
-    weight          : '185',
-    hairColor       : 'Black',
-    tattoos         : 'Tomato tattoo on right chest',
-    address         : '123 Gangsta Lane',
-    additional      : '',
-    summary         : '',
-    archive         : false
-};
-
-var fileAttachments = {
-    image   : [ '/path/to/image.jpg' ],
-    video   : [ '/path/to/video1.avi', '/path/to/video2.avi' ],
-    audio   : [ '/path/to/audio.mp3' ]
-};
-
-
-/* Helper Methods */
-var makeMeta = function ( file ) {
-    return {
-        uuid : "some-generated-uuid",
-        filename : path.basename( file )
-    };
-};
+var BoloFixture = require( '../lib/bolo-entity-fixture' );
 
 
 /* Test Specification */
-describe('client access port module', function () {
-    var mockStorageAdapter, mockMediaAdapter;
-    var clientAccess;
+describe('bolo service module', function () {
+    var stubBoloRepository;
+    var boloService;
+    var attachments;
 
     before( function () {
-        /* setup mocks */
-        mockStorageAdapter = {
-            insert : function ( bolo ) {
-                // expected to resolve a promise when done inserting
-                return Promise.resolve( this.record = bolo  );
-            }
-        };
-        mockMediaAdapter = {
-            put : function ( files ) {
-                // expected to return meta data for saved files in a promise
-                return Promise.resolve( files.map( makeMeta ) );
+        /* setup stubs */
+        stubBoloRepository = {
+            insert : function ( bolo, attachments ) {
+                this.record = bolo;
+                this.record.data.id = 'abc123';
+                if ( attachments )
+                    this.record.data.attachments = attachments;
+                return Promise.resolve( this.record  );
+            },
+            getBolo : function ( id ) {
+                var rec = ( id === this.record.data.id ) ? this.record : null;
+                return Promise.resolve( rec );
+            },
+            update : function ( bolo, attachments ) {
+                this.record = bolo;
+                if ( attachments ) {
+                    _.extend( this.record.data.attachments, attachments );
+                }
+                return Promise.resolve( this.record );
             }
         };
     });
 
     beforeEach( function () {
-        clientAccess = new BoloService( mockStorageAdapter, mockMediaAdapter );
+        boloService = new BoloService( stubBoloRepository );
+
+        attachments = {
+            'an-image.jpg': {
+                'content_type': 'image/jpeg',
+                'path': 'some/path/on/fs'
+            },
+            'an-audio.mp3': {
+                'content_type': 'audio/mp3',
+                'path': 'some/path/on/fs'
+            }
+        };
     });
 
     afterEach( function () {
-        mockStorageAdapter.record = null;
-    });
-
-    it( 'implements the client access port interface', function () {
-        var interface_methods = [
-            'createBolo'
-        ];
-
-        interface_methods.map( function ( method ) {
-            expect( clientAccess ).to.respondTo( method );
-        });
+        stubBoloRepository.record = null;
     });
 
     describe( 'createBolo method', function () {
-        it( 'saves valid BOLO data into a Storage Port', function () {
+        var bolo;
+
+        beforeEach( function () {
+            bolo = BoloFixture.create();
+        });
+
+        it( 'saves valid BOLO data', function () {
             /* act */
-            var promise = clientAccess.createBolo( validBoloData );
+            var promise = boloService.createBolo( bolo.data );
 
             /* assert */
-            var msa = mockStorageAdapter;
             return promise
-                .then( function ( result ) {
-                    var msg = "Input is most likely _invalid_";
-                    expect( result ).to.contain.property( 'success', true, msg );
-                    expect( msa.record ).to.include( validBoloData );
-                });
+            .then( function ( newbolo ) {
+                expect( newbolo.diff( bolo ) ).to.contain('id');
+            });
         });
 
         it( 'inserts file attachments into the BOLO', function () {
-            /* arrange */
-            var fa = fileAttachments;
-            var msa = mockStorageAdapter;
-
             /* act */
-            var promise = clientAccess
-                .createBolo( validBoloData, fileAttachments );
+            var promise = boloService.createBolo( bolo.data, attachments );
+
+            /* assert */
+            return promise
+            .then( function ( response ) {
+                expect( response.data.attachments ).to.include.all.keys(
+                    ['an-image.jpg', 'an-audio.mp3']
+                );
+            });
+        });
+    }); /* end describe: createBolo method */
+
+    describe( 'updateBolo method', function () {
+        var originalBolo, updatedBolo;
+
+        beforeEach( function () {
+            originalBolo = BoloFixture.create();
+            originalBolo.data.id = 'abc123';
+            stubBoloRepository.record = originalBolo;
+
+            updatedBolo = BoloFixture.copy( originalBolo.data );
+        });
+
+        it( 'saves valid bolo edits', function () {
+            /* act */
+            updatedBolo.data.hairColor = 'Red';
+            var promise = boloService.updateBolo( updatedBolo.data );
 
             /* assert */
             return promise
                 .then( function ( result ) {
-                    expect( msa.record ).to.contain.key( 'image' );
-                    expect( msa.record.image[0] ).to.contain.deep.property(
-                        'filename', path.basename( fa.image[0] )
-                    );
+                    expect( result ).to.not.equal( updatedBolo );
+                    expect( result.data ).to.deep.equal( updatedBolo.data );
                 });
         });
-    });
 
+        it( 'adds new attachments to existing attachments', function () {
+            /* arrange */
+            originalBolo.data.attachments = {
+                'some-image.jpg' : { 'content_type': 'image/jpeg' }
+            };
+
+            /* act */
+            var promise = boloService.updateBolo( updatedBolo.data, attachments );
+
+            /* assert */
+            return promise
+            .then( function ( response ) {
+                expect( response.data.attachments ).to.include.all.keys(
+                    ['some-image.jpg', 'an-image.jpg', 'an-audio.mp3']
+                );
+            });
+        });
+    }); /* end describe: updateBolo method */
 });
