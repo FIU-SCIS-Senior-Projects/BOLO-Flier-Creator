@@ -122,10 +122,17 @@ describe( 'user service port', function () {
         });
     }); /* end describe: deserializes ids to user objects  */
 
-    describe( 'registers new users', function () {
-        it( 'promises User object for valid registrations', function () {
+    describe( 'registering new users', function () {
+        it( 'promises a User object for valid registrations', function () {
             /* arrange */
-            var userDTO = user.data;
+            var userDTO = UserFixture.create().data;
+
+            var storedUser = UserFixture.create();
+            storedUser.data.id = 'abc123';
+
+            mockUserRepo.insert = sinon.stub()
+                .withArgs( sinon.match.instanceOf( User ) )
+                .returns( Promise.resolve( storedUser ) );
 
             /* act */
             var registrationPromise = userService.registerUser( userDTO );
