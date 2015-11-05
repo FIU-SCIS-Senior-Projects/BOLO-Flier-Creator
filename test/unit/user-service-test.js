@@ -141,7 +141,7 @@ describe( 'user service port', function () {
             return registrationPromise
                 .then( function ( response ) {
                     expect( response ).to.be.instanceOf( User );
-                    expect( response.diff( user ) ).to.contain( 'id' );
+                    expect( response ).to.equal( storedUser );
                 });
         });
     }); /* end describe: registers new users */
