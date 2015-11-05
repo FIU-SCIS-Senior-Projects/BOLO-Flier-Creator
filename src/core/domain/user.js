@@ -6,11 +6,15 @@ var _ = require('lodash');
 var userTemplate = {
     'id'            : null,
     'username'      : null,
-    'password'      : null,
+    'email'         : null,
     'fname'         : null,
     'lname'         : null,
+    'password'      : null,
+    'tier'          : null,
     'agency'        : null,
-    'tier'          : null
+    'badge'         : null,
+    'sectunit'      : null,
+    'ranktitle'     : null
 };
 
 /** @module core/domain */
