@@ -83,7 +83,8 @@ function transformAttachment ( original ) {
             if ( err ) {
                 reject( err );
             }
-            resolve( image.resize( 400, 400 ) );
+            //resolve( image.resize( 400, 400 ) );
+            resolve( image );
         });
     });
 
