@@ -11,8 +11,12 @@ module.exports.create = function () {
         'password'      : 'superuser1',
         'fname'         : 'Kevin',
         'lname'         : 'Flynn',
+        'email'         : 'kflynn@en.com',
         'agency'        : 'Pinecrest',
-        'tier'          : 1
+        'tier'          : 1,
+        'badge'         : '',
+        'sectunit'      : '',
+        'ranktitle'     : '' 
     });
 };
 
