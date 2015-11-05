@@ -152,18 +152,18 @@ router.post('/edit/:id', function (req, res) {
     var boloService = new BoloService(boloRepository);
 
     parseFormData( req )
-    .then( function ( _data ) {
-        var bolodata = setBoloData( _data.fields );
-        return Promise.all([ bolodata, _data.files ]);
+    .then( function ( formDTO ) {
+        var boloDTO = setBoloData( formDTO.fields );
+        var result = boloService.updateBolo( boloDTO, formDTO.files );
+        return Promise.all([ result, formDTO ]);
     })
-    .then( function ( _data ) {
-        return boloService.updateBolo( _data[0], _data[1] );
-    })
-    .then( function ( _res ) {
+    .then( function ( pData ) {
+        if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
         res.redirect( '/bolo' );
     })
     .catch( function ( _error ) {
-        res.status( 500 ).send( 'something wrong happened...', _error.stack );
+        console.log( '>>> edit bolo route error: ', _error );
+        res.redirect( 'back' );
     });
 
 });
