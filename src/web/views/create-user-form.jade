@@ -1,0 +1,65 @@
+include includes/mixins
+extends layout
+
+//- Template Mixins
+mixin input_mx(name, label, placeholder, required, value, type)
+  .form-group
+    label.control-label(for=name)= label
+    input.form-control(name=name type=type?type:"text" placeholder=placeholder, value=value)
+
+mixin input_textarea(name, label, placeholder, required, value)
+  .form-group
+    label.control-label(for=name)= label
+    textarea.form-control(name=name type="text" placeholder=placeholder)= value
+
+mixin select_options(name, label, options, required, selectedValue)
+  .form-group
+    label.control-label(for=name)= label
+    select.form-control(name=name)
+      option() Select an option...
+      each val in options
+          if selectedValue == val
+            +option(val,true)
+          else
+            +option(val,false)
+
+block jumbo
+  .jumbotron
+    .container
+      h1 Create a user
+      p Fill out the form to create a new user in your agency.
+
+block content
+  //- Dropdown Box Selections
+  -
+    var roles = [
+      'Officer', 'Supervisor', 'Administrator'
+    ]
+
+  //- Actual Form
+  form(action="/admin/createuser" enctype="multipart/form-data" method="post")
+    +input_mx("username", "Username (required)", "", true, "")
+    +input_mx("email", "Email (required)", "", true, "")
+    +input_mx("fname", "First Name", "", false, "")
+    +input_mx("lname", "Last Name", "", false,  "")
+    +input_mx("password", "Password (required)", "", true,  "", "password")
+    +input_mx("password", "Repeat Password (required)", "", true,  "", "password")
+
+    +select_options("role", "Role", roles, true, "")
+
+    .form-group
+      label.control-label() Notifications
+      br
+      label.checkbox-inline
+        input(type="radio" required name="notifications" value=true)
+        = ' Yes'
+      label.checkbox-inline
+        input(type="radio" required name="notifications" value=false)
+        = ' No'
+
+    +input_mx("badge", "Badge No.", "", false,  "")
+    +input_mx("secunit", "Section / Unit", "", false,  "")
+    +input_mx("ranktitle", "Rank / Title", "", false,  "")
+
+    .form-group
+      button.btn.btn-primary(type="submit" value="save") Add New User

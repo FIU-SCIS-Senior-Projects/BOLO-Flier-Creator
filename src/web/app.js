@@ -78,6 +78,7 @@ app.use( function ( req, res, next ) {
 });
 app.use( express.static( path.join( __dirname, 'public' ) ) );
 app.use( auth.router );
+app.use( '/admin', isAuthenticated, routes.admin );
 app.use( '/bolo', isAuthenticated, routes.bolos );
 app.get( '/',
     isAuthenticated,
