@@ -157,6 +157,25 @@ describe( 'user service port', function () {
                     expect( response ).to.equal( storedUser );
                 });
         });
+
+        it( 'rejects when the username already exists', function () {
+            /* arrange */
+            sinon.stub( mockUserRepo, 'getByUsername' )
+                .withArgs( user.data.username )
+                .returns( Promise.resolve( storedUser ) );
+
+            /* act */
+            var registrationPromise = userService.registerUser( user.data );
+
+            /* assert */
+            return registrationPromise
+                .then(function ( response ) {
+                    expect( response ).to.be.undefined;
+                }, function ( response ) {
+                    expect( response ).to.be.instanceOf( Error )
+                    .and.to.match( /already registered/ );
+                });
+        });
     }); /* end describe: registers new users */
 
 });
