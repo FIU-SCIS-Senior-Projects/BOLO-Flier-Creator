@@ -125,17 +125,14 @@ describe( 'user service port', function () {
     describe( 'registering new users', function () {
         it( 'promises a User object for valid registrations', function () {
             /* arrange */
-            var userDTO = UserFixture.create().data;
-
-            var storedUser = UserFixture.create();
-            storedUser.data.id = 'abc123';
+            var storedUser = UserFixture.create({ 'id': 'abc123' });
 
             mockUserRepo.insert = sinon.stub()
                 .withArgs( sinon.match.instanceOf( User ) )
                 .returns( Promise.resolve( storedUser ) );
 
             /* act */
-            var registrationPromise = userService.registerUser( userDTO );
+            var registrationPromise = userService.registerUser( user.data );
 
             /* assert */
             return registrationPromise
