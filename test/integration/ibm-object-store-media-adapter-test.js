@@ -21,7 +21,7 @@ var nameFilter = function ( obj ) { return obj.name; };
 
 
 /* == Test Spec ============================================================= */
-describe( 'ibm object store media adapter', function () {
+describe.skip( 'ibm object store media adapter', function () {
     var stat, oAccount, oContainer;
     var adapterFactory, ostoreAdapter;
     var osAccount, osContainer;
