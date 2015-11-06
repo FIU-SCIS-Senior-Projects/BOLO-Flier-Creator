@@ -57,11 +57,20 @@ UserServicePort.prototype.deserializeId = function ( id ) {
 };
 
 UserServicePort.prototype.registerUser = function ( userDTO ) {
-    var user = new User( userDTO );
+    var context = this;
+    var newuser = new User( userDTO );
 
-    if ( ! user.isValid() ) {
+    if ( ! newuser.isValid() ) {
         throw new Error( 'User registration invalid' );
     }
 
-    return this.userRepository.insert( user );
+    return context.userRepository.getByUsername( newuser.data.username )
+        .then( function ( existingUser ) {
+            if ( existingUser ) {
+                throw new Error( 'User already registered: ' +
+                        existingUser.data.username
+                );
+            }
+            return context.userRepository.insert( newuser );
+        });
 };
