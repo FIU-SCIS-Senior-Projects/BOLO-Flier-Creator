@@ -19,8 +19,16 @@ describe( 'user service port', function () {
     var mockUserRepo;
     var user;
 
+    var defaultStubMethod = function () {
+        throw new Error( 'Stub behavior undefined' );
+    };
+
     beforeEach( function () {
-        mockUserRepo = {};
+        mockUserRepo = {
+            'insert': defaultStubMethod,
+            'getByUsername': defaultStubMethod,
+            'getById': defaultStubMethod
+        };
         userService = new UserService( mockUserRepo );
         user = UserFixture.create();
     });
@@ -123,13 +131,21 @@ describe( 'user service port', function () {
     }); /* end describe: deserializes ids to user objects  */
 
     describe( 'registering new users', function () {
-        it( 'promises a User object for valid registrations', function () {
-            /* arrange */
-            var storedUser = UserFixture.create({ 'id': 'abc123' });
+        var storedUser;
 
-            mockUserRepo.insert = sinon.stub()
+        beforeEach( function () {
+            storedUser = UserFixture.create({ 'id': 'abc123' });
+
+            sinon.stub( mockUserRepo, 'insert' )
                 .withArgs( sinon.match.instanceOf( User ) )
                 .returns( Promise.resolve( storedUser ) );
+        });
+
+        it( 'promises a User object for valid registrations', function () {
+            /* arrange */
+            sinon.stub( mockUserRepo, 'getByUsername' )
+                .withArgs( sinon.match.string )
+                .returns( Promise.resolve( null ) );
 
             /* act */
             var registrationPromise = userService.registerUser( user.data );
