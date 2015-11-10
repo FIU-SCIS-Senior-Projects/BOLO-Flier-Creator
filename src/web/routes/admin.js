@@ -66,3 +66,27 @@ function parseFormData ( req ) {
 router.get( '/createuser', function ( req, res ) {
     res.render( 'create-user-form' );
 });
+
+
+/**
+ * POST /createuser
+ */
+router.post( '/createuser',function ( req, res ) {
+    var userRepository = AdapterFactory.create( 'persistence', 'cloudant-user-repository' );
+    var userService = new UserService( userRepository );
+    parseFormData( req )
+        .then( function ( formDTO ) {
+            var userDTO = setUserData( formDTO.fields );
+            var result = userService.registerUser( userDTO, formDTO.files );
+            return Promise.all([ result, formDTO ]);
+        })
+        .then( function ( pData ) {
+            if( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+            res.render( 'create-user-form', { 'msg': 'Successfully registered user.' } );
+        })
+        .catch( function ( error ) {
+            /** @todo send back form data with error message */
+            console.error( '>>> register user route error: ', error );
+            res.render( 'create-user-form', { 'error': error } );
+        });
+});
