@@ -36,6 +36,13 @@ block content
       'Officer', 'Supervisor', 'Administrator'
     ]
 
+  //- Alerts
+  if ( error )
+    +alert_error( error.message )
+
+  if ( msg )
+    +alert_info( msg )
+
   //- Actual Form
   form(action="/admin/createuser" enctype="multipart/form-data" method="post")
     +input_mx("username", "Username (required)", "", true, "")
