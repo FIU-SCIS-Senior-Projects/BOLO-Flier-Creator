@@ -30,12 +30,6 @@ block jumbo
       p Fill out the form to create a new user in your agency.
 
 block content
-  //- Dropdown Box Selections
-  -
-    var roles = [
-      'Officer', 'Supervisor', 'Administrator'
-    ]
-
   //- Alerts
   if ( error )
     +alert_error( error.message )
@@ -52,7 +46,8 @@ block content
     +input_mx("password", "Password (required)", "", true,  "", "password")
     +input_mx("password", "Repeat Password (required)", "", true,  "", "password")
 
-    +select_options("role", "Role", roles, true, "")
+    if ( roles )
+        +select_options("role", "Role", roles, true, "")
 
     .form-group
       label.control-label() Notifications
