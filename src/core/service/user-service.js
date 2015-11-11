@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var _ = require('lodash');
 var Promise = require('promise');
 var User = require('../domain/user');
 
@@ -54,6 +55,17 @@ UserService.prototype.authenticate = function ( username, password ) {
  */
 UserService.prototype.deserializeId = function ( id ) {
     return this.userRepository.getById( id );
+};
+
+UserService.prototype.getRoleNames = function () {
+    return User.roleNames().map( function ( name ) {
+        return _.startCase( name.toLowerCase() );
+    });
+};
+
+UserService.prototype.getRole = function ( roleName ) {
+    var role = _.snakeCase( roleName ).toUpperCase();
+    return User[role];
 };
 
 UserService.prototype.registerUser = function ( userDTO ) {
