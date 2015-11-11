@@ -30,7 +30,7 @@ function setUserData ( fields ) {
         'password'      : fields.password || '',
         'tier'          : 1,
         'badge'         : fields.badge || '',
-        'secunit'       : fields.securnit || '',
+        'secunit'       : fields.secunit || '',
         'ranktitle'     : fields.ranktitle || ''
         /** @todo 'tier' needs to be handled somewhere */
     };
