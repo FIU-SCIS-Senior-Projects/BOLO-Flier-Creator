@@ -6,11 +6,11 @@ var User = require('../domain/user');
 
 
 /** @module core/ports */
-module.exports = UserServicePort;
+module.exports = UserService;
 
 
 /**
- * Creates a new instance of {UserServicePort}.
+ * Creates a new instance of {UserService}.
  *
  * @class
  * @classdesc Provides an API for interacting with application user
@@ -19,7 +19,7 @@ module.exports = UserServicePort;
  * @param {StrageAdapter|UserRepository} - Oobject implementing the User
  * Repository Storage Port Interface.
  */
-function UserServicePort ( userRepository ) {
+function UserService ( userRepository ) {
     this.userRepository = userRepository;
 }
 
@@ -32,7 +32,7 @@ function UserServicePort ( userRepository ) {
  * @returns {Promise|User} the User object matching the supplied username and
  * password. Null if authentication fails.
  */
-UserServicePort.prototype.authenticate = function ( username, password ) {
+UserService.prototype.authenticate = function ( username, password ) {
     var userPromise = this.userRepository.getByUsername( username );
 
     return userPromise
@@ -52,11 +52,11 @@ UserServicePort.prototype.authenticate = function ( username, password ) {
  *
  * @returns {Promise|User} the User object matching the supplied id.
  */
-UserServicePort.prototype.deserializeId = function ( id ) {
+UserService.prototype.deserializeId = function ( id ) {
     return this.userRepository.getById( id );
 };
 
-UserServicePort.prototype.registerUser = function ( userDTO ) {
+UserService.prototype.registerUser = function ( userDTO ) {
     var context = this;
     var newuser = new User( userDTO );
 
