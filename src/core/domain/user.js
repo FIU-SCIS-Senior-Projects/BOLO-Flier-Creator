@@ -67,6 +67,11 @@ for ( var role in EnumRoles ) {
     });
 }
 
+/**
+ * Returns a string array of defined roles.
+ * @returns {String|Array} array of defined roles as strings
+ *
+ */
 User.roleNames = function () {
     return Object.keys( EnumRoles );
 };
