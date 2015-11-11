@@ -1,0 +1,27 @@
+extends layout
+
+block jumbo
+  .jumbotron
+    .container
+      h1 Admin Portal
+
+block content
+  .row
+    .col-md-4
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title Manage Users
+        .panel-body
+          a(href="/admin/createuser") Create User
+
+    .col-md-4
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title Manage Agencies
+        .panel-body
+
+    .col-md-4
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title Options
+        .panel-body

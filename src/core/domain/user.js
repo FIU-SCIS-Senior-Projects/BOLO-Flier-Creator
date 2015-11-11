@@ -55,6 +55,27 @@ function User ( data ) {
     this.data = _.extend( {}, userTemplate, data );
 }
 
+var EnumRoles = Object.create( null, {
+    'OFFICER'       : { 'value': 1, 'writable': false, 'enumerable': true },
+    'SUPERVISOR'    : { 'value': 2, 'writable': false, 'enumerable': true },
+    'ADMINISTRATOR' : { 'value': 3, 'writable': false, 'enumerable': true }
+});
+
+for ( var role in EnumRoles ) {
+    Object.defineProperty( User, role, {
+        'value': EnumRoles[role], 'writable': false, 'enumerable': true
+    });
+}
+
+/**
+ * Returns a string array of defined roles.
+ * @returns {String|Array} array of defined roles as strings
+ *
+ */
+User.roleNames = function () {
+    return Object.keys( EnumRoles );
+};
+
 /**
  * Ensure the consistency of user data.
  *
@@ -67,9 +88,8 @@ function User ( data ) {
 User.prototype.isValid = function () {
     var data = this.data;
     var result = required.filter( function ( key ) {
-        if ( data[key] && typeof data[key] === schema[key].type )
-            return data[key];
-    }, []) || [];
+        return ( data[key] && typeof data[key] === schema[key].type );
+    });
 
     return ( result.length === required.length );
 };
@@ -94,3 +114,4 @@ User.prototype.diff = function ( other ) {
             return source.data[key] !== other.data[key];
         });
 };
+

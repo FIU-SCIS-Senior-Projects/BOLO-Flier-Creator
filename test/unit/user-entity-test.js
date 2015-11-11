@@ -37,8 +37,21 @@ describe( 'user domain entity', function () {
         expect( other.data ).to.not.equal( user.data );
     });
 
-    describe( 'when comapring user objects', function () {
+    describe( 'roles', function () {
+        it( '#roleNames returns an array of all roles', function () {
+            /* assert */
+            expect( User.roleNames() ).to.be.an( 'array' );
+        });
 
+        it( 'can be referenced statically', function () {
+            /* assert */
+            User.roleNames().forEach( function ( role ) {
+                expect( User[role] ).to.be.exist;
+            });
+        });
+    }); /* end describe: roles */
+
+    describe( 'when comapring user objects', function () {
         var other;
 
         beforeEach( function () {
@@ -66,7 +79,6 @@ describe( 'user domain entity', function () {
             /* assert */
             expect( result ).to.be.false;
         });
-
     }); /* when comparing user objects */
 
 });
