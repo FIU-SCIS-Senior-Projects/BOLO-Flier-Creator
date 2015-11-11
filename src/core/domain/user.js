@@ -88,9 +88,8 @@ User.roleNames = function () {
 User.prototype.isValid = function () {
     var data = this.data;
     var result = required.filter( function ( key ) {
-        if ( data[key] && typeof data[key] === schema[key].type )
-            return data[key];
-    }, []) || [];
+        return ( data[key] && typeof data[key] === schema[key].type );
+    });
 
     return ( result.length === required.length );
 };
