@@ -57,17 +57,35 @@ UserService.prototype.deserializeId = function ( id ) {
     return this.userRepository.getById( id );
 };
 
+/**
+ * Get a list of defined user roles.
+ *
+ * @returns {Array} list of defined user roles.
+ */
 UserService.prototype.getRoleNames = function () {
     return User.roleNames().map( function ( name ) {
         return _.startCase( name.toLowerCase() );
     });
 };
 
+/**
+ * Get the index of a user role by name.
+ *
+ * @param {String} - name of the role to get
+ * @returns {number} - the integer value of the role name or undefined.
+ */
 UserService.prototype.getRole = function ( roleName ) {
     var role = _.snakeCase( roleName ).toUpperCase();
     return User[role];
 };
 
+/**
+ * Register a new user in the system.
+ *
+ * @param {Object} - new user information in the expected DTO format
+ * @returns {Promise|User} promises a user object for the new user or rejects
+ * with an error if the user could not be saved.
+ */
 UserService.prototype.registerUser = function ( userDTO ) {
     var context = this;
     var newuser = new User( userDTO );
