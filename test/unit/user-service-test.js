@@ -13,7 +13,7 @@ var UserService = require( path.join( src, 'core/service/user-service' ) );
 var UserFixture = require( '../lib/user-entity-fixture' );
 
 
-describe( 'user service port', function () {
+describe( 'user service module', function () {
 
     var userService;
     var mockUserRepo;

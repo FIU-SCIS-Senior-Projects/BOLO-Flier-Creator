@@ -104,3 +104,7 @@ UserService.prototype.registerUser = function ( userDTO ) {
             return context.userRepository.insert( newuser );
         });
 };
+
+UserService.prototype.getUsers = function () {
+    return this.userRepository.getAll();
+};

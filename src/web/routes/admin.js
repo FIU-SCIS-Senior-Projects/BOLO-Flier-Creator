@@ -108,3 +108,18 @@ router.post( '/createuser', function ( req, res ) {
             });
         });
 });
+
+/**
+ * GET /users
+ * Responds with a list of all system users.
+ */
+router.get( '/users', function ( req, res ) {
+    userService.getUsers().then( function ( users ) {
+        console.log( users );
+        res.render( 'user-list', { 'users': users } );
+    })
+    .catch( function ( error ) {
+        console.log( '/admin/users route error: ', error );
+        res.status( 500 );
+    });
+});

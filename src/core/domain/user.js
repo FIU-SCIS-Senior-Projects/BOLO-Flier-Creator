@@ -76,6 +76,13 @@ User.roleNames = function () {
     return Object.keys( EnumRoles );
 };
 
+User.prototype.roleName = function () {
+    var context = this;
+    return _.findKey( EnumRoles, function ( role ) {
+        return ( role === context.data.tier );
+    });
+};
+
 /**
  * Ensure the consistency of user data.
  *

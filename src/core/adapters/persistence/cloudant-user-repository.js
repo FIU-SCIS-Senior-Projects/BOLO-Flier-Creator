@@ -1,6 +1,7 @@
 /* jshint node:true */
 'use strict';
 
+var _ = require('lodash');
 var Promise = require('promise');
 
 var db = require('../../lib/cloudant-promise').db.use('bolo_users');
@@ -26,17 +27,28 @@ function CloudantUserRepository () {
  * Insert a User into the repository
  */
 CloudantUserRepository.prototype.insert = function ( user ) {
-    var newuser = new User( user.data );
-    newuser.data.Type = DOCTYPE;
+    var userDTO = toCloudant( user );
 
-    return db.insert( newuser.data )
+    return db.insert( userDTO )
         .then( function ( response ) {
             if ( !response.ok ) throw new Error( 'Problem adding user' );
 
-            delete newuser.data.Type;
-            newuser.data.id = response.id;
+            userDTO._id = response.id;
+            return fromCloudant( userDTO );
+        })
+        .catch( function ( error ) {
+            return error;
+        });
+};
 
-            return newuser;
+CloudantUserRepository.prototype.getAll = function () {
+    return db.view( 'users', 'by_username', { 'include_docs': true } )
+        .then( function ( docs ) {
+            if ( ! docs.rows.length ) return Promise.resolve( null );
+
+            return docs.rows.map( function ( row ) {
+                return fromCloudant( row.doc );
+            });
         })
         .catch( function ( error ) {
             return error;
@@ -88,6 +100,30 @@ CloudantUserRepository.prototype.remove = function ( id ) {
         });
 };
 
+
+function fromCloudant ( data ) {
+    var user = new User( data );
+
+    user.data.id = user.data._id;
+    delete user.data._id;
+    delete user.data._rev;
+    delete user.data.Type;
+
+    return user;
+}
+
+function toCloudant ( user ) {
+    var dto = _.assign( {}, user.data );
+
+    dto.Type = DOCTYPE;
+
+    if ( dto.id ) {
+        dto._id = dto.id;
+        delete dto.id;
+    }
+
+    return dto;
+}
 
 /**
  * Transform the user doc to a suitable format for the User entity object.
