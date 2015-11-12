@@ -1,6 +1,7 @@
 /* jshint node:true */
 'use strict';
 
+var _ = require('lodash');
 var Promise = require('promise');
 
 var db = require('../../lib/cloudant-promise').db.use('bolo_users');
@@ -88,6 +89,30 @@ CloudantUserRepository.prototype.remove = function ( id ) {
         });
 };
 
+
+function fromCloudant ( data ) {
+    var user = new User( data );
+
+    user.data.id = user.data._id;
+    delete user.data._id;
+    delete user.data._rev;
+    delete user.data.Type;
+
+    return user;
+}
+
+function toCloudant ( user ) {
+    var dto = _.assign( {}, user.data );
+
+    dto.Type = DOCTYPE;
+
+    if ( dto.id ) {
+        dto._id = dto.id;
+        delete dto.id;
+    }
+
+    return dto;
+}
 
 /**
  * Transform the user doc to a suitable format for the User entity object.
