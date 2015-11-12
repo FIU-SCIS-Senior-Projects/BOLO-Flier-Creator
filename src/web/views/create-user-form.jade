@@ -26,10 +26,13 @@ mixin select_options(name, label, options, required, selectedValue)
 block jumbo
   .jumbotron
     .container
-      h1 Create a user
-      p Fill out the form to create a new user in your agency.
+      h1 Admin Portal
+      p New User Registration
 
 block content
+  p
+    a(href="/admin") < Back to Admin Dashboard
+
   //- Alerts
   if ( error )
     +alert_error( error.message )
