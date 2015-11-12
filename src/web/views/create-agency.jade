@@ -1,0 +1,32 @@
+include includes/mixins
+extends layout
+
+
+block jumbo
+  .jumbotron
+    .container
+        if agency
+          h1 Edit an Agency
+          p Fill out the form to submit and update an existing agency
+        else
+          h1 Create an Agency
+          p Fill out the form and submit to create a new sadas agency.
+block content
+  //- Actual Form
+  form#create-agency(action=agency?"/agency/edit/" + agency.data.id:"/agency/create" enctype="multipart/form-data" method="post")
+    +input_mx("name", "Agency Name", "", false, agency?agency.data.name:"")
+    +input_mx("address", "Address", "", false,  agency?agency.data.address:"")
+    +input_mx("city", "City", "", false,  agency?agency.data.city:"")
+    +input_mx("zip", "Zip Code", "", false,  agency?agency.data.zip:"")
+    +input_mx("phone", "Phone Number", "", false, agency?agency.data.phone:"")
+    .form-group
+      label.control-label(for="image_upload") Logo Attachment
+      div#form-add-img-group
+        input(name="logo_upload" type="file" accept="image/*")
+    .form-group
+      label.control-label(for="image_upload") Shield Attachment
+      div#form-add-img-group
+        input(name="shield_upload" type="file" accept="image/*")
+    .form-group
+      button.btn.btn-primary(type="submit" value="save") Submit
+
