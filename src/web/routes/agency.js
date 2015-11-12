@@ -1,46 +1,85 @@
-/* Module Dependencies */
-var router = require('express').Router();
-var cloudant = require(__dirname + '/../lib/cloudant-connection.js');
+/* jshint node: true */
+'use strict';
 
-function getPriviledge(username) {
-    var user = cloudant.db.use('bolo_users');
-    user.get(username, function(error, currUser) {
-        //get the user's account status and set priviledged to the proper level
-        return currUser.userTier;
+/* Module Dependencies */
+var fs = require('fs');
+var multiparty = require('multiparty');
+var path = require('path');
+var Promise = require('promise');
+var router = require('express').Router();
+
+var core_dir = path.resolve(__dirname + '../../../core/');
+var AgencyService = require(path.join(core_dir, 'service/agency-service'));
+var CommonService = require(path.join(core_dir, 'service/common-service'));
+var AdapterFactory = require(path.join(core_dir, 'adapters'));
+
+
+function parseFormData(req) {
+    return new Promise(function (resolve, reject) {
+        var form = new multiparty.Form();
+        var files = [];
+        var fields = {};
+        var result = { 'files': files, 'fields': fields };
+
+        form.on('error', function (error) { reject(error); });
+        form.on('close', function () { resolve(result); });
+
+        form.on('field', function (field, value) { fields[field] = value; });
+        form.on('file', function (name, file) {
+            files.push({
+                'name': file.originalFilename,
+                'content_type': file.headers['content-type'],
+                'path': file.path
+            });
+        });
+
+        form.parse(req);
     });
 }
 
-//create an agency, should ONLY be used by tier 1/admin users
-router.post('/create', function(request, response) {
-    var priviledge = getPriviledge(request.cookies.boloUsername);
+function setAgencyData(fields) {
+    return {
+        id: fields.id || '',
+        name: fields.name || '',
+        address: fields.address || '',
+        city: fields.city || '',
+        zip: fields.zip || '',
+        phone: fields.phone || '',
+        logo: fields.logo || '',
+        shield: fields.shield || '',
+        //enteredDT   : fields.enteredDT ? fields.enteredDT : CommonService.getDateTime()
+    };
+}
 
-    //if it's higher than 1, user lacks rights to create and agency
-    if (priviledge > 1) {
-        response.json({Result: 'Failure', Message : 'Insufficient Priviledges'});
-    }
-    else {
-        var agencies = cloudant.db.use('bolo_agencies');
-        agencies.insert({
-            name: request.body.name,
-            address: {
-                address: request.body.address,
-                city: request.body.city,
-                zip: request.body.zip
-            },
-            phone: request.body.phone,
-            shield: request.body.shieldImage,
-            logo: request.body.logoImage,
-            chief: request.body.chief
-        }, request.body.name, function(err, doc) {
-            if (err) {
-                response.json({Result: 'Failure', Message: 'Unable to create agency. It may already exist.'});
-            }
-            else {
-                response.json({Result: 'Success', Message: 'Agency successfully created.'});
-            }
-        });
-    }//end of priviledged else
+router.get('/create', function (req, res) {
+    res.render('create-agency');
 });
+
+//creates an agency
+router.post('/create', function (req, resp) {
+
+    var agencyRepository = AdapterFactory.create('persistence', 'cloudant-agency-repository');
+    var agencyService = new AgencyService(agencyRepository);
+    parseFormData(req)
+        .then(function (formDTO) {
+            var agencyDTO = setAgencyData(formDTO.fields);
+            var result = agencyService.createAgency(agencyDTO, formDTO.files);
+            return Promise.all([result, formDTO]);
+        })
+        .then(function (pData) {
+            if (pData[1].files.length) CommonService.cleanTemporaryFiles(pData[1].files);
+            resp.redirect('/agency');
+        })
+        .catch(function (_error) {
+            /** @todo send back form data with error message */
+            console.error('>>> create agency route error: ', _error);
+        });
+});
+
+router.get('', function (req, res) {
+    res.render('agency-list');
+});
+/*
 
 //Updates an Agency. Can only be used by tier 1 user or agency chief
 router.put('', function(request, response) {
@@ -124,6 +163,6 @@ router.delete('', function(request, response) {
         });//end agencies.get currentUserCount
 });
 
-
+*/
 
 module.exports = router;
