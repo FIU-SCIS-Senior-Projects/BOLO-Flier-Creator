@@ -62,6 +62,11 @@ mixin select_options(name, label, options, required, selectedValue)
           else
             +option(val,false)
 
+mixin input_mx(name, label, placeholder, required, value, type)
+  .form-group
+    label.control-label(for=name)= label
+    input.form-control(name=name type=type?type:text placeholder=placeholder, value=value)
+
 
 mixin alert_info(msg)
     .alert.alert-info.alert-dismissable(role="alert")
