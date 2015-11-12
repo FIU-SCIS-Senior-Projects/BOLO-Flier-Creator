@@ -27,15 +27,19 @@ function CloudantUserRepository () {
  * Insert a User into the repository
  */
 CloudantUserRepository.prototype.insert = function ( user ) {
-    var newuser = new User( user.data );
-    newuser.data.Type = DOCTYPE;
+    var userDTO = toCloudant( user );
 
-    return db.insert( newuser.data )
+    return db.insert( userDTO )
         .then( function ( response ) {
             if ( !response.ok ) throw new Error( 'Problem adding user' );
 
-            delete newuser.data.Type;
-            newuser.data.id = response.id;
+            userDTO._id = response.id;
+            return fromCloudant( userDTO );
+        })
+        .catch( function ( error ) {
+            return error;
+        });
+};
 
             return newuser;
         })
