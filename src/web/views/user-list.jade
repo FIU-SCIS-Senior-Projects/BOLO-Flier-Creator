@@ -1,4 +1,5 @@
 extends layout
+include includes/mixins
 
 block jumbo
   .jumbotron
@@ -9,6 +10,12 @@ block jumbo
 block content
   p 
     a(href="/admin") < Back to Admin Dashboard
+
+  div
+    if msg.length
+      +alert_info( msg )
+    if err.length
+      +alert_error( err )
 
   table.table.table-striped
     thead
@@ -27,4 +34,5 @@ block content
           td= user.data.email
           td= user.roleName()
           td Edit
-          td Delete
+          td
+            a(href="/admin/users/delete/" + user.data.id) Delete

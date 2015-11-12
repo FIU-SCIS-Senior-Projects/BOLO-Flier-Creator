@@ -115,11 +115,32 @@ router.post( '/createuser', function ( req, res ) {
  */
 router.get( '/users', function ( req, res ) {
     userService.getUsers().then( function ( users ) {
-        console.log( users );
-        res.render( 'user-list', { 'users': users } );
+        var templateData = {
+            'users': users,
+            'msg': req.flash( 'msg' ),
+            'err': req.flash( 'error' )
+        };
+        res.render( 'user-list', templateData );
     })
     .catch( function ( error ) {
-        console.log( '/admin/users route error: ', error );
+        console.error( '/admin/users route error: ', error );
         res.status( 500 );
     });
+});
+
+/**
+ * GET /users/delete/:id
+ * Attempts to delete user with the given id
+ */
+router.get( '/users/delete/:id', function ( req, res ) {
+    userService.removeUser( req.params.id ).then(
+        function ( result ) {
+            req.flash( 'msg', 'Successfully deleted user.' );
+            res.redirect( '/admin/users' );
+        },
+        function ( error ) {
+            req.flash( 'error', 'Unable to delete, please try again.' );
+            res.redirect( '/admin/users' );
+        }
+    );
 });
