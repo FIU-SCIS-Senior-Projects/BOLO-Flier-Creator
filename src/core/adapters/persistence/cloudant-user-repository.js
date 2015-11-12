@@ -41,7 +41,14 @@ CloudantUserRepository.prototype.insert = function ( user ) {
         });
 };
 
-            return newuser;
+CloudantUserRepository.prototype.getAll = function () {
+    return db.view( 'users', 'by_username', { 'include_docs': true } )
+        .then( function ( docs ) {
+            if ( ! docs.rows.length ) return Promise.resolve( null );
+
+            return docs.rows.map( function ( row ) {
+                return fromCloudant( row.doc );
+            });
         })
         .catch( function ( error ) {
             return error;
