@@ -108,3 +108,13 @@ UserService.prototype.registerUser = function ( userDTO ) {
 UserService.prototype.getUsers = function () {
     return this.userRepository.getAll();
 };
+
+/**
+ * Remove a user from the system.
+ *
+ * @param {String} - the id of the user to remove
+ * @returns {Object} - a response from the persistence layer
+ */
+UserService.prototype.removeUser = function ( id ) {
+    return this.userRepository.remove( id );
+};
