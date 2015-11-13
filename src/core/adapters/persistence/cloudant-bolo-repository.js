@@ -3,7 +3,6 @@
 
 var _ = require('lodash');
 var fs = require('fs');
-var Jimp = require('jimp');
 var Promise = require('promise');
 var uuid = require('node-uuid');
 
@@ -79,24 +78,7 @@ function attachmentsFromCloudant ( attachments ) {
  * @private
  */
 function transformAttachment ( original ) {
-    var jimp = new Promise( function ( resolve, reject ) {
-        new Jimp( original.path, function ( err, image ) {
-            if ( err ) {
-                reject( err );
-            }
-            //resolve( image.resize( 400, 400 ) );
-            resolve( image );
-        });
-    });
-
-    var getBuffer = function ( image ) {
-        return new Promise( function ( resolve, reject ) {
-            image.getBuffer( original.content_type, function ( err, buffer ) {
-                if ( err ) reject( err );
-                resolve( buffer );
-            });
-        });
-    };
+    var readFile = Promise.denodeify( fs.readFile );
 
     var createDTO = function ( readBuffer ) {
         return {
@@ -110,8 +92,7 @@ function transformAttachment ( original ) {
         throw new Error( 'transformAttachment: ', error );
     };
 
-    return jimp
-        .then( getBuffer )
+    return readFile( original.path )
         .then( createDTO )
         .catch( errorHandler );
 }
