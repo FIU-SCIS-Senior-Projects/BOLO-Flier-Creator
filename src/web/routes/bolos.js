@@ -72,11 +72,12 @@ function parseFormData ( req ) {
 
         form.on( 'field', function ( field, value ) { fields[field] = value; } );
         form.on( 'file' , function ( name, file) {
-            files.push({
-                'name': file.originalFilename,
-                'content_type': file.headers['content-type'],
-                'path': file.path
-            });
+            if ( file.originalFilename )
+                files.push({
+                    'name': file.originalFilename,
+                    'content_type': file.headers['content-type'],
+                    'path': file.path
+                });
         });
 
         form.parse( req );
@@ -162,7 +163,7 @@ router.post('/edit/:id', function (req, res) {
         res.redirect( '/bolo' );
     })
     .catch( function ( _error ) {
-        console.log( '>>> edit bolo route error: ', _error );
+        console.error( '>>> edit bolo route error: ', _error );
         res.redirect( 'back' );
     });
 
