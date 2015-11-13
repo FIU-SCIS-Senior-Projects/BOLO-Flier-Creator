@@ -8,27 +8,32 @@ var path = require('path');
 var Promise = require('promise');
 
 var src = path.resolve( __dirname, '../../src' );
+var User = require( path.join( src, 'core/domain/user' ) );
 var UserService = require( path.join( src, 'core/service/user-service' ) );
 var UserFixture = require( '../lib/user-entity-fixture' );
 
 
-describe( 'user service port', function () {
+describe( 'user service module', function () {
 
     var userService;
     var mockUserRepo;
+    var user;
+
+    var defaultStubMethod = function () {
+        throw new Error( 'Stub behavior undefined' );
+    };
 
     beforeEach( function () {
-        mockUserRepo = {};
+        mockUserRepo = {
+            'insert': defaultStubMethod,
+            'getByUsername': defaultStubMethod,
+            'getById': defaultStubMethod
+        };
         userService = new UserService( mockUserRepo );
+        user = UserFixture.create();
     });
 
     describe( 'authenticates user credentials', function () {
-        var user;
-
-        beforeEach( function () {
-            user = UserFixture.create();
-        });
-
         it( 'promises a User object for valid credentials', function () {
             /* arrange */
             var username    = user.data.username,
@@ -88,12 +93,6 @@ describe( 'user service port', function () {
     }); /* end describe: authenticates user credentials */
 
     describe( 'deserializes user ids', function () {
-        var user;
-
-        beforeEach( function () {
-            user = UserFixture.create();
-        });
-
         it( 'promises User object for valid ids', function () {
             /* arrange */
             var id = user.data.id = 'abc123';
@@ -130,5 +129,53 @@ describe( 'user service port', function () {
                 });
         });
     }); /* end describe: deserializes ids to user objects  */
+
+    describe( 'registering new users', function () {
+        var storedUser;
+
+        beforeEach( function () {
+            storedUser = UserFixture.create({ 'id': 'abc123' });
+
+            sinon.stub( mockUserRepo, 'insert' )
+                .withArgs( sinon.match.instanceOf( User ) )
+                .returns( Promise.resolve( storedUser ) );
+        });
+
+        it( 'promises a User object for valid registrations', function () {
+            /* arrange */
+            sinon.stub( mockUserRepo, 'getByUsername' )
+                .withArgs( sinon.match.string )
+                .returns( Promise.resolve( null ) );
+
+            /* act */
+            var registrationPromise = userService.registerUser( user.data );
+
+            /* assert */
+            return registrationPromise
+                .then( function ( response ) {
+                    expect( response ).to.be.instanceOf( User );
+                    expect( response ).to.equal( storedUser );
+                });
+        });
+
+        it( 'rejects when the username already exists', function () {
+            /* arrange */
+            sinon.stub( mockUserRepo, 'getByUsername' )
+                .withArgs( user.data.username )
+                .returns( Promise.resolve( storedUser ) );
+
+            /* act */
+            var registrationPromise = userService.registerUser( user.data );
+
+            /* assert */
+            return registrationPromise
+                .then(function ( response ) {
+                    expect( response ).to.be.undefined;
+                }, function ( response ) {
+                    expect( response ).to.be.instanceOf( Error )
+                    .and.to.match( /already registered/ );
+                });
+        });
+    }); /* end describe: registers new users */
 
 });

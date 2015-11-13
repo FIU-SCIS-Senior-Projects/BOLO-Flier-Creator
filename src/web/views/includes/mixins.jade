@@ -70,13 +70,18 @@ mixin input_mx(name, label, placeholder, required, value, type)
 
 mixin alert_info(msg)
     .alert.alert-info.alert-dismissable(role="alert")
-        button.close(type="button" data-dismiss="alert" aria-lable="Close")
+        button.close(type="button" data-dismiss="alert" aria-label="Close")
             span(aria-hidden="true") &times;
         = msg
 
 mixin alert_warning(msg)
     .alert.alert-warning.alert-dismissable(role="alert")
-        button.close(type="button" data-dismiss="alert" aria-lable="Close")
+        button.close(type="button" data-dismiss="alert" aria-label="Close")
             span(aria-hidden="true") &times;
         = msg
 
+mixin alert_error(msg)
+    .alert.alert-danger.alert-dismissable(role="alert")
+        button.close(type="button" data-dismiss="alert" aria-label="Close")
+            span(aria-hidden="true") &times;
+        = msg

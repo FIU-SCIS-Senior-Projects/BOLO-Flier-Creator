@@ -12,16 +12,20 @@ var AdapterFactory = require( path.join( src, 'core/adapters' ) );
 
 require('dotenv').config({ path: path.resolve( __dirname, '../../.env' ) });
 
-
-/* == Test Spec ============================================================= */
-describe( 'cloudant user storage adapter', function () {
-    var user, insertedUserID;
+describe( 'cloudant user repository', function () {
     var userRepository;
+    var user, cache, insertedUserID;
 
     this.timeout( 5000 );
 
     before( function () {
         userRepository = AdapterFactory.create( 'persistence', 'cloudant-user-repository' );
+
+        cache = {};
+    });
+
+    after( function () {
+        return Promise.all( Object.keys( cache ).map( userRepository.remove ) );
     });
 
     beforeEach( function () {
@@ -39,6 +43,33 @@ describe( 'cloudant user storage adapter', function () {
                     .and.to.contain( 'id' );
                 insertedUserID = newuser.data.id;
             });
+    });
+
+    it( 'gets all users', function () {
+        /* arrange */
+        var other = UserFixture.create();
+        other.data.username = 'otherman';
+
+        var dataFixtures = [ user, other ];
+        var setupPromise = Promise.all( dataFixtures.map( function ( aUser ) {
+            return userRepository.insert( aUser );
+        }))
+        .then( function ( fixtures ) {
+            fixtures.forEach( function ( fixture ) {
+                cache[fixture.data.id] = fixture;
+            });
+            return fixtures;
+        });
+
+        /* act */
+        var response = setupPromise.then( function ( ready ) {
+            return userRepository.getAll();
+        });
+
+        /* assert */
+        return response.then( function ( list ) {
+            expect( list ).to.have.length.of.at.least( 2 );
+        });
     });
 
     it( 'gets a single user by id', function () {

@@ -3,15 +3,42 @@
 
 var _ = require('lodash');
 
+var schema = {
+    'username': {
+        'required'  : true,
+        'type'      : 'string'
+    },
+    'email': {
+        'required'  : true,
+        'type'      : 'string'
+    },
+    'password': {
+        'required'  : true,
+        'type'      : 'string'
+    },
+    'tier': {
+        'required'  : true,
+        'type'      : 'number'
+    }
+};
+
 var userTemplate = {
     'id'            : null,
     'username'      : null,
-    'password'      : null,
+    'email'         : null,
     'fname'         : null,
     'lname'         : null,
+    'password'      : null,
+    'tier'          : null,
     'agency'        : null,
-    'tier'          : null
+    'badge'         : null,
+    'sectunit'      : null,
+    'ranktitle'     : null
 };
+
+var required = Object.keys( schema ).filter( function ( key ) {
+    return schema[key].required;
+});
 
 /** @module core/domain */
 module.exports = User;
@@ -27,6 +54,52 @@ module.exports = User;
 function User ( data ) {
     this.data = _.extend( {}, userTemplate, data );
 }
+
+var EnumRoles = Object.create( null, {
+    'OFFICER'       : { 'value': 1, 'writable': false, 'enumerable': true },
+    'SUPERVISOR'    : { 'value': 2, 'writable': false, 'enumerable': true },
+    'ADMINISTRATOR' : { 'value': 3, 'writable': false, 'enumerable': true }
+});
+
+for ( var role in EnumRoles ) {
+    Object.defineProperty( User, role, {
+        'value': EnumRoles[role], 'writable': false, 'enumerable': true
+    });
+}
+
+/**
+ * Returns a string array of defined roles.
+ * @returns {String|Array} array of defined roles as strings
+ *
+ */
+User.roleNames = function () {
+    return Object.keys( EnumRoles );
+};
+
+User.prototype.roleName = function () {
+    var context = this;
+    return _.findKey( EnumRoles, function ( role ) {
+        return ( role === context.data.tier );
+    });
+};
+
+/**
+ * Ensure the consistency of user data.
+ *
+ * @returns {bool} true if passes validation, false oherwise
+ *
+ * @todo Refactor the validation mechanism. This approach is a naive
+ * implementation and should be reviewed. The domain/bolo.js module uses a
+ * similar approach that shoud be refactored as well.
+ */
+User.prototype.isValid = function () {
+    var data = this.data;
+    var result = required.filter( function ( key ) {
+        return ( data[key] && typeof data[key] === schema[key].type );
+    });
+
+    return ( result.length === required.length );
+};
 
 /**
  * Check if the supplied user object has the same attributes.
@@ -48,3 +121,4 @@ User.prototype.diff = function ( other ) {
             return source.data[key] !== other.data[key];
         });
 };
+

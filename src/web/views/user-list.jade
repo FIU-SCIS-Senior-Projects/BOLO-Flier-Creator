@@ -1,0 +1,38 @@
+extends layout
+include includes/mixins
+
+block jumbo
+  .jumbotron
+    .container
+      h1 Admin Portal
+      p User Directory
+
+block content
+  p 
+    a(href="/admin") < Back to Admin Dashboard
+
+  div
+    if msg.length
+      +alert_info( msg )
+    if err.length
+      +alert_error( err )
+
+  table.table.table-striped
+    thead
+      tr
+        th Username
+        th Name
+        th Email
+        th Role
+        th 
+        th 
+    tbody
+      each user in users
+        tr
+          td= user.data.username
+          td= user.data.fname + ' ' + user.data.lname
+          td= user.data.email
+          td= user.roleName()
+          td Edit
+          td
+            a(href="/admin/users/delete/" + user.data.id) Delete
