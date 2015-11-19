@@ -130,7 +130,7 @@ router.get( '/users', function ( req, res ) {
  * GET /users/delete/:id
  * Attempts to delete user with the given id
  */
-router.get( '/users/delete/:id', function ( req, res ) {
+router.get( '/users/:id/delete', function ( req, res ) {
     userService.removeUser( req.params.id ).then(
         function ( result ) {
             req.flash( 'msg', 'Successfully deleted user.' );
@@ -141,4 +141,25 @@ router.get( '/users/delete/:id', function ( req, res ) {
             res.redirect( '/admin/users' );
         }
     );
+});
+
+/**
+ * GET /users/:id
+ * Responds with account information for a specified user.
+ */
+router.get( '/users/:id', function ( req, res ) {
+    userService.getUser( req.params.id ).then( function ( user ) {
+        var data = {
+            'user': user,
+            'msg': req.flash( 'msg' ),
+            'err': req.flash( 'error' )
+        };
+
+        res.render( 'user-details', data );
+    })
+    .catch( function ( error ) {
+        console.error( 'ERROR: At /admin/users/:id >>> ', error.message );
+        req.flash( 'error', 'Unable to get user information, please try again.' );
+        res.redirect( 'back' );
+    });
 });

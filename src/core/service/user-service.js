@@ -57,6 +57,8 @@ UserService.prototype.deserializeId = function ( id ) {
     return this.userRepository.getById( id );
 };
 
+UserService.prototype.getUser = UserService.prototype.deserializeId;
+
 /**
  * Get a list of defined user roles.
  *
