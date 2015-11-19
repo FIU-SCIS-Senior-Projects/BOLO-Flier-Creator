@@ -7,7 +7,7 @@ var path            = require('path');
 var Promise         = require('promise');
 var router          = require('express').Router();
 
-var config          = require( '../config' );
+var config          = require( '../../config' );
 
 var userService     = new config.UserService( userRepository );
 var userRepository  = new config.UserRepository();
