@@ -1,0 +1,36 @@
+extends layout
+
+block jumbo
+    .jumbotron
+        .container
+            h1 Admin Portal
+            p User Details
+
+block content
+    .panel.panel-primary
+        .panel-heading
+            h3 User: #{user.data.username}
+        .panel-body
+            dl.dl-horizontal
+                dt Name:
+                dd #{user.data.fname} #{user.data.lname}
+
+                dt Email:
+                dd #{user.data.email}
+
+                dt Badge Number:
+                dd #{user.data.badge}
+
+                dt Section / Unit:
+                dd #{user.data.secunit}
+
+                dt Rank / Title:
+                dd #{user.data.ranktitle}
+
+                dt Role:
+                dd #{user.roleName()}
+
+    - var resource = "/admin/users/" + user.data.id
+    a.btn.btn-default(href=resource + "/edit-details") Edit Account Details
+    a.btn.btn-default(href=resource + "/reset-password") Reset Password
+    a.btn.btn-danger(href=resource + "/delete") Delete User
