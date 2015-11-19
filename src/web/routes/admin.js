@@ -1,18 +1,16 @@
 /* jshint node: true */
 'use strict';
 
-var fs = require('fs');
-var multiparty = require('multiparty');
-var path = require('path');
-var Promise = require('promise');
-var router = require('express').Router();
+var fs              = require('fs');
+var multiparty      = require('multiparty');
+var path            = require('path');
+var Promise         = require('promise');
+var router          = require('express').Router();
 
-var core = path.resolve( __dirname, '../../core/' );
-var UserService = require( path.join( core, 'service/user-service' ) );
-var AdapterFactory = require( path.join( core, 'adapters' ) );
+var config          = require( '../config' );
 
-var userRepository = AdapterFactory.create( 'persistence', 'cloudant-user-repository' );
-var userService = new UserService( userRepository );
+var userService     = new config.UserService( userRepository );
+var userRepository  = new config.UserRepository();
 
 module.exports = router;
 
