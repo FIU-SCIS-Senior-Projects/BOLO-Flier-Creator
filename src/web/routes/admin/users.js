@@ -9,8 +9,8 @@ var router          = require('express').Router();
 
 var config          = require( '../../config' );
 
-var userService     = new config.UserService( userRepository );
 var userRepository  = new config.UserRepository();
+var userService     = new config.UserService( userRepository );
 
 module.exports = router;
 
