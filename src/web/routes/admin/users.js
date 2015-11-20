@@ -151,10 +151,14 @@ router.get( '/users/:id', function ( req, res ) {
  */
 router.get( '/users/:id/reset-password', function( req, res ) {
     var data = {
-        'user': req.user
+        'msg': req.flash( 'msg' ),
+        'err': req.flash( 'error' )
     };
 
-    res.render( 'user-reset-password', data );
+    userService.getUser( req.params.id ).then( function ( user ) {
+        data.user = user;
+        res.render( 'user-reset-password', data );
+    });
 });
 
 /**
