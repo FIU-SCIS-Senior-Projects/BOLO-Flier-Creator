@@ -146,6 +146,18 @@ router.get( '/users/:id', function ( req, res ) {
 });
 
 /**
+ * GET /users/:id/reset-password
+ * Responds with a form to reset a user's password
+ */
+router.get( '/users/:id/reset-password', function( req, res ) {
+    var data = {
+        'user': req.user
+    };
+
+    res.render( 'user-reset-password', data );
+});
+
+/**
  * GET /users/delete/:id
  * Attempts to delete user with the given id
  */
