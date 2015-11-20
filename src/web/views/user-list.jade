@@ -1,16 +1,10 @@
-extends layout
+extends admin-layout
 include includes/mixins
 
-block jumbo
-  .jumbotron
-    .container
-      h1 Admin Portal
-      p User Directory
+block jumbo-desc
+    p User Directory
 
-block content
-  p 
-    a(href="/admin") < Back to Admin Dashboard
-
+block admin-content
   div
     each m in msg
       if m.length
