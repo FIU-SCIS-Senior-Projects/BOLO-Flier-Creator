@@ -1,0 +1,18 @@
+extends ./layout.jade
+
+block jumbo
+    .jumbotron
+        .container
+            h1 Admin Portal
+            block jumbo-desc
+
+block content
+    .row
+        .col-sm-3
+            ul.nav.nav-stacked
+                li
+                    a(href="/admin") Dashboard
+                li
+                    a(href="/admin/users") User Management
+        .col-sm-9
+            block admin-content

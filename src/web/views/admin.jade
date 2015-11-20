@@ -1,32 +1,8 @@
-extends layout
+extends ./admin-layout.jade
 
-block jumbo
-  .jumbotron
-    .container
-      h1 Admin Portal
-      p Dashboard
+block jumbo-desc
+    p Dashboard
 
-block content
-  .row
-    .col-md-4
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title Manage Users
-        .panel-body
-          ul.list-unstyled
-            li
-              a(href="/admin/createuser") Create a new user
-            li
-              a(href="/admin/users") User Directory
+block admin-content
+    p.lead This is a the BOLO System Dashboard,
 
-    .col-md-4
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title Manage Agencies
-        .panel-body
-
-    .col-md-4
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title Options
-        .panel-body
