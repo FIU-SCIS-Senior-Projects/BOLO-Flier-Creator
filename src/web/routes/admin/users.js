@@ -162,6 +162,36 @@ router.get( '/users/:id/reset-password', function( req, res ) {
 });
 
 /**
+ * POST /users/:id/reset-password
+ * Process a request to reset a user's password.
+ */
+router.post( '/users/:id/reset-password', function( req, res ) {
+    var userID = req.params.id;
+
+    parseFormData( req ).then( function ( formDTO ) {
+        if ( formDTO.fields.pass_new !== formDTO.fields.pass_conf ) {
+            req.flash( 'error', 'Passwords must match.' );
+            res.redirect( 'back' );
+        } else {
+            return userService.resetPassword( userID, formDTO.fields.pass_new );
+        }
+    }, function( error ) {
+        console.error( 'Error at /users/:id/reset-password >>> ', error.message );
+        req.flash( 'error', 'Error processing form, please try again.' );
+        res.redirect( 'back' );
+    })
+    .then( function ( ) {
+        req.flash( 'msg', 'Password reset successful.' );
+        res.redirect( '/admin/users/' + userID );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at /users/:id/reset-password >>> ', error.message );
+        req.flash( 'error', 'Unknown error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
+});
+
+/**
  * GET /users/delete/:id
  * Attempts to delete user with the given id
  */
