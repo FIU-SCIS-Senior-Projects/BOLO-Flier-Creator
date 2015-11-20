@@ -72,11 +72,12 @@ var isAuthenticated = function ( req, res, next ) {
     if ( req.isAuthenticated() ) next();
     else res.redirect( '/login' );
 };
+
+app.use( express.static( path.join( __dirname, 'public' ) ) );
 app.use( function ( req, res, next ) {
     if ( req.user ) res.locals.userLoggedIn = true;
     next();
 });
-app.use( express.static( path.join( __dirname, 'public' ) ) );
 app.use( auth.router );
 app.use( '/admin', isAuthenticated, routes.admin );
 app.use( '/bolo', isAuthenticated, routes.bolos );
