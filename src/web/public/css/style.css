@@ -1,0 +1,24 @@
+
+
+.btn {
+    margin: 3px;
+}
+
+table.details {
+    margin-bottom: 2rem;
+}
+
+table.details td {
+    border-top: 1px solid #ECF0F1;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 1rem 2rem;
+}
+
+table.details td:first-child {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+table.details td:last-child {
+    width: 99%;
+}
