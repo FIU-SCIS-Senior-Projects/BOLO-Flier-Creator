@@ -1,26 +1,4 @@
 extends layout
 
 block content
-    h1 Agencies
-    table.table.table-striped
-        thead
-            tr
-                th="Name"
-                th="Address"
-                th="City"
-                th="Zip"
-                th="State"
-                th="Phone"
-        tbody
-        for agency in agencies
-           tr
-                td= agency.data.name
-                td=agency.data.address
-                td= agency.data.city
-                td= agency.data.zip
-                td= agency.data.state
-                td= agency.data.phone
-                td
-                    a(href="/agency/edit/"+ agency.data.id role="button") Edit
-                td
-                    a(href="#" role="button") Delete
+    h1 Eventually this page will show a list of agencies. Stay tuned.
