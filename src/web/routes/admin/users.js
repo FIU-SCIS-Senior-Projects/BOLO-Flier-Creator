@@ -62,18 +62,26 @@ function parseFormData ( req ) {
  * GET /createuser
  * Responds with a form to create a new user.
  */
-router.get( '/createuser', function ( req, res ) {
-    res.render( 'create-user-form', {
-        'roles': userService.getRoleNames()
-    });
+router.get( '/users/create', function ( req, res ) {
+    var data = {
+        'roles': userService.getRoleNames(),
+        'msg': req.flash( 'msg' ),
+        'err': req.flash( 'error' )
+    };
+    console.log( data );
+    res.render( 'user-create-form', data );
 });
 
 /**
  * POST /createuser
  * Process data to create a user, respond with the result.
  */
-router.post( '/createuser', function ( req, res ) {
-    var userRoles = userService.getRoleNames();
+router.post( '/users/create', function ( req, res ) {
+    var data = {
+        'roles': userService.getRoleNames(),
+        'msg': req.flash( 'msg' ),
+        'err': req.flash( 'error' )
+    };
 
     parseFormData( req )
         .then( function ( formDTO ) {
@@ -85,17 +93,15 @@ router.post( '/createuser', function ( req, res ) {
             return Promise.all([ result, formDTO ]);
         })
         .then( function ( pData ) {
-            if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
-            res.render( 'create-user-form', {
-                'msg': 'Successfully registered user.',
-                'roles': userRoles
-            });
+            if ( pData[1].files.length ) {
+                cleanTemporaryFiles( pData[1].files );
+            }
+            data.msg.push( 'Successfully registered user.' );
+            res.render( 'user-create-form', data );
         })
         .catch( function ( error ) {
-            res.render( 'create-user-form', {
-                'error': error,
-                'roles': userRoles
-            });
+            data.err.push( error.message );
+            res.render( 'user-create-form', data );
         });
 });
 
@@ -119,23 +125,6 @@ router.get( '/users', function ( req, res ) {
 });
 
 /**
- * GET /users/delete/:id
- * Attempts to delete user with the given id
- */
-router.get( '/users/:id/delete', function ( req, res ) {
-    userService.removeUser( req.params.id ).then(
-        function ( result ) {
-            req.flash( 'msg', 'Successfully deleted user.' );
-            res.redirect( '/admin/users' );
-        },
-        function ( error ) {
-            req.flash( 'error', 'Unable to delete, please try again.' );
-            res.redirect( '/admin/users' );
-        }
-    );
-});
-
-/**
  * GET /users/:id
  * Responds with account information for a specified user.
  */
@@ -155,3 +144,21 @@ router.get( '/users/:id', function ( req, res ) {
         res.redirect( 'back' );
     });
 });
+
+/**
+ * GET /users/delete/:id
+ * Attempts to delete user with the given id
+ */
+router.get( '/users/:id/delete', function ( req, res ) {
+    userService.removeUser( req.params.id ).then(
+        function ( result ) {
+            req.flash( 'msg', 'Successfully deleted user.' );
+            res.redirect( '/admin/users' );
+        },
+        function ( error ) {
+            req.flash( 'error', 'Unable to delete, please try again.' );
+            res.redirect( '/admin/users' );
+        }
+    );
+});
+
