@@ -111,6 +111,20 @@ UserService.prototype.getUsers = function () {
     return this.userRepository.getAll();
 };
 
+UserService.prototype.resetPassword = function ( id, password ) {
+    var context = this;
+
+    return context.userRepository.getById( id ).then( function ( user ) {
+        user.data.password = password;
+        return context.userRepository.update( user );
+    }, function ( error ) {
+        throw new Error( 'Unable to get current user data: ', error.message );
+    })
+    .catch( function ( error ) {
+        throw new Error( 'Error saving password to repository: ', error.message );
+    });
+};
+
 /**
  * Remove a user from the system.
  *
