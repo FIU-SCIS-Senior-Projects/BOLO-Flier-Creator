@@ -59,7 +59,7 @@ function parseFormData ( req ) {
 }
 
 /**
- * GET /createuser
+ * GET /users/create
  * Responds with a form to create a new user.
  */
 router.get( '/users/create', function ( req, res ) {
@@ -73,7 +73,7 @@ router.get( '/users/create', function ( req, res ) {
 });
 
 /**
- * POST /createuser
+ * POST /users/create
  * Process data to create a user, respond with the result.
  */
 router.post( '/users/create', function ( req, res ) {
