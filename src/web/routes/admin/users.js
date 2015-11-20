@@ -192,6 +192,36 @@ router.post( '/users/:id/reset-password', function( req, res ) {
 });
 
 /**
+ * GET /users/:id/edit-details
+ * Responds with a form for editing a user's details.
+ */
+router.get( '/users/:id/edit-details', function ( req, res ) {
+    var data = {
+        'msg': req.flash( 'msg' ),
+        'err': req.flash( 'error' )
+    };
+
+    userService.getUser( req.params.id ).then( function ( user ) {
+        data.user = user;
+        res.render( 'user-edit-details', data );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at /users/:id/edit-details >>> ', error.message );
+        req.flash( 'error', 'Unkown error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
+});
+
+/**
+ * POST /users/:id/edit-details
+ * Process a request to update a user's details.
+ */
+router.post( '/users/:id/edit-details', function ( req, res ) {
+    req.flash( 'error', 'Submition processing not implemented yet.' );
+    res.redirect( 'back' );
+});
+
+/**
  * GET /users/delete/:id
  * Attempts to delete user with the given id
  */

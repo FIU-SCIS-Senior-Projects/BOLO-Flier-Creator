@@ -1,0 +1,34 @@
+extends ./admin-layout.jade
+include ./includes/mixins.jade
+
+
+block jumbo-desc
+    p Edit User Details
+
+block admin-content
+    div
+        each m in msg
+            if m.length
+                +alert_info( m )
+        each e in err
+            if e.message
+                +alert_error( e.message )
+            else if e.length
+                +alert_error( e )
+
+    - var route = "/admin/users/" + user.data.id;
+
+    form(action=route + "/edit-details" enctype="multipart/form-data" method="post")
+        +input_mx("fname", "First Name", "", false, user.data.fname)
+        +input_mx("lname", "Last Name", "", false,  user.data.lname)
+        +input_mx("email", "Email (required)", "", true, user.data.email)
+
+        if ( roles )
+            +select_options("role", "Role", roles, true, user.roleName())
+
+        +input_mx("badge", "Badge No.", "", false,  user.data.badge)
+        +input_mx("secunit", "Section / Unit", "", false, user.data.secunit)
+        +input_mx("ranktitle", "Rank / Title", "", false, user.data.ranktitle)
+
+        .form-group
+            button.btn.btn-primary(type="submit" value="save") Submit
