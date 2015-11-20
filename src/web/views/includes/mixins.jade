@@ -80,3 +80,11 @@ mixin alert_warning(msg)
             span(aria-hidden="true") &times;
         = msg
 
+
+
+mixin alert_error(msg)
+    .alert.alert-danger.alert-dismissable(role="alert")
+        button.close(type="button" data-dismiss="alert" aria-label="Close")
+            span(aria-hidden="true") &times;
+        = msg
+
