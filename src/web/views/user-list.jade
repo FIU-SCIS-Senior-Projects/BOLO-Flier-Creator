@@ -12,28 +12,37 @@ block content
     a(href="/admin") < Back to Admin Dashboard
 
   div
-    if msg.length
-      +alert_info( msg )
-    if err.length
-      +alert_error( err )
+    each m in msg
+      if m.length
+        +alert_info( m )
+    each e in err
+      if e.message
+        +alert_error( e.message )
+      else if e.length
+        +alert_error( e )
 
-  table.table.table-striped
-    thead
-      tr
-        th Username
-        th Name
-        th Email
-        th Role
-        th 
-        th 
-    tbody
-      each user in users
-        tr
-          td= user.data.username
-          td= user.data.fname + ' ' + user.data.lname
-          td= user.data.email
-          td= user.roleName()
-          td
-            a(href="/admin/users/" + user.data.id) View
-          td
-            a(href="/admin/users/" + user.data.id + "/delete") Delete
+  if 0 === users.length
+      p.lead.bg-info "No users registered."
+  else
+      table.table.table-striped
+        thead
+          tr
+            th Username
+            th Name
+            th Email
+            th Role
+            th 
+            th 
+        tbody
+          each user in users
+            tr
+              td= user.data.username
+              td= user.data.fname + ' ' + user.data.lname
+              td= user.data.email
+              td= user.roleName()
+              td
+                a(href="/admin/users/" + user.data.id) View
+              td
+                a(href="/admin/users/" + user.data.id + "/delete") Delete
+
+    a.btn.btn-default(href="/admin/users/create") Add New User

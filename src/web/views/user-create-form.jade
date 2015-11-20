@@ -30,18 +30,17 @@ block jumbo
       p New User Registration
 
 block content
-  p
-    a(href="/admin") < Back to Admin Dashboard
-
-  //- Alerts
-  if ( error )
-    +alert_error( error.message )
-
-  if ( msg )
-    +alert_info( msg )
+  each m in msg
+    if m.length
+      +alert_info( m )
+  each e in err
+    if e.message
+      +alert_error( e.message )
+    else if e.length
+      +alert_error( e )
 
   //- Actual Form
-  form(action="/admin/createuser" enctype="multipart/form-data" method="post")
+  form(action="/admin/users/create" enctype="multipart/form-data" method="post")
     +input_mx("username", "Username (required)", "", true, "")
     +input_mx("email", "Email (required)", "", true, "")
     +input_mx("fname", "First Name", "", false, "")
@@ -67,4 +66,4 @@ block content
     +input_mx("ranktitle", "Rank / Title", "", false,  "")
 
     .form-group
-      button.btn.btn-primary(type="submit" value="save") Add New User
+      button.btn.btn-primary(type="submit" value="save") Submit
