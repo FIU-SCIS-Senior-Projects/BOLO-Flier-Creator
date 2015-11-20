@@ -1,31 +1,29 @@
 extends admin-layout
 
-block admin-jumbo
+block jumbo-desc
     p User Details
 
 block admin-content
-    .panel.panel-primary
-        .panel-heading
-            h3 User: #{user.data.username}
-        .panel-body
-            dl.dl-horizontal
-                dt Name:
-                dd #{user.data.fname} #{user.data.lname}
-
-                dt Email:
-                dd #{user.data.email}
-
-                dt Badge Number:
-                dd #{user.data.badge}
-
-                dt Section / Unit:
-                dd #{user.data.secunit}
-
-                dt Rank / Title:
-                dd #{user.data.ranktitle}
-
-                dt Role:
-                dd #{user.roleName()}
+    h3 #{user.data.username}
+    table.details
+        tr
+            td Name
+            td #{user.data.fname} #{user.data.lname}
+        tr
+            td Email
+            td #{user.data.email}
+        tr
+            td Badge Number
+            td #{user.data.badge}
+        tr
+            td Section / Unit
+            td #{user.data.secunit}
+        tr
+            td Rank / Title
+            td #{user.data.ranktitle}
+        tr
+            td Role
+            td #{user.roleName()}
 
     - var resource = "/admin/users/" + user.data.id
     a.btn.btn-default(href=resource + "/edit-details") Edit Account Details
