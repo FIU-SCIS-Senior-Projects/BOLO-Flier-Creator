@@ -41,6 +41,25 @@ CloudantUserRepository.prototype.insert = function ( user ) {
         });
 };
 
+CloudantUserRepository.prototype.update = function ( user ) {
+    var newdoc = toCloudant( user );
+
+    return db.get( user.data.id ).then( function ( doc ) {
+        newdoc._rev = doc._rev;
+        return db.insert( newdoc );
+    })
+    .then( function ( response ) {
+        if ( !response.ok ) {
+            throw new Error( 'Unable to update User' );
+        }
+        return fromCloudant( newdoc );
+    })
+    .catch( function ( error ) {
+        console.log( error );
+        throw error;
+    });
+};
+
 CloudantUserRepository.prototype.getAll = function () {
     return db.view( 'users', 'by_username', { 'include_docs': true } )
         .then( function ( docs ) {
