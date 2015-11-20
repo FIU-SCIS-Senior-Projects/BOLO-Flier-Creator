@@ -86,19 +86,3 @@ mixin alert_error(msg)
             span(aria-hidden="true") &times;
         = msg
 
-mixin select_options(name, label, options, required, selectedValue)
-  .form-group
-    label.control-label(for=name)= label
-    select.form-control(name=name)
-      option() Select an option...
-      each val in options
-          if selectedValue == val
-            +option(val,true)
-          else
-            +option(val,false)
-mixin form_labels_row(label,value, css)
-  div.form-group(class=css)
-    label.col-sm-3.control-label= label + ":"
-    div.col-sm-9
-    p= value
->>>>>>> Stashed changes

@@ -45,7 +45,7 @@ function boloFromCloudant( bolo_doc ) {
 function boloToCloudant( bolo ) {
     var doc = _.assign( {}, bolo.data );
 
-    doc.type = DOCTYPE;
+    doc.Type = DOCTYPE;
     doc._id = doc.id;
 
     delete doc.id;
@@ -152,7 +152,6 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
     newdoc._id = createAgencyBoloID( newdoc.agency );
 
     var handleBoloInsert = function ( attDTOs ) {
-        console.log(">>>>");
         if ( attDTOs.length ) {
             return db.insertMultipart( newdoc, attDTOs, newdoc._id );
         } else {

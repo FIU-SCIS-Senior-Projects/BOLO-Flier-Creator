@@ -7,7 +7,16 @@ mixin input_textarea(name, label, placeholder, required, value)
     label.control-label(for=name)= label
     textarea.form-control(name=name type="text" placeholder=placeholder)= value
 
-
+mixin select_options(name, label, options, required, selectedValue)
+  .form-group
+    label.control-label(for=name)= label
+    select.form-control(name=name)
+      option() Select an option...
+      each val in options
+          if selectedValue == val
+            +option(val,true)
+          else
+            +option(val,false)
 
 block jumbo
   .jumbotron

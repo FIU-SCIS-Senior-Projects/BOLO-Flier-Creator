@@ -6,12 +6,9 @@ var fs = require('fs');
 var Jimp = require('jimp');
 var Promise = require('promise');
 var uuid = require('node-uuid');
-var path = require('path');
 
 var db = require('../../lib/cloudant-promise').db.use('bolo');
-var core_dir = path.resolve(__dirname + '../../../');
 var Agency = require('../../domain/agency.js');
-var CommonService = require(path.join(core_dir, 'service/common-service'));
 
 var DOCTYPE = 'agency';
 
@@ -59,8 +56,6 @@ function agencyToCloudant(agency) {
     var doc = _.assign({}, agency.data);
 
     doc._id = doc.id;
-    doc.type= DOCTYPE;
-    
 
     delete doc.id;
 
@@ -138,41 +133,6 @@ CloudantAgencyRepository.prototype.insert = function (agency, attachments) {
         });
 };
 
-/**
- * Updates an agency
- *
- * @param {Agency} - the agency to update
- * @param {Attachments} - the attachments belonging to that agency
- */
-CloudantAgencyRepository.prototype.update = function ( agency, attachments ) {
-    var agencyToUpdate = agencyToCloudant( agency );
-    var atts = attachments || [];
-
-    var currentAgencyRev = db.get( agency.data.id );
-    var attsPromise = Promise.all( atts.map( transformAttachment ) );
-
-    return Promise.all([ currentAgencyRev, attsPromise ])
-        .then( function ( data ) {
-            var doc = data[0],
-                attDTOs = data[1];
-
-            agencyToUpdate._rev = doc._rev;
-            agencyToUpdate._attachments = doc._attachments || {};
-
-            if ( attDTOs.length ) {
-                return db.insertMultipart( agencyToUpdate, attDTOs, agencyToUpdate._id );
-            } else {
-                return db.insert( agencyToUpdate );
-            }
-        })
-        .then( function ( response ) {
-            if ( !response.ok ) throw new Error( 'Unable to update AGENCY' );
-            return Promise.resolve( agencyFromCloudant( agencyToUpdate ) );
-        })
-        .catch( function ( error ) {
-            return Promise.reject( error );
-        });
-};
 
 /**
  * Retrieve an agency document from the Cloudant Database
@@ -182,36 +142,7 @@ CloudantAgencyRepository.prototype.update = function ( agency, attachments ) {
 CloudantAgencyRepository.prototype.getAgency = function (id) {
     return db.get(id)
         .then(function (agency_doc) {
+            console.log(agency_doc);
             return agencyFromCloudant(agency_doc);
         });
-};
-
-/**
- * Retrieve a collection of agencies from the cloudant database
- */
-CloudantAgencyRepository.prototype.getAgencies = function () {
-    return db.view( 'agency', 'all_active', { include_docs: true } )
-        .then( function ( result ) {
-            var agencies = result.rows.map( function ( item ) {
-                return agencyFromCloudant( item.doc );
-            });
-            return Promise.resolve( agencies );
-        });
-};
-
-CloudantAgencyRepository.prototype.getAttachment = function ( id, attname ) {
-    var bufferPromise = db.getAttachment( id, attname );
-    var docPromise = db.get( id );
-
-    return Promise.all([ bufferPromise, docPromise ])
-    .then( function ( data ) {
-        var buffer = data[0];
-        var attinfo = data[1]._attachments[attname];
-
-        return {
-            'name': attname,
-            'content_type': attinfo.content_type,
-            'data': buffer
-        };
-    });
 };

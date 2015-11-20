@@ -7,9 +7,10 @@ var agencyTemplate = {
     name: '',
     address: '',
     city: '',
-    state:'',
     zip: '',
-    phone: ''    
+    phone: '',
+    logo: '',
+    shield: ''
 };
 
 /** @module core/domain */
@@ -45,17 +46,4 @@ Agency.prototype.attachImage = function (meta) {
 Agency.prototype.isValid = function () {
     // TODO Pending Implementation
     return true;
-};
-
-/**
- * Returns an array of keys differing from the source user object.
- *
- * @param {Agency} - the other agency to compare to
- */
-Agency.prototype.diff = function ( other ) {
-    var source = this;
-    return Object.getOwnPropertyNames( source.data )
-        .filter( function ( key ) {
-            return ! _.isEqual( other.data[key], source.data[key] );
-        });
 };
