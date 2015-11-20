@@ -72,7 +72,6 @@ function parseFormData ( req ) {
 
         form.on( 'field', function ( field, value ) { fields[field] = value; } );
         form.on( 'file' , function ( name, file) {
-            if ( file.originalFilename )
             files.push({
                 'name': file.originalFilename,
                 'content_type': file.headers['content-type'],
@@ -130,7 +129,7 @@ router.post('/create', function(req, res) {
     });
 });
 
-// handle requests to edit a specific bolo
+// render the bolo edit form
 router.get('/edit/:id', function (req, res) {
 
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
@@ -163,7 +162,7 @@ router.post('/edit/:id', function (req, res) {
         res.redirect( '/bolo' );
     })
     .catch( function ( _error ) {
-        console.error( '>>> edit bolo route error: ', _error );
+        console.log( '>>> edit bolo route error: ', _error );
         res.redirect( 'back' );
     });
 
@@ -183,6 +182,22 @@ router.post('/delete/:id', function (req, res) {
         })
         .catch(function (_error) {
             /** @todo redirect and send flash message with error */
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
+});
+
+// handle requests to view the details of a bolo
+router.get('/details/:id', function ( req, res ) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+
+    boloService.getBolo(req.params.id)
+        .then(function (bolo) {
+            res.render('bolo-details', {
+                bolo: bolo
+            });
+        })
+        .catch(function (_error) {
             res.status(500).send('something wrong happened...', _error.stack);
         });
 });
