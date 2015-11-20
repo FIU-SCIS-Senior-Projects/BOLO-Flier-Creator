@@ -130,7 +130,7 @@ router.post('/create', function(req, res) {
     });
 });
 
-// handle requests to edit a specific bolo
+// render the bolo edit form
 router.get('/edit/:id', function (req, res) {
 
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
@@ -183,6 +183,22 @@ router.post('/delete/:id', function (req, res) {
         })
         .catch(function (_error) {
             /** @todo redirect and send flash message with error */
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
+});
+
+// handle requests to view the details of a bolo
+router.get('/details/:id', function ( req, res ) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+
+    boloService.getBolo(req.params.id)
+        .then(function (bolo) {
+            res.render('bolo-details', {
+                bolo: bolo
+            });
+        })
+        .catch(function (_error) {
             res.status(500).send('something wrong happened...', _error.stack);
         });
 });
