@@ -59,14 +59,6 @@ function parseFormData ( req ) {
 }
 
 /**
- * GET /
- * Responds with the root admin template.
- */
-router.get( '/', function ( req, res ) {
-    res.render( 'admin' );
-});
-
-/**
  * GET /createuser
  * Responds with a form to create a new user.
  */
