@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1 Archive Bolos
+  #bolos
+  div.row
+    for bolo in bolos
+        div.col-sm-6.col-md-4
+            div.thumbnail
+                if bolo.data.attachments
+                    - var keys = Object.keys( bolo.data.attachments )
+                    img(src="/bolo/asset/" + bolo.data.id + "/" + keys[0] alt="" style="height:300px")
+                div.caption
+                    h3= bolo.data.category
+                    p= "Author: " +  bolo.data.firstName + " " +  bolo.data.lastName
+                    p= bolo.data.enteredDT
+                    p
+                         a.btn.btn-primary(role="button", type="submit" class="restore-bolo" id=bolo.data.id) Restore
+                         a.btn.btn-danger(role="button", type="submit" class="delete-bolo", id=bolo.data.id) Delete
