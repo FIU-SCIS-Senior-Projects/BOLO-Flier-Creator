@@ -102,6 +102,19 @@ router.get('/', function (req, res) {
         });
 });
 
+// list archive bolos
+router.get('/archive', function (req, res) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+
+    boloService.getArchiveBolos()
+        .then(function (bolos) {
+            res.render('bolo-archive', {
+                bolos: bolos
+            });
+        });
+});
+
 // render the bolo create form
 router.get('/create', function (req, res) {
     res.render( 'create-bolo-form' );
@@ -168,7 +181,44 @@ router.post('/edit/:id', function (req, res) {
 
 });
 
-// handle requests to delete a specific bolo
+// handle requests to inactivate a specific bolo
+router.post('/archive/:id', function (req, res) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+    
+    var activate = false;
+    return boloService.activate( req.params.id, activate )
+        .then( function ( success ) {
+            if ( !success ) {
+                throw new Error( "Bolo not inactivated. Please try again." );
+            }
+            res.redirect( '/bolo' );
+        })
+        .catch(function (_error) {
+            /** @todo redirect and send flash message with error */
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
+});
+
+router.post('/restore/:id', function (req, res) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+    
+    var activate = true;
+    return boloService.activate( req.params.id, activate )
+        .then( function ( success ) {
+            if ( !success ) {
+                throw new Error( "Bolo not activated. Please try again." );
+            }
+            res.redirect( '/bolo/archive' );
+        })
+        .catch(function (_error) {
+            /** @todo redirect and send flash message with error */
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
+});
+
+
 router.post('/delete/:id', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var boloService = new BoloService(boloRepository);
@@ -181,7 +231,7 @@ router.post('/delete/:id', function (req, res) {
             res.redirect( '/bolo' );
         })
         .catch(function (_error) {
-            /** @todo redirect and send flash message with error */
+            // @todo redirect and send flash message with error 
             res.status(500).send('something wrong happened...', _error.stack);
         });
 });
@@ -214,4 +264,9 @@ router.get( '/asset/:boloid/:attname', function ( req, res ) {
         });
 });
 
+function ArchiveRestoreBolo(boloId, activate)
+{
+    
+    
+}
 module.exports = router;
