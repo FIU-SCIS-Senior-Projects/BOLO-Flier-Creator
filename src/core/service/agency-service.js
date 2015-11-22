@@ -4,7 +4,6 @@ var _ = require('lodash');
 
 var Agency = require('../domain/agency.js');
 var Promise = require('promise');
-var CONTENTTYPE = "application/octet-stream";
 
 /** @module core/ports */
 module.exports = AgencyService;
@@ -64,12 +63,6 @@ AgencyService.prototype.updateAgency = function ( agencyData, attachments ) {
     .then( function ( original ) {
         
         var atts = _.assign( {}, original.data.attachments );
-        _.forEach(attachments, function(attachment, index){
-           if (attachment.content_type != CONTENTTYPE)
-           {
-               atts[index] = attachment[index];
-           }
-        });
         original.diff( updated ).forEach( function ( key ) {
             original.data[key] = updated.data[key];
         });
