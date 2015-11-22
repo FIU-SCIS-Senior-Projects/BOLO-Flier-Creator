@@ -150,9 +150,10 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
 
     var newdoc = boloToCloudant( bolo );
     newdoc._id = createAgencyBoloID( newdoc.agency );
+    newdoc.isActive = true;
 
     var handleBoloInsert = function ( attDTOs ) {
-        console.log(">>>>");
+
         if ( attDTOs.length ) {
             return db.insertMultipart( newdoc, attDTOs, newdoc._id );
         } else {
@@ -215,10 +216,24 @@ CloudantBoloRepository.prototype.update = function ( bolo, attachments ) {
 
 
 /**
- * Delete a bolo from the bolo repository.
+ * Inactivate a bolo from the bolo repository.
  *
- * @param {String} - The id of the bolo to delete
+ * @param {String} - The id of the bolo to inactivate
  */
+CloudantBoloRepository.prototype.activate = function ( id, activate ) {
+
+    return db.get( id )
+        .then( function ( bolo ) {
+            bolo.isActive = activate;
+            return db.insert( bolo);
+        })
+        .catch( function ( error ) {
+            return new Error(
+                'Failed to activate/inactivate BOLO: ' + error.error + ' / ' + error.reason
+            );
+        });
+};
+
 CloudantBoloRepository.prototype.delete = function ( id ) {
     // **UNDOCUMENTED BEHAVIOR**
     // cloudant/nano library destroys the database if a null/undefined argument
@@ -241,6 +256,16 @@ CloudantBoloRepository.prototype.delete = function ( id ) {
 
 CloudantBoloRepository.prototype.getBolos = function () {
     return db.view( 'bolo', 'all_active', { include_docs: true } )
+        .then( function ( result ) {
+            var bolos = result.rows.map( function ( item ) {
+                return boloFromCloudant( item.doc );
+            });
+            return Promise.resolve( bolos );
+        });
+};
+
+CloudantBoloRepository.prototype.getArchiveBolos = function () {
+    return db.view( 'bolo', 'all_archive', { include_docs: true } )
         .then( function ( result ) {
             var bolos = result.rows.map( function ( item ) {
                 return boloFromCloudant( item.doc );
