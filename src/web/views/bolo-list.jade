@@ -9,7 +9,7 @@ block content
             div.thumbnail
                 if bolo.data.attachments
                     - var keys = Object.keys( bolo.data.attachments )
-                    img(src="/bolo/asset/" + bolo.data.id + "/" + keys[0] alt="")
+                    img(src="/bolo/asset/" + bolo.data.id + "/" + keys[0] alt="" style="height:300px")
                 div.caption
                     h3= bolo.data.category
                     p= "Author: " +  bolo.data.firstName + " " +  bolo.data.lastName
@@ -17,4 +17,4 @@ block content
                     p
                          a.btn.btn-primary(href="/bolo/edit/" + bolo.data.id, role="button") Edit
                          a.btn.btn-default(href="/bolo/details/" + bolo.data.id, role="button") Details
-                         a.btn.btn-danger(role="button", type="submit" class="delete-bolo", id=bolo.data.id) Delete
+                         a.btn.btn-danger(role="button", type="submit" class="archive-bolo", id=bolo.data.id) Archive
