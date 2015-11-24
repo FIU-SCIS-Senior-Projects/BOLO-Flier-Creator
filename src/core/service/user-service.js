@@ -134,3 +134,29 @@ UserService.prototype.resetPassword = function ( id, password ) {
 UserService.prototype.removeUser = function ( id ) {
     return this.userRepository.remove( id );
 };
+
+/**
+ * Attempt to create a formatted object suitable for use with UserService
+ * methods.
+ *
+ * @param {Object} - the input data object
+ * @return {Object} DTO object containing keys identified as suitable from the
+ * input object.
+ */
+UserService.formatDTO = function ( dto ) {
+    var userDTO = new User().data;
+
+    Object.keys( userDTO ).forEach( function ( key ) {
+        userDTO[key] = dto[key] || null;
+    });
+
+    return userDTO;
+};
+
+/**
+ * A convenience wrapper to the static UserService.formatDTO method.
+ * @see {@link UserService.formatDTO}
+ */
+UserService.prototype.formatDTO = function ( dto ) {
+    return UserService.formatDTO( dto );
+};
