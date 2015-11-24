@@ -126,6 +126,34 @@ UserService.prototype.resetPassword = function ( id, password ) {
 };
 
 /**
+ * Update user data.
+ *
+ * @param {String} - the id of the user to update
+ * @param {Object} - object with the data to update, null values indicate no
+ * change
+ * @returns {Promise|User} the updated user object
+ */
+UserService.prototype.updateUser = function ( id, userDTO ) {
+    var context = this;
+
+    return context.userRepository.getById( id ).then( function ( user ) {
+        Object.keys( user.data ).forEach( function ( key ) {
+            if ( userDTO[key] ) user.data[key] = userDTO[key];
+        });
+        return context.userRepository.update( user );
+    }, function ( error ) {
+        throw new Error(
+            'Unable to get user id ' + id + ': ' + error.message
+        );
+    })
+    .catch( function ( error ) {
+        throw new Error(
+            'Error saving user data changes to repository: ' + error.message
+        );
+    });
+};
+
+/**
  * Remove a user from the system.
  *
  * @param {String} - the id of the user to remove
