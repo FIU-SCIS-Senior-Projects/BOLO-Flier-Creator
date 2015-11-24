@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var _               = require('lodash');
 var fs              = require('fs');
 var multiparty      = require('multiparty');
 var path            = require('path');
@@ -197,9 +198,15 @@ router.post( '/users/:id/reset-password', function( req, res ) {
  */
 router.get( '/users/:id/edit-details', function ( req, res ) {
     var data = {
+        'roles': userService.getRoleNames(),
         'msg': req.flash( 'msg' ),
         'err': req.flash( 'error' )
     };
+
+    /** @todo Fix this temporary thing **/
+    data.roles = data.roles.map( function ( role ) {
+        return _.snakeCase( role ).toUpperCase();
+    });
 
     userService.getUser( req.params.id ).then( function ( user ) {
         data.user = user;
