@@ -59,6 +59,13 @@ function parseFormData ( req ) {
     });
 }
 
+function transformRoleToTier ( formFieldsObject ) {
+    if ( formFieldsObject.role ) {
+        formFieldsObject.tier = userService.getRole( formFieldsObject.role );
+        delete formFieldsObject.role;
+    }
+}
+
 /**
  * GET /users/create
  * Responds with a form to create a new user.
@@ -224,8 +231,26 @@ router.get( '/users/:id/edit-details', function ( req, res ) {
  * Process a request to update a user's details.
  */
 router.post( '/users/:id/edit-details', function ( req, res ) {
-    req.flash( 'error', 'Submition processing not implemented yet.' );
-    res.redirect( 'back' );
+    var id = req.params.id;
+
+    parseFormData( req ).then( function ( formDTO ) {
+        transformRoleToTier( formDTO.fields );
+        var userDTO = userService.formatDTO( formDTO.fields );
+        return userService.updateUser( id, userDTO );
+    }, function ( error ) {
+        console.error( 'Error at /users/:id/edit-details >>> ', error.message );
+        req.flash( 'error', 'Unable to process form, please try again.' );
+        res.redirect( 'back' );
+    })
+    .then( function ( success ) {
+        req.flash( 'msg', 'User update successful.' );
+        res.redirect( '/admin/users/' + id );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at /users/:id/edit-details >>> ', error.message );
+        req.flash( 'error', 'Unknown error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
 });
 
 /**
