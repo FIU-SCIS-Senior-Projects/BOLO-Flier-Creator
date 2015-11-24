@@ -18,6 +18,9 @@ block admin-content
 
     - var route = "/admin/users/" + user.data.id;
 
+    h3 Username: #{user.data.username}
+    br
+
     form(action=route + "/edit-details" enctype="multipart/form-data" method="post")
         +input_mx("fname", "First Name", "", false, user.data.fname)
         +input_mx("lname", "Last Name", "", false,  user.data.lname)
