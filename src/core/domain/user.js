@@ -80,6 +80,13 @@ function User ( data ) {
     });
 }
 
+/**
+ * Get the role name by providing the tier value.
+ * @private
+ */
+function getRoleByValue ( value ) {
+    return _.findKey( EnumRoles, function ( role ) {
+        return ( role === value );
     });
 }
 
@@ -92,11 +99,12 @@ User.roleNames = function () {
     return Object.keys( EnumRoles );
 };
 
+/**
+ * Get the role name of the current user.
+ * @returns {String} role name of this object
+ */
 User.prototype.roleName = function () {
-    var context = this;
-    return _.findKey( EnumRoles, function ( role ) {
-        return ( role === context.data.tier );
-    });
+    return getRoleByValue( this.tier );
 };
 
 /**
