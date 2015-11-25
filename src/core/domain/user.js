@@ -3,6 +3,7 @@
 
 var _ = require('lodash');
 
+
 var schema = {
     'username': {
         'required'  : true,
@@ -40,6 +41,20 @@ var required = Object.keys( schema ).filter( function ( key ) {
     return schema[key].required;
 });
 
+
+var EnumRoles = Object.create( null, {
+    'OFFICER'       : { 'value': 1, 'writable': false, 'enumerable': true },
+    'SUPERVISOR'    : { 'value': 2, 'writable': false, 'enumerable': true },
+    'ADMINISTRATOR' : { 'value': 3, 'writable': false, 'enumerable': true }
+});
+
+for ( var role in EnumRoles ) {
+    Object.defineProperty( User, role, {
+        'value': EnumRoles[role], 'writable': false, 'enumerable': true
+    });
+}
+
+
 /** @module core/domain */
 module.exports = User;
 
@@ -55,15 +70,7 @@ function User ( data ) {
     this.data = _.extend( {}, userTemplate, data );
 }
 
-var EnumRoles = Object.create( null, {
-    'OFFICER'       : { 'value': 1, 'writable': false, 'enumerable': true },
-    'SUPERVISOR'    : { 'value': 2, 'writable': false, 'enumerable': true },
-    'ADMINISTRATOR' : { 'value': 3, 'writable': false, 'enumerable': true }
-});
 
-for ( var role in EnumRoles ) {
-    Object.defineProperty( User, role, {
-        'value': EnumRoles[role], 'writable': false, 'enumerable': true
     });
 }
 
