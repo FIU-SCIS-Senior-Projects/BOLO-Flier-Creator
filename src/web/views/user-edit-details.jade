@@ -5,6 +5,7 @@ include ./includes/mixins.jade
 block jumbo-desc
     p Edit User Details
 
+
 block admin-content
     div
         each m in msg
@@ -16,22 +17,28 @@ block admin-content
             else if e.length
                 +alert_error( e )
 
-    - var route = "/admin/users/" + user.data.id;
+    - var route = "/admin/users/" + user.id;
 
-    h3 Username: #{user.data.username}
+    h3 Username: #{user.username}
     br
 
     form(action=route + "/edit-details" enctype="multipart/form-data" method="post")
-        +input_mx("fname", "First Name", "", false, user.data.fname)
-        +input_mx("lname", "Last Name", "", false,  user.data.lname)
-        +input_mx("email", "Email (required)", "", true, user.data.email)
+        +input_mx("fname", "First Name", "", false, user.fname)
+        +input_mx("lname", "Last Name", "", false,  user.lname)
+        +input_mx("email", "Email (required)", "", true, user.email)
 
         if ( roles )
-            +select_options("role", "Role", roles, true, user.roleName())
+            .form-group
+                label.control-label(for="role") Role
+                select.form-control(name="role")
+                    each role in roles
+                        - var formattedRole = _.startCase( role.toLowerCase() );
+                        - var sel = ( role === user.roleName() );
+                        option(value=role, selected=sel) #{formattedRole}
 
-        +input_mx("badge", "Badge No.", "", false,  user.data.badge)
-        +input_mx("secunit", "Section / Unit", "", false, user.data.secunit)
-        +input_mx("ranktitle", "Rank / Title", "", false, user.data.ranktitle)
+        +input_mx("badge", "Badge No.", "", false,  user.badge)
+        +input_mx("secunit", "Section / Unit", "", false, user.secunit)
+        +input_mx("ranktitle", "Rank / Title", "", false, user.ranktitle)
 
         .form-group
             button.btn.btn-primary(type="submit" value="save") Submit

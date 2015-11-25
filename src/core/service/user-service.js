@@ -129,9 +129,16 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
     var context = this;
 
     return context.userRepository.getById( id ).then( function ( user ) {
+        var cache = { 'tier': user.tier };
+
         Object.keys( user.data ).forEach( function ( key ) {
-            if ( userDTO[key] ) user.data[key] = userDTO[key];
+            if ( userDTO[key] ) user[key] = userDTO[key];
         });
+
+        if ( typeof user.tier === 'string' ) {
+            user.tier = User[user.tier] || cache.tier;
+        }
+
         return context.userRepository.update( user );
     }, function ( error ) {
         throw new Error(

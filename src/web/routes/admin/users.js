@@ -48,13 +48,6 @@ function parseFormData ( req ) {
     });
 }
 
-function transformRoleToTier ( formFieldsObject ) {
-    if ( formFieldsObject.role ) {
-        formFieldsObject.tier = userService.getRole( formFieldsObject.role );
-        delete formFieldsObject.role;
-    }
-}
-
 /**
  * GET /users/create
  * Responds with a form to create a new user.
@@ -221,7 +214,7 @@ router.post( '/users/:id/edit-details', function ( req, res ) {
     var id = req.params.id;
 
     parseFormData( req ).then( function ( formDTO ) {
-        transformRoleToTier( formDTO.fields );
+        formDTO.fields.tier = formDTO.fields.role;
         var userDTO = userService.formatDTO( formDTO.fields );
         return userService.updateUser( id, userDTO );
     }, function ( error ) {
