@@ -103,11 +103,18 @@ UserService.prototype.getUsers = function () {
     return this.userRepository.getAll();
 };
 
+/**
+ * Reset a user's password.
+ *
+ * @param {String} - the user id
+ * @param {String} - the password to change to
+ * @returns {User} an updated user object
+ */
 UserService.prototype.resetPassword = function ( id, password ) {
     var context = this;
 
     return context.userRepository.getById( id ).then( function ( user ) {
-        user.data.password = password;
+        user.password = password;
         return context.userRepository.update( user );
     }, function ( error ) {
         throw new Error( 'Unable to get current user data: ', error.message );

@@ -13,10 +13,15 @@ var config          = require( '../../config' );
 var userRepository  = new config.UserRepository();
 var userService     = new config.UserService( userRepository );
 
+
 var FERR = 'Flash Subject - User Route Errors';
 var FMSG = 'Flash Subject - User Route Messages';
 
+var MIN_PASS_LENGTH = config.constants.MIN_PASS_LENGTH;
+
+
 module.exports = router;
+
 
 /** @todo Extract into a common library */
 function cleanTemporaryFiles ( files ) {
@@ -157,8 +162,15 @@ router.post( '/users/:id/reset-password', function( req, res ) {
     var userID = req.params.id;
 
     parseFormData( req ).then( function ( formDTO ) {
-        if ( formDTO.fields.pass_new !== formDTO.fields.pass_conf ) {
+        var fields = formDTO.fields;
+
+        /** @todo develop a password helper module */
+        if ( fields.pass_new !== fields.pass_conf ) {
             req.flash( FERR, 'Passwords must match.' );
+            res.redirect( 'back' );
+        } else if ( _.trim( fields.pass_new ).length < MIN_PASS_LENGTH ) {
+            var min_length = MIN_PASS_LENGTH.toString();
+            req.flash( FERR, 'Password must be at least ' + min_length + ' characters.' );
             res.redirect( 'back' );
         } else {
             return userService.resetPassword( userID, formDTO.fields.pass_new );
