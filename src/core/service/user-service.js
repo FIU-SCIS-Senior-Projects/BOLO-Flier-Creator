@@ -65,20 +65,7 @@ UserService.prototype.getUser = UserService.prototype.deserializeId;
  * @returns {Array} list of defined user roles.
  */
 UserService.prototype.getRoleNames = function () {
-    return User.roleNames().map( function ( name ) {
-        return _.startCase( name.toLowerCase() );
-    });
-};
-
-/**
- * Get the index of a user role by name.
- *
- * @param {String} - name of the role to get
- * @returns {number} - the integer value of the role name or undefined.
- */
-UserService.prototype.getRole = function ( roleName ) {
-    var role = _.snakeCase( roleName ).toUpperCase();
-    return User[role];
+    return User.roleNames();
 };
 
 /**
@@ -91,6 +78,10 @@ UserService.prototype.getRole = function ( roleName ) {
 UserService.prototype.registerUser = function ( userDTO ) {
     var context = this;
     var newuser = new User( userDTO );
+
+    if ( newuser.tier && typeof newuser.tier === 'string' ) {
+        newuser.tier = User[newuser.tier] || undefined;
+    }
 
     if ( ! newuser.isValid() ) {
         throw new Error( 'User registration invalid' );
