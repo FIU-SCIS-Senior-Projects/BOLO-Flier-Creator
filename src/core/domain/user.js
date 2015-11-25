@@ -30,7 +30,7 @@ var userTemplate = {
     'fname'         : null,
     'lname'         : null,
     'password'      : null,
-    'tier'          : null,
+    'tier'          : 1,
     'agency'        : null,
     'badge'         : null,
     'sectunit'      : null,

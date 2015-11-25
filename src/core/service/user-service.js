@@ -79,8 +79,8 @@ UserService.prototype.registerUser = function ( userDTO ) {
     var context = this;
     var newuser = new User( userDTO );
 
-    if ( newuser.tier && typeof newuser.tier === 'string' ) {
-        newuser.tier = User[newuser.tier] || undefined;
+    if ( userDTO.tier && typeof userDTO.tier === 'string' ) {
+        newuser.tier = User[newuser.tier] || newuser.tier;
     }
 
     if ( ! newuser.isValid() ) {
