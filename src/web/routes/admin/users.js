@@ -13,27 +13,21 @@ var config          = require( '../../config' );
 var userRepository  = new config.UserRepository();
 var userService     = new config.UserService( userRepository );
 
+
+var FERR = 'Flash Subject - User Route Errors';
+var FMSG = 'Flash Subject - User Route Messages';
+
+var MIN_PASS_LENGTH = config.constants.MIN_PASS_LENGTH;
+
+
 module.exports = router;
+
 
 /** @todo Extract into a common library */
 function cleanTemporaryFiles ( files ) {
     files.forEach( function ( file ) {
         fs.unlink( file.path );
     });
-}
-
-function setUserData ( fields ) {
-    return {
-        'username'      : fields.username || '',
-        'email'         : fields.email || '',
-        'fname'         : fields.fname || '',
-        'lname'         : fields.lname || '',
-        'password'      : fields.password,
-        'tier'          : fields.role || null,
-        'badge'         : fields.badge || '',
-        'secunit'       : fields.secunit || '',
-        'ranktitle'     : fields.ranktitle || ''
-    };
 }
 
 function parseFormData ( req ) {
@@ -59,13 +53,6 @@ function parseFormData ( req ) {
     });
 }
 
-function transformRoleToTier ( formFieldsObject ) {
-    if ( formFieldsObject.role ) {
-        formFieldsObject.tier = userService.getRole( formFieldsObject.role );
-        delete formFieldsObject.role;
-    }
-}
-
 /**
  * GET /users/create
  * Responds with a form to create a new user.
@@ -73,10 +60,9 @@ function transformRoleToTier ( formFieldsObject ) {
 router.get( '/users/create', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
-        'msg': req.flash( 'msg' ),
-        'err': req.flash( 'error' )
+        'msg': req.flash( FMSG ),
+        'err': req.flash( FERR )
     };
-    console.log( data );
     res.render( 'user-create-form', data );
 });
 
@@ -87,48 +73,52 @@ router.get( '/users/create', function ( req, res ) {
 router.post( '/users/create', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
-        'msg': req.flash( 'msg' ),
-        'err': req.flash( 'error' )
+        'msg': req.flash( FMSG ),
+        'err': req.flash( FERR )
     };
 
-    parseFormData( req )
-        .then( function ( formDTO ) {
-            var userDTO = setUserData( formDTO.fields );
-            if ( userDTO.tier ) {
-                userDTO.tier = userService.getRole( userDTO.tier );
-            }
-            var result = userService.registerUser( userDTO, formDTO.files );
-            return Promise.all([ result, formDTO ]);
-        })
-        .then( function ( pData ) {
-            if ( pData[1].files.length ) {
-                cleanTemporaryFiles( pData[1].files );
-            }
-            data.msg.push( 'Successfully registered user.' );
-            res.render( 'user-create-form', data );
-        })
-        .catch( function ( error ) {
-            data.err.push( error.message );
-            res.render( 'user-create-form', data );
-        });
+    parseFormData( req ).then( function ( formDTO ) {
+        formDTO.fields.tier = formDTO.fields.role;
+        var userDTO = userService.formatDTO( formDTO.fields );
+        return userService.registerUser( userDTO );
+    }, function ( error ) {
+        console.error( 'Error at /users/create >>> ', error.message );
+        req.flash( FERR, 'Error processing form, please try again.' );
+        res.redirect( 'back' );
+    })
+    .then( function ( response ) {
+        req.flash( FMSG, 'Successfully registered user.' );
+        res.redirect( '/admin/users' );
+    })
+    .catch( function ( error ) {
+        /** @todo inform of duplicate registration errors */
+        console.error( 'Error at /users/create >>> ', error.message );
+        req.flash( FERR, 'Error saving new user, please try again.' );
+        res.redirect( 'back' );
+    });
 });
 
 /**
  * GET /users
  * Responds with a list of all system users.
+ *
+ * @todo implement sorting, filtering, and paging
  */
 router.get( '/users', function ( req, res ) {
+    var data = {
+        'msg': req.flash( FMSG ),
+        'err': req.flash( FERR )
+    };
+
     userService.getUsers().then( function ( users ) {
-        var templateData = {
-            'users': users,
-            'msg': req.flash( 'msg' ),
-            'err': req.flash( 'error' )
-        };
-        res.render( 'user-list', templateData );
+        data.users = users;
+        res.render( 'user-list', data);
     })
     .catch( function ( error ) {
-        console.error( '/admin/users route error: ', error );
-        res.status( 500 );
+        console.error( 'Error at /users >>> ', error.message );
+        req.flash( FERR, 'Unable to retrieve user directory, please try ' +
+                'again or contact the system administrator' );
+        res.redirect( 'back' );
     });
 });
 
@@ -137,18 +127,18 @@ router.get( '/users', function ( req, res ) {
  * Responds with account information for a specified user.
  */
 router.get( '/users/:id', function ( req, res ) {
-    userService.getUser( req.params.id ).then( function ( user ) {
-        var data = {
-            'user': user,
-            'msg': req.flash( 'msg' ),
-            'err': req.flash( 'error' )
-        };
+    var data = {
+        'msg': req.flash( FMSG ),
+        'err': req.flash( FERR )
+    };
 
+    userService.getUser( req.params.id ).then( function ( user ) {
+        data.user = user;
         res.render( 'user-details', data );
     })
     .catch( function ( error ) {
-        console.error( 'ERROR: At /admin/users/:id >>> ', error.message );
-        req.flash( 'error', 'Unable to get user information, please try again.' );
+        console.error( 'Error at /users/:id >>> ', error.message );
+        req.flash( FERR, 'Unable to get user information, please try again.' );
         res.redirect( 'back' );
     });
 });
@@ -159,8 +149,8 @@ router.get( '/users/:id', function ( req, res ) {
  */
 router.get( '/users/:id/reset-password', function( req, res ) {
     var data = {
-        'msg': req.flash( 'msg' ),
-        'err': req.flash( 'error' )
+        'msg': req.flash( FMSG ),
+        'err': req.flash( FERR )
     };
 
     userService.getUser( req.params.id ).then( function ( user ) {
@@ -177,24 +167,31 @@ router.post( '/users/:id/reset-password', function( req, res ) {
     var userID = req.params.id;
 
     parseFormData( req ).then( function ( formDTO ) {
-        if ( formDTO.fields.pass_new !== formDTO.fields.pass_conf ) {
-            req.flash( 'error', 'Passwords must match.' );
+        var fields = formDTO.fields;
+
+        /** @todo develop a password helper module */
+        if ( fields.pass_new !== fields.pass_conf ) {
+            req.flash( FERR, 'Passwords must match.' );
+            res.redirect( 'back' );
+        } else if ( _.trim( fields.pass_new ).length < MIN_PASS_LENGTH ) {
+            var min_length = MIN_PASS_LENGTH.toString();
+            req.flash( FERR, 'Password must be at least ' + min_length + ' characters.' );
             res.redirect( 'back' );
         } else {
             return userService.resetPassword( userID, formDTO.fields.pass_new );
         }
     }, function( error ) {
         console.error( 'Error at /users/:id/reset-password >>> ', error.message );
-        req.flash( 'error', 'Error processing form, please try again.' );
+        req.flash( FERR, 'Error processing form, please try again.' );
         res.redirect( 'back' );
     })
     .then( function ( ) {
-        req.flash( 'msg', 'Password reset successful.' );
+        req.flash( FMSG, 'Password reset successful.' );
         res.redirect( '/admin/users/' + userID );
     })
     .catch( function ( error ) {
         console.error( 'Error at /users/:id/reset-password >>> ', error.message );
-        req.flash( 'error', 'Unknown error occurred, please try again.' );
+        req.flash( FERR, 'Unknown error occurred, please try again.' );
         res.redirect( 'back' );
     });
 });
@@ -206,8 +203,8 @@ router.post( '/users/:id/reset-password', function( req, res ) {
 router.get( '/users/:id/edit-details', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
-        'msg': req.flash( 'msg' ),
-        'err': req.flash( 'error' )
+        'msg': req.flash( FMSG ),
+        'err': req.flash( FERR )
     };
 
     /** @todo Fix this temporary thing **/
@@ -221,7 +218,7 @@ router.get( '/users/:id/edit-details', function ( req, res ) {
     })
     .catch( function ( error ) {
         console.error( 'Error at /users/:id/edit-details >>> ', error.message );
-        req.flash( 'error', 'Unkown error occurred, please try again.' );
+        req.flash( FERR, 'Unkown error occurred, please try again.' );
         res.redirect( 'back' );
     });
 });
@@ -234,21 +231,21 @@ router.post( '/users/:id/edit-details', function ( req, res ) {
     var id = req.params.id;
 
     parseFormData( req ).then( function ( formDTO ) {
-        transformRoleToTier( formDTO.fields );
+        formDTO.fields.tier = formDTO.fields.role;
         var userDTO = userService.formatDTO( formDTO.fields );
         return userService.updateUser( id, userDTO );
     }, function ( error ) {
         console.error( 'Error at /users/:id/edit-details >>> ', error.message );
-        req.flash( 'error', 'Unable to process form, please try again.' );
+        req.flash( FERR, 'Unable to process form, please try again.' );
         res.redirect( 'back' );
     })
     .then( function ( success ) {
-        req.flash( 'msg', 'User update successful.' );
+        req.flash( FMSG, 'User update successful.' );
         res.redirect( '/admin/users/' + id );
     })
     .catch( function ( error ) {
         console.error( 'Error at /users/:id/edit-details >>> ', error.message );
-        req.flash( 'error', 'Unknown error occurred, please try again.' );
+        req.flash( FERR, 'Unknown error occurred, please try again.' );
         res.redirect( 'back' );
     });
 });
@@ -260,11 +257,11 @@ router.post( '/users/:id/edit-details', function ( req, res ) {
 router.get( '/users/:id/delete', function ( req, res ) {
     userService.removeUser( req.params.id ).then(
         function ( result ) {
-            req.flash( 'msg', 'Successfully deleted user.' );
+            req.flash( FMSG, 'Successfully deleted user.' );
             res.redirect( '/admin/users' );
         },
         function ( error ) {
-            req.flash( 'error', 'Unable to delete, please try again.' );
+            req.flash( FERR, 'Unable to delete, please try again.' );
             res.redirect( '/admin/users' );
         }
     );

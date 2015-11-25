@@ -30,13 +30,13 @@ block admin-content
         tbody
           each user in users
             tr
-              td= user.data.username
-              td= user.data.fname + ' ' + user.data.lname
-              td= user.data.email
+              td= user.username
+              td= user.fname + ' ' + user.lname
+              td= user.email
               td= user.roleName()
               td
-                a(href="/admin/users/" + user.data.id) View
+                a(href="/admin/users/" + user.id) View
               td
-                a(href="/admin/users/" + user.data.id + "/delete") Delete
+                a(href="/admin/users/" + user.id + "/delete") Delete
 
     a.btn.btn-default(href="/admin/users/create") Add New User

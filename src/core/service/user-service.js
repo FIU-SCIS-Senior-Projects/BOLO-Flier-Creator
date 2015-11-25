@@ -65,20 +65,7 @@ UserService.prototype.getUser = UserService.prototype.deserializeId;
  * @returns {Array} list of defined user roles.
  */
 UserService.prototype.getRoleNames = function () {
-    return User.roleNames().map( function ( name ) {
-        return _.startCase( name.toLowerCase() );
-    });
-};
-
-/**
- * Get the index of a user role by name.
- *
- * @param {String} - name of the role to get
- * @returns {number} - the integer value of the role name or undefined.
- */
-UserService.prototype.getRole = function ( roleName ) {
-    var role = _.snakeCase( roleName ).toUpperCase();
-    return User[role];
+    return User.roleNames();
 };
 
 /**
@@ -92,17 +79,22 @@ UserService.prototype.registerUser = function ( userDTO ) {
     var context = this;
     var newuser = new User( userDTO );
 
+    if ( userDTO.tier && typeof userDTO.tier === 'string' ) {
+        newuser.tier = User[newuser.tier] || newuser.tier;
+    }
+
     if ( ! newuser.isValid() ) {
         throw new Error( 'User registration invalid' );
     }
 
-    return context.userRepository.getByUsername( newuser.data.username )
+    return context.userRepository.getByUsername( newuser.username )
         .then( function ( existingUser ) {
             if ( existingUser ) {
-                throw new Error( 'User already registered: ' +
-                        existingUser.data.username
+                throw new Error(
+                    'User already registered: ' + existingUser.username
                 );
             }
+
             return context.userRepository.insert( newuser );
         });
 };
@@ -111,11 +103,18 @@ UserService.prototype.getUsers = function () {
     return this.userRepository.getAll();
 };
 
+/**
+ * Reset a user's password.
+ *
+ * @param {String} - the user id
+ * @param {String} - the password to change to
+ * @returns {User} an updated user object
+ */
 UserService.prototype.resetPassword = function ( id, password ) {
     var context = this;
 
     return context.userRepository.getById( id ).then( function ( user ) {
-        user.data.password = password;
+        user.password = password;
         return context.userRepository.update( user );
     }, function ( error ) {
         throw new Error( 'Unable to get current user data: ', error.message );
@@ -137,9 +136,16 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
     var context = this;
 
     return context.userRepository.getById( id ).then( function ( user ) {
+        var cache = { 'tier': user.tier };
+
         Object.keys( user.data ).forEach( function ( key ) {
-            if ( userDTO[key] ) user.data[key] = userDTO[key];
+            if ( userDTO[key] ) user[key] = userDTO[key];
         });
+
+        if ( typeof user.tier === 'string' ) {
+            user.tier = User[user.tier] || cache.tier;
+        }
+
         return context.userRepository.update( user );
     }, function ( error ) {
         throw new Error(
