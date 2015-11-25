@@ -53,6 +53,12 @@ function parseFormData ( req ) {
     });
 }
 
+router.use( function ( req, res, next ) {
+    res.locals.admin_nav = 'admin-users';
+    next();
+});
+
+
 /**
  * GET /users/create
  * Responds with a form to create a new user.

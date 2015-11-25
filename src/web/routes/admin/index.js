@@ -8,6 +8,11 @@ module.exports = router;
 
 router.use( users );
 
+router.use( function ( req, res, next ) {
+    res.locals.admin_nav = 'admin-index';
+    next();
+});
+
 /**
  * GET /
  * Responds with the root admin template.
