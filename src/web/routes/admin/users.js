@@ -22,20 +22,6 @@ function cleanTemporaryFiles ( files ) {
     });
 }
 
-function setUserData ( fields ) {
-    return {
-        'username'      : fields.username || '',
-        'email'         : fields.email || '',
-        'fname'         : fields.fname || '',
-        'lname'         : fields.lname || '',
-        'password'      : fields.password,
-        'tier'          : fields.role || null,
-        'badge'         : fields.badge || '',
-        'secunit'       : fields.secunit || '',
-        'ranktitle'     : fields.ranktitle || ''
-    };
-}
-
 function parseFormData ( req ) {
     return new Promise( function ( resolve, reject ) {
         var form = new multiparty.Form();
@@ -74,9 +60,8 @@ router.get( '/users/create', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
         'msg': req.flash( 'msg' ),
-        'err': req.flash( 'error' )
+        'err': req.flash( 'err' )
     };
-    console.log( data );
     res.render( 'user-create-form', data );
 });
 
@@ -88,29 +73,28 @@ router.post( '/users/create', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
         'msg': req.flash( 'msg' ),
-        'err': req.flash( 'error' )
+        'err': req.flash( 'err' )
     };
 
-    parseFormData( req )
-        .then( function ( formDTO ) {
-            var userDTO = setUserData( formDTO.fields );
-            if ( userDTO.tier ) {
-                userDTO.tier = userService.getRole( userDTO.tier );
-            }
-            var result = userService.registerUser( userDTO, formDTO.files );
-            return Promise.all([ result, formDTO ]);
-        })
-        .then( function ( pData ) {
-            if ( pData[1].files.length ) {
-                cleanTemporaryFiles( pData[1].files );
-            }
-            data.msg.push( 'Successfully registered user.' );
-            res.render( 'user-create-form', data );
-        })
-        .catch( function ( error ) {
-            data.err.push( error.message );
-            res.render( 'user-create-form', data );
-        });
+    parseFormData( req ).then( function ( formDTO ) {
+        formDTO.fields.tier = formDTO.fields.role;
+        var userDTO = userService.formatDTO( formDTO.fields );
+        return userService.registerUser( userDTO );
+    }, function ( error ) {
+        console.error( 'Error at /users/create >>> ', error.message );
+        req.flash( 'err', 'Error processing form, please try again.' );
+        res.redirect( 'back' );
+    })
+    .then( function ( response ) {
+        req.flash( 'msg', 'Successfully registered user.' );
+        res.redirect( '/admin/users' );
+    })
+    .catch( function ( error ) {
+        /** @todo inform of duplicate registration errors */
+        console.error( 'Error at /users/create >>> ', error.message );
+        req.flash( 'err', 'Error saving new user, please try again.' );
+        res.redirect( 'back' );
+    });
 });
 
 /**

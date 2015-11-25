@@ -8,6 +8,7 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var _ = require('lodash');
 
 var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
@@ -34,6 +35,7 @@ var app = express();
 app.set( 'port', process.env.PORT || 3000 );
 app.set( 'views', path.join( __dirname, 'views' ) );
 app.set( 'view engine', 'jade' );
+app.locals._ = _;
 
 var isDev = ( 'development' == app.get('env') );
 var secretKey = new Buffer( process.env.SESSION_SECRET || 'pw0rd' ).toString();
