@@ -127,17 +127,17 @@ router.get( '/users', function ( req, res ) {
  * Responds with account information for a specified user.
  */
 router.get( '/users/:id', function ( req, res ) {
-    userService.getUser( req.params.id ).then( function ( user ) {
-        var data = {
-            'user': user,
-            'msg': req.flash( FMSG ),
-            'err': req.flash( FERR )
-        };
+    var data = {
+        'msg': req.flash( FMSG ),
+        'err': req.flash( FERR )
+    };
 
+    userService.getUser( req.params.id ).then( function ( user ) {
+        data.user = user;
         res.render( 'user-details', data );
     })
     .catch( function ( error ) {
-        console.error( 'ERROR: At /admin/users/:id >>> ', error.message );
+        console.error( 'Error at /users/:id >>> ', error.message );
         req.flash( FERR, 'Unable to get user information, please try again.' );
         res.redirect( 'back' );
     });
