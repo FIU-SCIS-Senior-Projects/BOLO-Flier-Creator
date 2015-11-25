@@ -101,19 +101,24 @@ router.post( '/users/create', function ( req, res ) {
 /**
  * GET /users
  * Responds with a list of all system users.
+ *
+ * @todo implement sorting, filtering, and paging
  */
 router.get( '/users', function ( req, res ) {
+    var data = {
+        'msg': req.flash( FMSG ),
+        'err': req.flash( FERR )
+    };
+
     userService.getUsers().then( function ( users ) {
-        var templateData = {
-            'users': users,
-            'msg': req.flash( FMSG ),
-            'err': req.flash( FERR )
-        };
-        res.render( 'user-list', templateData );
+        data.users = users;
+        res.render( 'user-list', data);
     })
     .catch( function ( error ) {
-        console.error( '/admin/users route error: ', error );
-        res.status( 500 );
+        console.error( 'Error at /users >>> ', error.message );
+        req.flash( FERR, 'Unable to retrieve user directory, please try ' +
+                'again or contact the system administrator' );
+        res.redirect( 'back' );
     });
 });
 
