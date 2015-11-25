@@ -87,13 +87,14 @@ UserService.prototype.registerUser = function ( userDTO ) {
         throw new Error( 'User registration invalid' );
     }
 
-    return context.userRepository.getByUsername( newuser.data.username )
+    return context.userRepository.getByUsername( newuser.username )
         .then( function ( existingUser ) {
             if ( existingUser ) {
-                throw new Error( 'User already registered: ' +
-                        existingUser.data.username
+                throw new Error(
+                    'User already registered: ' + existingUser.username
                 );
             }
+
             return context.userRepository.insert( newuser );
         });
 };
