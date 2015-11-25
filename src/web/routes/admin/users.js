@@ -111,7 +111,9 @@ router.get( '/users', function ( req, res ) {
     };
 
     userService.getUsers().then( function ( users ) {
-        data.users = users;
+        data.users = users.filter( function ( oneUser ) {
+            return oneUser.id !== req.user.id;
+        });
         res.render( 'user-list', data);
     })
     .catch( function ( error ) {

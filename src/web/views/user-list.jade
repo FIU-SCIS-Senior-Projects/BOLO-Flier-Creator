@@ -5,38 +5,39 @@ block jumbo-desc
     p User Directory
 
 block admin-content
-  div
-    each m in msg
-      if m.length
-        +alert_info( m )
-    each e in err
-      if e.message
-        +alert_error( e.message )
-      else if e.length
-        +alert_error( e )
 
-  if 0 === users.length
-      p.lead.bg-info "No users registered."
-  else
-      table.table.table-striped
-        thead
-          tr
-            th Username
-            th Name
-            th Email
-            th Role
-            th 
-            th 
-        tbody
-          each user in users
-            tr
-              td= user.username
-              td= user.fname + ' ' + user.lname
-              td= user.email
-              td= user.roleName()
-              td
-                a(href="/admin/users/" + user.id) View
-              td
-                a(href="/admin/users/" + user.id + "/delete") Delete
+    div
+        each m in msg
+            if m.length
+                +alert_info( m )
+        each e in err
+            if e.message
+                +alert_error( e.message )
+            else if e.length
+                +alert_error( e )
+
+    p.lead Total Users: #{users.length}
+
+    if users.length
+        table.table.table-striped
+            thead
+                tr
+                    th Username
+                    th Name
+                    th Email
+                    th Role
+                    th 
+                    th 
+            tbody
+                each user in users
+                    tr
+                        td= user.username
+                        td= user.fname + ' ' + user.lname
+                        td= user.email
+                        td= user.roleName()
+                        td
+                            a(href="/admin/users/" + user.id) View
+                        td
+                            a(href="/admin/users/" + user.id + "/delete") Delete
 
     a.btn.btn-default(href="/admin/users/create") Add New User
