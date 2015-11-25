@@ -68,8 +68,17 @@ module.exports = User;
  */
 function User ( data ) {
     this.data = _.extend( {}, userTemplate, data );
-}
 
+    // set some getters and setter on the main object instead of having to
+    // access properties via the .data object
+    var context = this;
+    Object.keys( this.data ).forEach( function ( key ) {
+        Object.defineProperty( context, key, {
+            get: function () { return context.data[key]; },
+            set: function ( v ) { context.data[key] = v; }
+        });
+    });
+}
 
     });
 }
