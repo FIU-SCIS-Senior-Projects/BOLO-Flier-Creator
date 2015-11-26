@@ -1,5 +1,10 @@
 include includes/mixins
 extends layout
+block jumbo
+  .jumbotron
+    .container
+          h1 BOLO Details
+          p Show the bolo in details
 block content
     h1=bolo.data.category
     div.container-fluid
@@ -18,7 +23,7 @@ block content
                 +form_labels_row("Hair Color", bolo.data.hairColor, bolo.data.hairColor?"":"hidden")
                 +form_labels_row("Tattoos/Scars", bolo.data.tattoos,bolo.data.tattoos?"":"hidden")
                 +form_labels_row("License #", bolo.data.dlNumber, bolo.data.dlNumber?"":"hidden")
-                +form_labels_row("Created on", bolo.data.enteredDT)
+                +form_labels_row("Created on", bolo.data.createdOn)
                 +form_labels_row("Aditional Info", bolo.data.additional, bolo.data.additional?"":"hidden")
                 +form_labels_row("Summary", bolo.data.summary, bolo.data.summary?"":"hidden")
             div.col-xs-12.col-md-5

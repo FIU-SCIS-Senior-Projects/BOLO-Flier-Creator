@@ -38,9 +38,14 @@ block content
     var hair_colors = [
       'Black','Blonde','Red','Brown','Gray','White','Sandy','Bald (No hair)'
     ]
-
+    
+    var bolo_status = [
+      'New', 'Canceled', 'In Custody', 'Located', 'Recovered'
+    ]
   //- Actual Form
   form#create-bolo-form(action=bolo?"/bolo/edit/" + bolo.data.id:"/bolo/create" enctype="multipart/form-data" method="post")
+    if bolo
+      +select_options("status", "Status", bolo_status, false, bolo?bolo.data.status:"")
     +select_options("bolo_category", "Category", categories, true, bolo?bolo.data.category:"")
     +input_mx("fname", "First Name", "", false, bolo?bolo.data.firstName:"")
     +input_mx("lname", "Last Name", "", false,  bolo?bolo.data.lastName:"")

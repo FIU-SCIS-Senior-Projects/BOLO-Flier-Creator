@@ -20,7 +20,7 @@ function getDateTime() {
     var seconds = date.getSeconds();
     var year = date.getFullYear();
     var month = date.getMonth() + 1;
-    var day = date.getDay();
+    var day = date.getDate();
 
     //Append 0 to all values less than 10;
     hour = (hour < 10 ? "0" : "") + hour;
@@ -34,29 +34,31 @@ function getDateTime() {
 
 function setBoloData(fields) {
     return {
-        id: fields.id || '',
-        authorFName: "temp",
-        authorLName: "user",
-        authorUName: "temp user",
-        agency: "temp agency",
-        category: fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
-        firstName: fields.fname || '',
-        lastName: fields.lname || '',
-        dob: fields.dob || '',
-        dlNumber: fields.dl_number || '',
-        race: fields.race || '',
-        sex: fields.sex != 'Select an option...' ? fields.sex : '',
-        height: fields.height || '',
-        weight: fields.weight || '',
-        hairColor: fields.hair_color != 'Select an option...' ? fields.hair_color : '',
-        tattoos: fields.tattoos || '',
-        address: fields.address || '',
-        image: fields.images || [],
-        video_url: fields.video_url || '',
-        additional: fields.last_known_address || '',
-        summary: fields.summary || '',
-        archive: false,
-        enteredDT: fields.enteredDT ? fields.enteredDT : getDateTime()
+        id                  : fields.id || '',
+        createdOn           : fields.enteredDT ? fields.enteredDT : getDateTime(),
+        lastUpdatedOn       : fields.lastUpdatedOn ? fields.lastUpdatedOn : getDateTime(),
+        agency              : "Pinecrest Police Department",
+        authorFName         : "Jason",
+        authorLName         : "Cohen",
+        authorUName         : "Jason Cohen",
+        category            : fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
+        firstName           : fields.fname || '',
+        lastName            : fields.lname || '',
+        dob                 : fields.dob || '',
+        dlNumber            : fields.dl_number || '',
+        race                : fields.race || '',
+        sex                 : fields.sex != 'Select an option...' ? fields.sex : '',
+        height              : fields.height || '',
+        weight              : fields.weight || '',
+        hairColor           : fields.hair_color != 'Select an option...' ? fields.hair_color : '',
+        tattoos             : fields.tattoos || '',
+        address             : fields.address || '',
+        additional          : fields.last_known_address || '',
+        summary             : fields.summary || '',
+        attachments         : {},
+        video_url           : fields.video_url || '',
+        isActive            : fields.isActive || true,
+        status              : fields.status || "New"
     };
 }
 
@@ -93,8 +95,10 @@ function cleanTemporaryFiles ( files ) {
 router.get('/', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var boloService = new BoloService(boloRepository);
-
-    boloService.getBolos()
+    var limit = 3;
+    var skip = 0;
+    
+    boloService.getBolos(limit,skip)
         .then(function (bolos) {
             res.render('bolo-list', {
                 bolos: bolos
@@ -167,6 +171,7 @@ router.post('/edit/:id', function (req, res) {
     parseFormData( req )
     .then( function ( formDTO ) {
         var boloDTO = setBoloData( formDTO.fields );
+        boloDTO.lastUpdatedOn = getDateTime();
         var result = boloService.updateBolo( boloDTO, formDTO.files );
         return Promise.all([ result, formDTO ]);
     })
