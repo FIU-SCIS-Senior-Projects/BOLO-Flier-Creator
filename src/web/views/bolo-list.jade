@@ -24,3 +24,15 @@ block content
                          a.btn.btn-primary(href="/bolo/edit/" + bolo.data.id, role="button") Edit
                          a.btn.btn-default(href="/bolo/details/" + bolo.data.id, role="button") Details
                          a.btn.btn-danger(role="button", type="submit" class="archive-bolo", id=bolo.data.id) Archive
+   #paging
+   - var n = 1
+   div.text-center
+    ul.pagination
+      while n < paging.pages
+        -var page = n++
+        if page == paging.currentPage
+            li.active
+                a(href="/bolo?page=" + page)= page
+        else
+            li
+                a(href="/bolo?page=" + page)= page

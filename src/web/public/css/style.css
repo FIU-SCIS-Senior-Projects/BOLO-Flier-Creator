@@ -22,3 +22,14 @@ table.details td:first-child {
 table.details td:last-child {
     width: 99%;
 }
+.btn {
+    margin: 3px;
+}
+.strong {
+    font-weight: 700;
+}
+.pagination>li>a, .pagination>li>span
+{
+    border: 1px solid #ffffff;
+    /*background:  #2c3e50;*/   
+}
