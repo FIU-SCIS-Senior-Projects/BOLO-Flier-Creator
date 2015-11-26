@@ -8,6 +8,7 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var _ = require('lodash');
 
 var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
@@ -18,6 +19,7 @@ var methodOverride = require('method-override');
 
 require('dotenv').config({ 'path': path.resolve( __dirname, '../../.env' ) });
 
+var config = require('./config');
 var routes = require('./routes');
 var auth = require('./lib/auth.js');
 
@@ -34,6 +36,7 @@ var app = express();
 app.set( 'port', process.env.PORT || 3000 );
 app.set( 'views', path.join( __dirname, 'views' ) );
 app.set( 'view engine', 'jade' );
+app.locals._ = _;
 
 var isDev = ( 'development' == app.get('env') );
 var secretKey = new Buffer( process.env.SESSION_SECRET || 'pw0rd' ).toString();
@@ -85,9 +88,11 @@ app.use( '/agency', isAuthenticated, routes.agency );
 app.get( '/',
     isAuthenticated,
     function ( req, res ) {
-        res.render( 'index', {
-            'message': req.session.messages
-        });
+        var data = {
+            'msg': req.flash( config.const.GFMSG ),
+            'err': req.flash( config.constants.GFERR )
+        };
+        res.render( 'index', data);
     });
 
 

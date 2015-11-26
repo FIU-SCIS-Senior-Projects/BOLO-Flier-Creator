@@ -16,7 +16,6 @@ mixin select_options(name, label, options, required, selectedValue)
   .form-group
     label.control-label(for=name)= label
     select.form-control(name=name)
-      option() Select an option...
       each val in options
           if selectedValue == val
             +option(val,true)
@@ -46,7 +45,12 @@ block admin-content
     +input_mx("password", "Repeat Password (required)", "", true,  "", "password")
 
     if ( roles )
-        +select_options("role", "Role", roles, true, "")
+        .form-group
+            label.control-label(for="role") Role
+            select.form-control(name="role")
+                each role in roles
+                    - var formattedRole = _.startCase( role.toLowerCase() );
+                    option(value=role, selected) #{formattedRole}
 
     .form-group
       label.control-label() Notifications

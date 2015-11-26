@@ -9,10 +9,10 @@ block jumbo
 block content
     .row
         .col-sm-3
-            ul.nav.nav-stacked(role="nav")
-                li
+            ul.nav.nav-pills.nav-stacked(role="nav")
+                li(class=( admin_nav === 'admin-index' ? 'active' : '' ))
                     a(href="/admin") Dashboard
-                li
+                li(class=( admin_nav === 'admin-users' ? 'active' : '' ))
                     a(href="/admin/users") User Management
         .col-sm-9
             block admin-content

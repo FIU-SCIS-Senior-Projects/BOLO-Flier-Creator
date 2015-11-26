@@ -4,6 +4,7 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 
+var _ = require('lodash');
 var path = require('path');
 var Promise = require('promise');
 
@@ -23,9 +24,13 @@ describe( 'user service module', function () {
         throw new Error( 'Stub behavior undefined' );
     };
 
+    before( function () {
+    });
+
     beforeEach( function () {
         mockUserRepo = {
             'insert': defaultStubMethod,
+            'update': defaultStubMethod,
             'getByUsername': defaultStubMethod,
             'getById': defaultStubMethod
         };
@@ -177,5 +182,62 @@ describe( 'user service module', function () {
                 });
         });
     }); /* end describe: registers new users */
+
+    describe( 'updating user data', function () {
+        var storedUser;
+
+        beforeEach( function () {
+            storedUser = UserFixture.create();
+            sinon.stub( mockUserRepo, 'update', function ( user ) {
+                return Promise.resolve ( user );
+            });
+        });
+
+        it( 'modifies user data in the configured repository', function () {
+            /* arrange */
+            var userID = '46';
+            var userDTO = userService.formatDTO({
+                'email': 'robocop@cybernetics-dpd.gov'
+            });
+
+            storedUser.data.id = userID;
+            storedUser.data.email = 'some-email@example.com';
+
+            sinon.stub( mockUserRepo, 'getById' )
+                .withArgs( userID )
+                .returns( Promise.resolve( storedUser ) );
+
+            /* act */
+            var updatePromise = userService.updateUser( userID, userDTO );
+
+            /* assert */
+            return updatePromise.then( function ( response ) {
+                expect( storedUser.data.email ).to.equal( userDTO.email );
+            });
+        });
+
+        it( 'promises the modified User object', function () {
+            var userID = '46';
+            var userDTO = userService.formatDTO({
+                'email': 'robocop@cybernetics-dpd.gov'
+            });
+
+            storedUser.data.id = userID;
+            storedUser.data.email = 'some-email@example.com';
+
+            sinon.stub( mockUserRepo, 'getById' )
+                .withArgs( userID )
+                .returns( Promise.resolve( storedUser ) );
+
+            /* act */
+            var updatePromise = userService.updateUser( userID, userDTO );
+
+            /* assert */
+            return updatePromise.then( function ( response ) {
+                expect( response ).to.be.an.instanceOf( User );
+                expect( response.diff( storedUser ) ).to.be.be.length( 0 );
+            });
+        });
+    }); /* end describe: updating user data */
 
 });
