@@ -19,6 +19,7 @@ var methodOverride = require('method-override');
 
 require('dotenv').config({ 'path': path.resolve( __dirname, '../../.env' ) });
 
+var config = require('./config');
 var routes = require('./routes');
 var auth = require('./lib/auth.js');
 
@@ -87,9 +88,11 @@ app.use( '/agency', isAuthenticated, routes.agency );
 app.get( '/',
     isAuthenticated,
     function ( req, res ) {
-        res.render( 'index', {
-            'message': req.session.messages
-        });
+        var data = {
+            'msg': req.flash( config.const.GFMSG ),
+            'err': req.flash( config.constants.GFERR )
+        };
+        res.render( 'index', data);
     });
 
 
