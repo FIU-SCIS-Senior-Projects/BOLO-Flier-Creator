@@ -77,10 +77,8 @@ function attachmentsFromCloudant(attachments) {
  * @returns {Promise|Object} - Promise resolving to the transformed DTO
  * @private
  */
-<<<<<<< HEAD
 function transformAttachment ( original ) {
     var readFile = Promise.denodeify( fs.readFile );
-=======
 function transformAttachment(original) {
     var jimp = new Promise(function (resolve, reject) {
         new Jimp(original.path, function (err, image) {
@@ -100,7 +98,6 @@ function transformAttachment(original) {
             });
         });
     };
->>>>>>> agency
 
     var createDTO = function (readBuffer) {
         return {
@@ -114,16 +111,15 @@ function transformAttachment(original) {
         throw new Error('transformAttachment: ', error);
     };
 
-<<<<<<< HEAD
     return readFile( original.path )
         .then( createDTO )
         .catch( errorHandler );
-=======
+
     return jimp
         .then(getBuffer)
         .then(createDTO)
         .catch(errorHandler);
->>>>>>> agency
+
 }
 
 function createAgencyBoloID(agencyName) {
