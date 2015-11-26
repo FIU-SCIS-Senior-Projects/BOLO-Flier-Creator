@@ -3,6 +3,7 @@
 
 var _ = require('lodash');
 
+
 var schema = {
     'username': {
         'required'  : true,
@@ -29,7 +30,7 @@ var userTemplate = {
     'fname'         : null,
     'lname'         : null,
     'password'      : null,
-    'tier'          : null,
+    'tier'          : 1,
     'agency'        : null,
     'badge'         : null,
     'sectunit'      : null,
@@ -39,6 +40,20 @@ var userTemplate = {
 var required = Object.keys( schema ).filter( function ( key ) {
     return schema[key].required;
 });
+
+
+var EnumRoles = Object.create( null, {
+    'OFFICER'       : { 'value': 1, 'writable': false, 'enumerable': true },
+    'SUPERVISOR'    : { 'value': 2, 'writable': false, 'enumerable': true },
+    'ADMINISTRATOR' : { 'value': 3, 'writable': false, 'enumerable': true }
+});
+
+for ( var role in EnumRoles ) {
+    Object.defineProperty( User, role, {
+        'value': EnumRoles[role], 'writable': false, 'enumerable': true
+    });
+}
+
 
 /** @module core/domain */
 module.exports = User;
@@ -53,17 +68,25 @@ module.exports = User;
  */
 function User ( data ) {
     this.data = _.extend( {}, userTemplate, data );
+
+    // set some getters and setter on the main object instead of having to
+    // access properties via the .data object
+    var context = this;
+    Object.keys( this.data ).forEach( function ( key ) {
+        Object.defineProperty( context, key, {
+            get: function () { return context.data[key]; },
+            set: function ( v ) { context.data[key] = v; }
+        });
+    });
 }
 
-var EnumRoles = Object.create( null, {
-    'OFFICER'       : { 'value': 1, 'writable': false, 'enumerable': true },
-    'SUPERVISOR'    : { 'value': 2, 'writable': false, 'enumerable': true },
-    'ADMINISTRATOR' : { 'value': 3, 'writable': false, 'enumerable': true }
-});
-
-for ( var role in EnumRoles ) {
-    Object.defineProperty( User, role, {
-        'value': EnumRoles[role], 'writable': false, 'enumerable': true
+/**
+ * Get the role name by providing the tier value.
+ * @private
+ */
+function getRoleByValue ( value ) {
+    return _.findKey( EnumRoles, function ( role ) {
+        return ( role === value );
     });
 }
 
@@ -76,11 +99,12 @@ User.roleNames = function () {
     return Object.keys( EnumRoles );
 };
 
+/**
+ * Get the role name of the current user.
+ * @returns {String} role name of this object
+ */
 User.prototype.roleName = function () {
-    var context = this;
-    return _.findKey( EnumRoles, function ( role ) {
-        return ( role === context.data.tier );
-    });
+    return getRoleByValue( this.tier );
 };
 
 /**
