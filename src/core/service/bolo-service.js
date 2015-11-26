@@ -78,9 +78,9 @@ BoloService.prototype.updateBolo = function ( boloData, attachments ) {
 /**
  * Retrieve a collection of bolos
  */
-BoloService.prototype.getBolos = function () {
+BoloService.prototype.getBolos = function (limit, skip) {
     var context = this;
-    return context.boloRepository.getBolos();
+    return context.boloRepository.getBolos(limit, skip);
 };
 
 BoloService.prototype.getBolo = function (id) {
