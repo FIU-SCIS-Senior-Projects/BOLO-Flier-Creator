@@ -28,8 +28,8 @@ var required = Object.keys(schema).filter(function (key) {
 
 var boloTemplate = {
     id              : '',
-    creationDate    : '',
-    lastUpdate      : '',
+    createdOn       : '',
+    lastUpdatedOn   : '',
     agency          : '',
     authorFName     : '',
     authorLName     : '',
@@ -49,7 +49,9 @@ var boloTemplate = {
     additional      : '',
     summary         : '',
     attachments     : {},
-    archive         : false,
+    video_url       : '',
+    isActive        : '',
+    status          : ''
 };
 
 /** @module core/domain */
