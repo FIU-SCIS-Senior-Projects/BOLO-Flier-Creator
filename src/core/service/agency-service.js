@@ -1,9 +1,9 @@
 /* jshint node: true */
 'use strict';
+var _ = require('lodash');
 
 var Agency = require('../domain/agency.js');
 var Promise = require('promise');
-
 
 /** @module core/ports */
 module.exports = AgencyService;
@@ -43,4 +43,59 @@ AgencyService.prototype.createAgency = function ( agencyData, attachments) {
         .catch( function ( error ) {
             throw new Error( 'Unable to create Agency.' );
         });
+};
+
+/**
+ * Create a new Agency in the system.
+ *
+ * @param {object} agencyData - Agency to update
+ * @param {object} attachments - Agency Attachments
+ */
+AgencyService.prototype.updateAgency = function ( agencyData, attachments ) {
+    var context = this;
+    var updated = new Agency( agencyData );
+
+    if ( ! updated.isValid() ) {
+        throw new Error( "Invalid agency data" );
+    }
+
+    return context.AgencyRepository.getAgency( updated.data.id )
+    .then( function ( original ) {
+        
+        var atts = _.assign( {}, original.data.attachments );
+        original.diff( updated ).forEach( function ( key ) {
+            original.data[key] = updated.data[key];
+        });
+
+        original.data.attachments = atts;
+
+        return context.AgencyRepository.update( original, attachments );
+    })
+    .then( function ( updated ) {
+        return updated;
+    })
+    .catch( function ( error ) {
+        return Promise.reject( { success: false, error: error.message } );
+    });
+};
+
+/**
+ * Retrieve a collection of agencies
+ */
+AgencyService.prototype.getAgencies = function () {
+    var context = this;
+    return context.AgencyRepository.getAgencies();
+};
+
+AgencyService.prototype.getAgency= function (id) {
+    var context = this;
+    return context.AgencyRepository.getAgency(id);
+};
+
+/**
+ * Get an attachment for a specified Agency.
+ */
+AgencyService.prototype.getAttachment = function ( id, attname ) {
+    var context = this;
+    return context.AgencyRepository.getAttachment( id, attname );
 };

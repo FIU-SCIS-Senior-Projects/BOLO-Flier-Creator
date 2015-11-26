@@ -28,6 +28,16 @@ window.addEventListener("load", function (event) {
     bolo.init();
 });
 
+$('.archive-bolo').click(function (bolo) {
+    var id = $(this).attr('id');
+    $.ajax({
+        url: "/bolo/archive/" + id,
+        method:"POST"
+    }).done(function () {
+        window.location.assign( window.location.href );
+    });
+});
+
 $('.delete-bolo').click(function (bolo) {
     var id = $(this).attr('id');
     $.ajax({
@@ -38,3 +48,12 @@ $('.delete-bolo').click(function (bolo) {
     });
 });
 
+$('.restore-bolo').click(function (bolo) {
+    var id = $(this).attr('id');
+    $.ajax({
+        url: "/bolo/restore/" + id,
+        method:"POST"
+    }).done(function () {
+        window.location.assign( window.location.href );
+    });
+});

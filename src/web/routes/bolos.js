@@ -20,7 +20,7 @@ function getDateTime() {
     var seconds = date.getSeconds();
     var year = date.getFullYear();
     var month = date.getMonth() + 1;
-    var day = date.getDay();
+    var day = date.getDate();
 
     //Append 0 to all values less than 10;
     hour = (hour < 10 ? "0" : "") + hour;
@@ -34,29 +34,31 @@ function getDateTime() {
 
 function setBoloData(fields) {
     return {
-        id: fields.id || '',
-        authorFName: "temp",
-        authorLName: "user",
-        authorUName: "temp user",
-        agency: "temp agency",
-        category: fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
-        firstName: fields.fname || '',
-        lastName: fields.lname || '',
-        dob: fields.dob || '',
-        dlNumber: fields.dl_number || '',
-        race: fields.race || '',
-        sex: fields.sex != 'Select an option...' ? fields.sex : '',
-        height: fields.height || '',
-        weight: fields.weight || '',
-        hairColor: fields.hair_color != 'Select an option...' ? fields.hair_color : '',
-        tattoos: fields.tattoos || '',
-        address: fields.address || '',
-        image: fields.images || [],
-        video_url: fields.video_url || '',
-        additional: fields.last_known_address || '',
-        summary: fields.summary || '',
-        archive: false,
-        enteredDT: fields.enteredDT ? fields.enteredDT : getDateTime()
+        id                  : fields.id || '',
+        createdOn           : fields.enteredDT ? fields.enteredDT : getDateTime(),
+        lastUpdatedOn       : fields.lastUpdatedOn ? fields.lastUpdatedOn : getDateTime(),
+        agency              : "Pinecrest Police Department",
+        authorFName         : "Jason",
+        authorLName         : "Cohen",
+        authorUName         : "Jason Cohen",
+        category            : fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
+        firstName           : fields.fname || '',
+        lastName            : fields.lname || '',
+        dob                 : fields.dob || '',
+        dlNumber            : fields.dl_number || '',
+        race                : fields.race || '',
+        sex                 : fields.sex != 'Select an option...' ? fields.sex : '',
+        height              : fields.height || '',
+        weight              : fields.weight || '',
+        hairColor           : fields.hair_color != 'Select an option...' ? fields.hair_color : '',
+        tattoos             : fields.tattoos || '',
+        address             : fields.address || '',
+        additional          : fields.last_known_address || '',
+        summary             : fields.summary || '',
+        attachments         : {},
+        video_url           : fields.video_url || '',
+        isActive            : fields.isActive || true,
+        status              : fields.status || "New"
     };
 }
 
@@ -94,10 +96,25 @@ function cleanTemporaryFiles ( files ) {
 router.get('/', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var boloService = new BoloService(boloRepository);
-
-    boloService.getBolos()
+    var limit = 3;
+    var skip = 0;
+    
+    boloService.getBolos(limit,skip)
         .then(function (bolos) {
             res.render('bolo-list', {
+                bolos: bolos
+            });
+        });
+});
+
+// list archive bolos
+router.get('/archive', function (req, res) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+
+    boloService.getArchiveBolos()
+        .then(function (bolos) {
+            res.render('bolo-archive', {
                 bolos: bolos
             });
         });
@@ -130,7 +147,7 @@ router.post('/create', function(req, res) {
     });
 });
 
-// handle requests to edit a specific bolo
+// render the bolo edit form
 router.get('/edit/:id', function (req, res) {
 
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
@@ -155,6 +172,7 @@ router.post('/edit/:id', function (req, res) {
     parseFormData( req )
     .then( function ( formDTO ) {
         var boloDTO = setBoloData( formDTO.fields );
+        boloDTO.lastUpdatedOn = getDateTime();
         var result = boloService.updateBolo( boloDTO, formDTO.files );
         return Promise.all([ result, formDTO ]);
     })
@@ -169,7 +187,44 @@ router.post('/edit/:id', function (req, res) {
 
 });
 
-// handle requests to delete a specific bolo
+// handle requests to inactivate a specific bolo
+router.post('/archive/:id', function (req, res) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+    
+    var activate = false;
+    return boloService.activate( req.params.id, activate )
+        .then( function ( success ) {
+            if ( !success ) {
+                throw new Error( "Bolo not inactivated. Please try again." );
+            }
+            res.redirect( '/bolo' );
+        })
+        .catch(function (_error) {
+            /** @todo redirect and send flash message with error */
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
+});
+
+router.post('/restore/:id', function (req, res) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+    
+    var activate = true;
+    return boloService.activate( req.params.id, activate )
+        .then( function ( success ) {
+            if ( !success ) {
+                throw new Error( "Bolo not activated. Please try again." );
+            }
+            res.redirect( '/bolo/archive' );
+        })
+        .catch(function (_error) {
+            /** @todo redirect and send flash message with error */
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
+});
+
+
 router.post('/delete/:id', function (req, res) {
     var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
     var boloService = new BoloService(boloRepository);
@@ -182,7 +237,23 @@ router.post('/delete/:id', function (req, res) {
             res.redirect( '/bolo' );
         })
         .catch(function (_error) {
-            /** @todo redirect and send flash message with error */
+            // @todo redirect and send flash message with error 
+            res.status(500).send('something wrong happened...', _error.stack);
+        });
+});
+
+// handle requests to view the details of a bolo
+router.get('/details/:id', function ( req, res ) {
+    var boloRepository = AdapterFactory.create( 'persistence', 'cloudant-bolo-repository' );
+    var boloService = new BoloService(boloRepository);
+
+    boloService.getBolo(req.params.id)
+        .then(function (bolo) {
+            res.render('bolo-details', {
+                bolo: bolo
+            });
+        })
+        .catch(function (_error) {
             res.status(500).send('something wrong happened...', _error.stack);
         });
 });
@@ -199,4 +270,9 @@ router.get( '/asset/:boloid/:attname', function ( req, res ) {
         });
 });
 
+function ArchiveRestoreBolo(boloId, activate)
+{
+    
+    
+}
 module.exports = router;

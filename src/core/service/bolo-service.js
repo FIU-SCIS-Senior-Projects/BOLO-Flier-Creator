@@ -78,9 +78,9 @@ BoloService.prototype.updateBolo = function ( boloData, attachments ) {
 /**
  * Retrieve a collection of bolos
  */
-BoloService.prototype.getBolos = function () {
+BoloService.prototype.getBolos = function (limit, skip) {
     var context = this;
-    return context.boloRepository.getBolos();
+    return context.boloRepository.getBolos(limit, skip);
 };
 
 BoloService.prototype.getBolo = function (id) {
@@ -88,9 +88,19 @@ BoloService.prototype.getBolo = function (id) {
     return context.boloRepository.getBolo(id);
 };
 
+BoloService.prototype.getArchiveBolos = function ( ) {
+    return this.boloRepository.getArchiveBolos( );
+};
+
+BoloService.prototype.activate = function ( id, activate ) {
+    return this.boloRepository.activate( id, activate );
+};
+
 BoloService.prototype.removeBolo = function ( id ) {
     return this.boloRepository.delete( id );
 };
+
+
 
 /**
  * Get an attachment for a specified Bolo.
