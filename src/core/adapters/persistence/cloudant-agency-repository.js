@@ -3,27 +3,18 @@
 
 var _ = require('lodash');
 var fs = require('fs');
-var Jimp = require('jimp');
 var Promise = require('promise');
 var uuid = require('node-uuid');
 var path = require('path');
 
 var db = require('../../lib/cloudant-promise').db.use('bolo');
-var core_dir = path.resolve(__dirname + '../../../');
 var Agency = require('../../domain/agency.js');
-var CommonService = require(path.join(core_dir, 'service/common-service'));
 
 var DOCTYPE = 'agency';
 
+
 module.exports = CloudantAgencyRepository;
 
-/**
- * Create a new CloudantAgencyRepository object.
- *
- */
-function CloudantAgencyRepository() {
-    // constructor stub
-}
 
 /**
  * Transform the agency doc to a suitable format for the Agency entity object.
@@ -105,6 +96,14 @@ function transformAttachment(original) {
         .catch(errorHandler);
 }
 
+
+/**
+ * Create a new CloudantAgencyRepository object.
+ *
+ */
+function CloudantAgencyRepository() {
+    // constructor stub
+}
 
 /**
  * Insert an agency document in the Cloudant Database
