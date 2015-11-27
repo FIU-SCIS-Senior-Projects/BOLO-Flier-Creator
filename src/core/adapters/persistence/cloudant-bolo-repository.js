@@ -44,7 +44,7 @@ function boloFromCloudant(bolo_doc) {
 function boloToCloudant(bolo) {
     var doc = _.assign({}, bolo.data);
 
-    doc.type = DOCTYPE;
+    doc.Type = DOCTYPE;
     doc._id = doc.id;
 
     delete doc.id;
@@ -79,24 +79,6 @@ function attachmentsFromCloudant(attachments) {
  */
 function transformAttachment(original) {
     var readFile = Promise.denodeify(fs.readFile);
-    var jimp = new Promise(function (resolve, reject) {
-        new Jimp(original.path, function (err, image) {
-            if (err) {
-                reject(err);
-            }
-            //resolve( image.resize( 400, 400 ) );
-            resolve(image);
-        });
-    });
-
-    var getBuffer = function (image) {
-        return new Promise(function (resolve, reject) {
-            image.getBuffer(original.content_type, function (err, buffer) {
-                if (err) reject(err);
-                resolve(buffer);
-            });
-        });
-    };
 
     var createDTO = function (readBuffer) {
         return {

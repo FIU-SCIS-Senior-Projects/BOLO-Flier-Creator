@@ -28,7 +28,8 @@ module.exports.create = function () {
         address         : '123 Gangsta Lane',
         additional      : '',
         summary         : '',
-        archive         : false
+        archive         : false,
+        isActive        : true
     });
 };
 
