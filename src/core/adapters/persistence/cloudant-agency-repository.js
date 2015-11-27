@@ -29,7 +29,7 @@ function agencyFromCloudant(agency_doc) {
     agency.data.id = agency.data._id;
     delete agency.data._id;
     delete agency.data._rev;
-
+    delete agency.data.Type;
 
     if (agency.data._attachments) {
         agency.data.attachments = agency.data._attachments;
@@ -49,11 +49,12 @@ function agencyFromCloudant(agency_doc) {
 function agencyToCloudant(agency) {
     var doc = _.assign({}, agency.data);
 
-    doc._id = doc.id;
-    doc.type= DOCTYPE;
-    
+    doc.Type = DOCTYPE;
 
-    delete doc.id;
+    if ( doc.id ) {
+        doc._id = doc.id;
+        delete doc.id;
+    }
 
     if (agency.data.attachments) {
         doc._attachments = _.assign({}, agency.data.attachments);
