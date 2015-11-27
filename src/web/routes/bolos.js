@@ -180,7 +180,7 @@ router.post('/edit/:id', function (req, res) {
 router.post('/archive/:id', function (req, res) {
     var activate = false;
 
-    return boloService.activate(req.params.id, activate)
+    boloService.activate(req.params.id, activate)
         .then(function (success) {
             if (!success) {
                 throw new Error("Bolo not inactivated. Please try again.");
@@ -196,7 +196,7 @@ router.post('/archive/:id', function (req, res) {
 router.post('/restore/:id', function (req, res) {
     var activate = true;
 
-    return boloService.activate(req.params.id, activate)
+    boloService.activate(req.params.id, activate)
         .then(function (success) {
             if (!success) {
                 throw new Error("Bolo not activated. Please try again.");
@@ -211,7 +211,7 @@ router.post('/restore/:id', function (req, res) {
 
 
 router.post('/delete/:id', function (req, res) {
-    return boloService.removeBolo(req.params.id)
+    boloService.removeBolo(req.params.id)
         .then(function (success) {
             if (!success) {
                 throw new Error("Bolo not deleted. Please try again.");
