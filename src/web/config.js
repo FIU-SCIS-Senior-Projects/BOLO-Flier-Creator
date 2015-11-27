@@ -1,11 +1,18 @@
 /* jshint node:true */
 'use strict';
 
-var path = require('path');
+var path                = require('path');
 
-var core = path.resolve( __dirname, '../core' );
-var config = {};
-module.exports = config;
+require('dotenv').config({
+    'path': path.resolve( __dirname, '../../.env' )
+});
+
+var core                = path.resolve( __dirname, '../core' );
+var config              = {};
+
+
+/* Export the config object */
+module.exports          = config;
 
 
 /* Infrastructure Config */

@@ -17,8 +17,6 @@ var flash = require('connect-flash');
 var logger = require('morgan');
 var methodOverride = require('method-override');
 
-require('dotenv').config({ 'path': path.resolve( __dirname, '../../.env' ) });
-
 var config = require('./config');
 var routes = require('./routes');
 var auth = require('./lib/auth.js');
