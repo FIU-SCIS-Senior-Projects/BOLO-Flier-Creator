@@ -76,10 +76,9 @@ CloudantUserRepository.prototype.getAll = function () {
 
 CloudantUserRepository.prototype.getById = function ( id ) {
     return db.get( id )
-        .then( function ( data ) {
-            if ( !data._id ) throw new Error( data );
-            userTransform( data );
-            return new User( data );
+        .then( function ( doc ) {
+            if ( !doc._id ) throw new Error( doc );
+            return fromCloudant( doc );
         })
         .catch( function ( error ) {
             return Promise.reject(
@@ -95,9 +94,8 @@ CloudantUserRepository.prototype.getByUsername = function ( id ) {
             'include_docs': true
         })
         .then( function ( found ) {
-                  if ( !found.rows.length ) return Promise.resolve( null );
-            userTransform( found.rows[0].doc );
-            return new User( found.rows[0].doc );
+            if ( !found.rows.length ) return Promise.resolve( null );
+            return fromCloudant( found.rows[0].doc );
         })
         .catch( function ( error ) {
             return new Error( "Failed to get user by username" );
@@ -142,15 +140,4 @@ function toCloudant ( user ) {
     }
 
     return dto;
-}
-
-/**
- * Transform the user doc to a suitable format for the User entity object.
- * @private
- */
-function userTransform ( data ) {
-    data.id = data._id;
-    delete data._id;
-    delete data._rev;
-    delete data.Type;
 }
