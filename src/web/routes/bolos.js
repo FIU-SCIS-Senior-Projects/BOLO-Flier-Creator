@@ -121,7 +121,7 @@ router.get('/archive', function (req, res) {
 
 // render the bolo create form
 router.get('/create', function (req, res) {
-    res.render('create-bolo-form');
+    res.render('bolo-create-form');
 });
 
 // process bolo creation user form input
@@ -147,7 +147,7 @@ router.post('/create', function (req, res) {
 router.get('/edit/:id', function (req, res) {
     boloService.getBolo(req.params.id)
         .then(function (bolo) {
-            res.render('create-bolo-form', {
+            res.render('bolo-create-form', {
                 bolo: bolo
             });
         })
