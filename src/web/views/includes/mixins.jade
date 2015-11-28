@@ -11,8 +11,7 @@ mixin nav(name, id)
             a.navbar-brand(href="/")= name
  
         .collapse.navbar-collapse( id=id )
-            ul.nav.navbar-nav
-                block
+            block
  
 mixin nav_item(href, active)
     li(class=active): a( href=href )

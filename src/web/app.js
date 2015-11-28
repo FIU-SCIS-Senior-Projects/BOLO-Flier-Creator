@@ -82,6 +82,7 @@ app.use( function ( req, res, next ) {
 app.use( auth.router );
 app.use( '/admin', isAuthenticated, routes.admin );
 app.use( '/bolo', isAuthenticated, routes.bolos );
+app.use( '/account', isAuthenticated, routes.account );
 app.get( '/', isAuthenticated, function ( req, res, next ) {
     res.redirect( '/bolo' );
 });
