@@ -1,15 +1,17 @@
-/* jshint node: true, mocha: true, expr: true */
+/* jshint node: true */
 'use strict';
+
 var _ = require('lodash');
+var Entity = require('./entity');
 
 var agencyTemplate = {
-    id: '',
-    name: '',
-    address: '',
-    city: '',
-    state:'',
-    zip: '',
-    phone: ''    
+    'id'        : '',
+    'name'      : '',
+    'address'   : '',
+    'city'      : '',
+    'state'     : '',
+    'zip'       : '',
+    'phone'     : ''
 };
 
 /** @module core/domain */
@@ -25,6 +27,7 @@ module.exports = Agency;
  */
 function Agency(data) {
     this.data = _.extend({}, agencyTemplate, data);
+    Entity.setDataAccessors( this.data, this );
 }
 
 /**
