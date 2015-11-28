@@ -9,10 +9,6 @@ var Promise = require('promise');
 /** @module core/ports */
 
 /**
- * Creates a new instance of {CommonServices}.
- */
-
-/**
  * Returns the current datetime.
  */
 module.exports.getDateTime = function() {
@@ -31,10 +27,10 @@ module.exports.getDateTime = function() {
     month = (month < 10 ? "0" : "") + month;
     day = (day < 10 ? "0" : "") + day;
     return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
-}
+};
 
 module.exports.cleanTemporaryFiles = function ( files ) {
     files.forEach( function ( file ) {
         fs.unlink( file.path );
     });
-}
+};

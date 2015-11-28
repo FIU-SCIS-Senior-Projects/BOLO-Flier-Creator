@@ -25,6 +25,7 @@ config.AgencyRepository = require( path.join( core, 'adapters/persistence/clouda
 config.UserService      = require( path.join( core, 'service/user-service' ) );
 config.UserRepository   = require( path.join( core, 'adapters/persistence/cloudant-user-repository' ) );
 
+config.CommonService    = require( path.join( core, 'service/common-service' ) );
 
 /* Application Config */
 config.const = config.constants = {

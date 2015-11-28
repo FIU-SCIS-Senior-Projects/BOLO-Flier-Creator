@@ -3,6 +3,7 @@
 
 var router  = require('express').Router();
 var users   = require('./users');
+var agency  = require('./agency');
 
 var config  = require('../../config');
 var User    = require('../../../core/domain/user');
@@ -10,6 +11,7 @@ var User    = require('../../../core/domain/user');
 module.exports = router;
 
 router.use( users );
+router.use( '/agency', agency );
 
 router.use( function ( req, res, next ) {
     res.locals.admin_nav = 'admin-index';
