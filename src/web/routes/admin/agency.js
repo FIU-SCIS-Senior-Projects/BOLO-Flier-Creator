@@ -83,7 +83,7 @@ router.get('/create', function (req, res) {
  * POST /create
  * Process a form to create an agency.
  */
-router.post('/create', function (req, resp) {
+router.post('/create', function (req, res) {
     parseFormData(req)
     .then(function (formDTO) {
         var agencyDTO = setAgencyData(formDTO.fields);
@@ -92,7 +92,7 @@ router.post('/create', function (req, resp) {
     })
     .then(function (pData) {
         if (pData[1].files.length) CommonService.cleanTemporaryFiles(pData[1].files);
-        resp.redirect('/admin/agency');
+        res.redirect('/admin/agency');
     })
     .catch(function (error) {
         /** @todo send back form data with error message */
