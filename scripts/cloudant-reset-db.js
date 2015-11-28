@@ -15,13 +15,13 @@ var BOLO_DB = 'bolo-test';
 var BOLO_DESIGN_DOC = {
     "views": {
         "all_active": {
-            "map": "function (doc) { if ( 'bolo' === doc.Type && !doc.archive ) emit(doc._id, 1);\n}"
+            "map": "function (doc) { if ( 'bolo' === doc.Type && doc.isActive ) emit(doc._id, 1); }"
         },
         "all_archive": {
-            "map": "function (doc) { if ( 'bolo' === doc.Type && doc.archive ) emit(doc._id, 1);\n}"
+            "map": "function (doc) { if ( 'bolo' === doc.Type && !doc.isActive ) emit(doc._id, 1); }"
         },
         "all": {
-            "map": "function (doc) { if ( 'bolo' === doc.Type ) emit(doc._id, 1);\n}"
+            "map": "function (doc) { if ( 'bolo' === doc.Type ) emit(doc._id, 1); }"
         },
         "revs": {
             "map": "function (doc) { if ( 'bolo' === doc.Type ) emit( null, doc._rev ); }"
@@ -32,10 +32,10 @@ var BOLO_DESIGN_DOC = {
 var USERS_DESIGN_DOC = {
     "views": {
         "by_username": {
-            "map": "function (doc) { if ( 'user' === doc.Type ) emit(doc.username, null);\n}"
+            "map": "function (doc) { if ( 'user' === doc.Type ) emit(doc.username, null); }"
         },
         "all": {
-            "map": "function (doc) { if ( 'user' === doc.Type ) emit(doc._id, 1);\n}"
+            "map": "function (doc) { if ( 'user' === doc.Type ) emit(doc._id, 1); }"
         },
         "revs": {
             "map": "function (doc) { if ( 'user' === doc.Type ) emit( null, doc._rev ); }"
@@ -46,10 +46,10 @@ var USERS_DESIGN_DOC = {
 var AGENCY_DESIGN_DOC = {
     "views": {
         "by_agency": {
-            "map": "function (doc) { if ( 'agency' === doc.Type ) emit(doc.name, null);\n}"
+            "map": "function (doc) { if ( 'agency' === doc.Type ) emit(doc.name, null); }"
         },
         "all_active": {
-            "map": "function (doc) { if ( 'agency' === doc.Type ) emit(doc._id, null);\n}"
+            "map": "function (doc) { if ( 'agency' === doc.Type ) emit(doc._id, null); }"
         },
         "revs": {
             "map": "function (doc) { if ( 'agency' === doc.Type ) emit( null, doc._rev ); }"
