@@ -8,9 +8,9 @@ var path = require('path');
 var Promise = require('promise');
 var router = require('express').Router();
 
-var core_dir = path.resolve(__dirname + '../../../core/');
-var BoloService = require(path.join(core_dir, 'service/bolo-service'));
-var AdapterFactory = require(path.join(core_dir, 'adapters'));
+var config = require('../config');
+var boloRepository = new config.BoloRepository();
+var boloService = new config.BoloService( boloRepository );
 
 //gets current time; useful for bolo creation and update
 function getDateTime() {
@@ -94,8 +94,6 @@ function cleanTemporaryFiles(files) {
 
 // list bolos at the root route
 router.get('/', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
     var pageSize = 2;
     var currentPage = req.query.page || 1;
 
@@ -113,9 +111,6 @@ router.get('/', function (req, res) {
 
 // list archive bolos
 router.get('/archive', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
     boloService.getArchiveBolos()
         .then(function (bolos) {
             res.render('bolo-archive', {
@@ -126,14 +121,11 @@ router.get('/archive', function (req, res) {
 
 // render the bolo create form
 router.get('/create', function (req, res) {
-    res.render('create-bolo-form');
+    res.render('bolo-create-form');
 });
 
 // process bolo creation user form input
 router.post('/create', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
     parseFormData(req)
         .then(function (formDTO) {
             var boloDTO = setBoloData(formDTO.fields);
@@ -153,13 +145,9 @@ router.post('/create', function (req, res) {
 
 // render the bolo edit form
 router.get('/edit/:id', function (req, res) {
-
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
     boloService.getBolo(req.params.id)
         .then(function (bolo) {
-            res.render('create-bolo-form', {
+            res.render('bolo-create-form', {
                 bolo: bolo
             });
         })
@@ -170,9 +158,6 @@ router.get('/edit/:id', function (req, res) {
 
 // handle requests to process edits on a specific bolo
 router.post('/edit/:id', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
     parseFormData(req)
         .then(function (formDTO) {
             var boloDTO = setBoloData(formDTO.fields);
@@ -193,11 +178,9 @@ router.post('/edit/:id', function (req, res) {
 
 // handle requests to inactivate a specific bolo
 router.post('/archive/:id', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
     var activate = false;
-    return boloService.activate(req.params.id, activate)
+
+    boloService.activate(req.params.id, activate)
         .then(function (success) {
             if (!success) {
                 throw new Error("Bolo not inactivated. Please try again.");
@@ -211,11 +194,9 @@ router.post('/archive/:id', function (req, res) {
 });
 
 router.post('/restore/:id', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
     var activate = true;
-    return boloService.activate(req.params.id, activate)
+
+    boloService.activate(req.params.id, activate)
         .then(function (success) {
             if (!success) {
                 throw new Error("Bolo not activated. Please try again.");
@@ -230,10 +211,7 @@ router.post('/restore/:id', function (req, res) {
 
 
 router.post('/delete/:id', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
-    return boloService.removeBolo(req.params.id)
+    boloService.removeBolo(req.params.id)
         .then(function (success) {
             if (!success) {
                 throw new Error("Bolo not deleted. Please try again.");
@@ -248,9 +226,6 @@ router.post('/delete/:id', function (req, res) {
 
 // handle requests to view the details of a bolo
 router.get('/details/:id', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
     boloService.getBolo(req.params.id)
         .then(function (bolo) {
             res.render('bolo-details', {
@@ -264,9 +239,6 @@ router.get('/details/:id', function (req, res) {
 
 // handle requests for bolo attachments
 router.get('/asset/:boloid/:attname', function (req, res) {
-    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
-    var boloService = new BoloService(boloRepository);
-
     boloService.getAttachment(req.params.boloid, req.params.attname)
         .then(function (attDTO) {
             res.type(attDTO.content_type);
@@ -278,4 +250,5 @@ function ArchiveRestoreBolo(boloId, activate) {
 
 
 }
+
 module.exports = router;

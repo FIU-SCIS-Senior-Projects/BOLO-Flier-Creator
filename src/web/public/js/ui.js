@@ -29,10 +29,10 @@ window.addEventListener("load", function (event) {
 });
 
 $('.archive-bolo').click(function (bolo) {
-    var id = $(this).attr('id');
+    var id = $(this).data('bid');
     $.ajax({
         url: "/bolo/archive/" + id,
-        method:"POST"
+        method: "POST"
     }).done(function () {
         window.location.assign( window.location.href );
     });

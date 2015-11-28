@@ -17,8 +17,6 @@ var flash = require('connect-flash');
 var logger = require('morgan');
 var methodOverride = require('method-override');
 
-require('dotenv').config({ 'path': path.resolve( __dirname, '../../.env' ) });
-
 var config = require('./config');
 var routes = require('./routes');
 var auth = require('./lib/auth.js');
@@ -84,16 +82,9 @@ app.use( function ( req, res, next ) {
 app.use( auth.router );
 app.use( '/admin', isAuthenticated, routes.admin );
 app.use( '/bolo', isAuthenticated, routes.bolos );
-app.use( '/agency', isAuthenticated, routes.agency );
-app.get( '/',
-    isAuthenticated,
-    function ( req, res ) {
-        var data = {
-            'msg': req.flash( config.const.GFMSG ),
-            'err': req.flash( config.constants.GFERR )
-        };
-        res.render( 'index', data);
-    });
+app.get( '/', isAuthenticated, function ( req, res, next ) {
+    res.redirect( '/bolo' );
+});
 
 
 /*

@@ -15,7 +15,7 @@ var DOCTYPE = 'bolo';
  * Transform the bolo doc to a suitable format for the Bolo entity object.
  *
  * @param {Object} - the doc to transform to a bolo
- * @returns {Bolo} - a bolo in the generic Bolo entity format
+ * @returns {Bolo} a bolo in the generic Bolo entity format
  * @private
  */
 function boloFromCloudant(bolo_doc) {
@@ -38,16 +38,18 @@ function boloFromCloudant(bolo_doc) {
  * Transform the bolo to a format suitable for cloudant.
  *
  * @param {Bolo} - the bolo to transform
- * @returns {Object} - an object suitable for Cloudant
+ * @returns {Object} an object suitable for Cloudant
  * @private
  */
 function boloToCloudant(bolo) {
     var doc = _.assign({}, bolo.data);
 
     doc.Type = DOCTYPE;
-    doc._id = doc.id;
 
-    delete doc.id;
+    if ( doc.id ) {
+        doc._id = doc.id;
+        delete doc.id;
+    }
 
     if (bolo.data.attachments) {
         doc._attachments = _.assign({}, bolo.data.attachments);
@@ -103,7 +105,9 @@ function createAgencyBoloID(agencyName) {
     return prefix.concat('_', id);
 }
 
+
 module.exports = CloudantBoloRepository;
+
 
 /**
  * Create a new CloudantBoloRepository object.
@@ -221,6 +225,7 @@ CloudantBoloRepository.prototype.activate = function (id, activate) {
         });
 };
 
+
 CloudantBoloRepository.prototype.delete = function (id) {
     // **UNDOCUMENTED BEHAVIOR**
     // cloudant/nano library destroys the database if a null/undefined argument
@@ -241,6 +246,7 @@ CloudantBoloRepository.prototype.delete = function (id) {
         });
 };
 
+
 CloudantBoloRepository.prototype.getBolos = function (pageSize, currentPage) {
     var limit = pageSize;
     var skip = pageSize * (currentPage-1);
@@ -250,11 +256,11 @@ CloudantBoloRepository.prototype.getBolos = function (pageSize, currentPage) {
                 return boloFromCloudant(item.doc);
             });
             var pages = Math.floor(result.total_rows/pageSize) + 1;
-           
 
             return Promise.resolve({ bolos: bolos, pages: pages });
         });
 };
+
 
 CloudantBoloRepository.prototype.getArchiveBolos = function () {
     return db.view('bolo', 'all_archive', { include_docs: true })
@@ -266,12 +272,14 @@ CloudantBoloRepository.prototype.getArchiveBolos = function () {
         });
 };
 
+
 CloudantBoloRepository.prototype.getBolo = function (id) {
     return db.get(id)
         .then(function (bolo_doc) {
             return boloFromCloudant(bolo_doc);
         });
 };
+
 
 CloudantBoloRepository.prototype.getAttachment = function (id, attname) {
     var bufferPromise = db.getAttachment(id, attname);

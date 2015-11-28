@@ -2,6 +2,7 @@
 'use strict';
 
 var _ = require('lodash');
+var Entity = require('./entity');
 
 var schema = {
     authorFName: {
@@ -68,6 +69,7 @@ module.exports = Bolo;
  */
 function Bolo( data ) {
     this.data = _.extend( {}, boloTemplate, data );
+    Entity.setDataAccessors( this.data, this );
 }
 
 /**

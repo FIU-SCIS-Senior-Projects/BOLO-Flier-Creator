@@ -3,27 +3,18 @@
 
 var _ = require('lodash');
 var fs = require('fs');
-var Jimp = require('jimp');
 var Promise = require('promise');
 var uuid = require('node-uuid');
 var path = require('path');
 
 var db = require('../../lib/cloudant-promise').db.use('bolo');
-var core_dir = path.resolve(__dirname + '../../../');
 var Agency = require('../../domain/agency.js');
-var CommonService = require(path.join(core_dir, 'service/common-service'));
 
 var DOCTYPE = 'agency';
 
+
 module.exports = CloudantAgencyRepository;
 
-/**
- * Create a new CloudantAgencyRepository object.
- *
- */
-function CloudantAgencyRepository() {
-    // constructor stub
-}
 
 /**
  * Transform the agency doc to a suitable format for the Agency entity object.
@@ -38,7 +29,7 @@ function agencyFromCloudant(agency_doc) {
     agency.data.id = agency.data._id;
     delete agency.data._id;
     delete agency.data._rev;
-
+    delete agency.data.Type;
 
     if (agency.data._attachments) {
         agency.data.attachments = agency.data._attachments;
@@ -58,14 +49,15 @@ function agencyFromCloudant(agency_doc) {
 function agencyToCloudant(agency) {
     var doc = _.assign({}, agency.data);
 
-    doc._id = doc.id;
-    doc.type= DOCTYPE;
-    
+    doc.Type = DOCTYPE;
 
-    delete doc.id;
+    if ( doc.id ) {
+        doc._id = doc.id;
+        delete doc.id;
+    }
 
-    if (agency.data.attachments) {
-        doc._attachments = _.assign({}, agency.data.attachments);
+    if ( agency.data.attachments ) {
+        doc._attachments = _.assign( {}, agency.data.attachments );
         delete doc.attachments;
     }
 
@@ -105,6 +97,14 @@ function transformAttachment(original) {
         .catch(errorHandler);
 }
 
+
+/**
+ * Create a new CloudantAgencyRepository object.
+ *
+ */
+function CloudantAgencyRepository() {
+    // constructor stub
+}
 
 /**
  * Insert an agency document in the Cloudant Database
@@ -213,5 +213,24 @@ CloudantAgencyRepository.prototype.getAttachment = function ( id, attname ) {
             'content_type': attinfo.content_type,
             'data': buffer
         };
+    });
+};
+
+CloudantAgencyRepository.prototype.delete = function ( id ) {
+    // **UNDOCUMENTED BEHAVIOR**
+    // cloudant/nano library destroys the database if a null/undefined argument
+    // is passed into the `docname` argument for `db.destroy( docname,
+    // callback)`. It seems that passing null to the object provided by
+    // `db.use( dbname )` creates the equivalent database API requests, i.e.
+    // create/read/delete database.
+    if ( !id ) throw new Error( 'id cannot be null or undefined' );
+
+    return db.get( id ).then( function ( doc ) {
+        return db.destroy( doc._id, doc._rev );
+    })
+    .catch( function ( error ) {
+        return new Error(
+            'Failed to delete BOLO: ' + error.error + ' / ' + error.reason
+        );
     });
 };

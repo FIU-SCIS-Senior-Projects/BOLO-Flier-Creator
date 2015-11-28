@@ -4,12 +4,53 @@
 var _ = require('lodash');
 var Promise = require('promise');
 
-var db = require('../../lib/cloudant-promise').db.use('bolo_users');
+var db = require('../../lib/cloudant-promise').db.use('bolo');
 var User = require('../../domain/user.js');
 
 var DOCTYPE = 'user';
 
+/** Export the repository as a module **/
 module.exports = CloudantUserRepository;
+
+
+/**
+ * Transform the cloudant doc into a suitable format for the User entity object.
+ *
+ * @param {Object} - the doc to transform to a user object
+ * @returns {User} a user in the generic User entity format
+ * @private
+ */
+function fromCloudant ( doc ) {
+    var user = new User( doc );
+
+    user.data.id = user.data._id;
+    delete user.data._id;
+    delete user.data._rev;
+    delete user.data.Type;
+
+    return user;
+}
+
+/**
+ * Transform the user object to a format suitable for Cloudant.
+ *
+ * @param {User} - the user to transform
+ * @returns {Object} user data in the Cloudant doc format
+ * @private
+ */
+function toCloudant ( user ) {
+    var dto = _.assign( {}, user.data );
+
+    dto.Type = DOCTYPE;
+
+    if ( dto.id ) {
+        dto._id = dto.id;
+        delete dto.id;
+    }
+
+    return dto;
+}
+
 
 /**
  * Create a new CloudantUserRepository object
@@ -76,10 +117,9 @@ CloudantUserRepository.prototype.getAll = function () {
 
 CloudantUserRepository.prototype.getById = function ( id ) {
     return db.get( id )
-        .then( function ( data ) {
-            if ( !data._id ) throw new Error( data );
-            userTransform( data );
-            return new User( data );
+        .then( function ( doc ) {
+            if ( !doc._id ) throw new Error( doc );
+            return fromCloudant( doc );
         })
         .catch( function ( error ) {
             return Promise.reject(
@@ -95,9 +135,8 @@ CloudantUserRepository.prototype.getByUsername = function ( id ) {
             'include_docs': true
         })
         .then( function ( found ) {
-                  if ( !found.rows.length ) return Promise.resolve( null );
-            userTransform( found.rows[0].doc );
-            return new User( found.rows[0].doc );
+            if ( !found.rows.length ) return Promise.resolve( null );
+            return fromCloudant( found.rows[0].doc );
         })
         .catch( function ( error ) {
             return new Error( "Failed to get user by username" );
@@ -119,38 +158,3 @@ CloudantUserRepository.prototype.remove = function ( id ) {
         });
 };
 
-
-function fromCloudant ( data ) {
-    var user = new User( data );
-
-    user.data.id = user.data._id;
-    delete user.data._id;
-    delete user.data._rev;
-    delete user.data.Type;
-
-    return user;
-}
-
-function toCloudant ( user ) {
-    var dto = _.assign( {}, user.data );
-
-    dto.Type = DOCTYPE;
-
-    if ( dto.id ) {
-        dto._id = dto.id;
-        delete dto.id;
-    }
-
-    return dto;
-}
-
-/**
- * Transform the user doc to a suitable format for the User entity object.
- * @private
- */
-function userTransform ( data ) {
-    data.id = data._id;
-    delete data._id;
-    delete data._rev;
-    delete data.Type;
-}
