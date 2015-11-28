@@ -82,15 +82,9 @@ app.use( function ( req, res, next ) {
 app.use( auth.router );
 app.use( '/admin', isAuthenticated, routes.admin );
 app.use( '/bolo', isAuthenticated, routes.bolos );
-app.get( '/',
-    isAuthenticated,
-    function ( req, res ) {
-        var data = {
-            'msg': req.flash( config.const.GFMSG ),
-            'err': req.flash( config.constants.GFERR )
-        };
-        res.render( 'index', data);
-    });
+app.get( '/', isAuthenticated, function ( req, res, next ) {
+    res.redirect( '/bolo' );
+});
 
 
 /*
