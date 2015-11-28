@@ -21,12 +21,7 @@ html.no-js
       | to improve your experience.
     <![endif]-->
 
-    +nav("BOLO Version 3.0", "dropdown_menu")
-      if userLoggedIn
-          +nav_item("/bolo/create", "") Create BOLO
-          +nav_item("/bolo", "") View BOLOS
-          +nav_item("/bolo/archive", "") Archive
-          +nav_item("/logout", "") Logout
+    include ./main-nav.jade
 
     block jumbo
 
