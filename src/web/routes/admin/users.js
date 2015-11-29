@@ -8,7 +8,8 @@ var path            = require('path');
 var Promise         = require('promise');
 var router          = require('express').Router();
 
-var config          = require( '../../config' );
+var config          = require('../../config');
+var passwordUtil    = require('../../lib/password-util');
 
 var userRepository  = new config.UserRepository();
 var userService     = new config.UserService( userRepository );
@@ -158,7 +159,8 @@ router.get( '/users/:id', function ( req, res ) {
 router.get( '/users/:id/reset-password', function( req, res ) {
     var data = {
         'msg': req.flash( FMSG ),
-        'err': req.flash( FERR )
+        'err': req.flash( FERR ),
+        'form_errors': req.flash( 'form-errors' )
     };
 
     userService.getUser( req.params.id ).then( function ( user ) {
@@ -175,18 +177,15 @@ router.post( '/users/:id/reset-password', function( req, res ) {
     var userID = req.params.id;
 
     parseFormData( req ).then( function ( formDTO ) {
-        var fields = formDTO.fields;
+        var validationErrors = passwordUtil.validatePassword(
+            formDTO.fields.password, formDTO.fields.confirm
+        );
 
-        /** @todo develop a password helper module */
-        if ( fields.pass_new !== fields.pass_conf ) {
-            req.flash( FERR, 'Passwords must match.' );
-            res.redirect( 'back' );
-        } else if ( _.trim( fields.pass_new ).length < MIN_PASS_LENGTH ) {
-            var min_length = MIN_PASS_LENGTH.toString();
-            req.flash( FERR, 'Password must be at least ' + min_length + ' characters.' );
+        if ( validationErrors ) {
+            req.flash( 'form-errors', validationErrors );
             res.redirect( 'back' );
         } else {
-            return userService.resetPassword( userID, formDTO.fields.pass_new );
+            return userService.resetPassword( userID, formDTO.fields.password );
         }
     }, function( error ) {
         console.error( 'Error at /users/:id/reset-password >>> ', error.message );
