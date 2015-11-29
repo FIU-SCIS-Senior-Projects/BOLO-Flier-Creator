@@ -28,7 +28,7 @@ block content
    - var n = 1
    div.text-center
     ul.pagination
-      while n < paging.pages
+      while n <= paging.pages
         -var page = n++
         if page == paging.currentPage
             li.active
