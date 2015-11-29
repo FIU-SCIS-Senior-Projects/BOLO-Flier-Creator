@@ -62,7 +62,6 @@ router.use( function ( req, res, next ) {
 router.get('/', function (req, res) {
     agencyService.getAgencies()
     .then(function (agencies) {
-        console.log(agencies);
         res.render('agency-list', {
             agencies: agencies
         });
@@ -109,7 +108,6 @@ router.post('/create', function (req, res) {
 router.get('/edit/:id', function (req, res) {
     agencyService.getAgency(req.params.id)
     .then(function (agency) {
-        console.log( agency );
         res.render('agency-create-form', {
             agency: agency
         });
