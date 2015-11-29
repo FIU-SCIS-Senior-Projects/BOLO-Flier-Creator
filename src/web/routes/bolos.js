@@ -11,7 +11,10 @@ var router = require('express').Router();
 var config = require('../config');
 var boloRepository = new config.BoloRepository();
 var boloService = new config.BoloService( boloRepository );
+
 var core_dir = path.resolve(__dirname + '../../../core/');
+var BoloService = require(path.join(core_dir, 'service/bolo-service'));
+var AdapterFactory = require(path.join(core_dir, 'adapters'));
 
 //gets current time; useful for bolo creation and update
 function getDateTime() {
@@ -115,8 +118,6 @@ router.get('/', function (req, res) {
 
 // list archive bolos
 router.get('/archive', function (req, res) {
-    boloService.getArchiveBolos()
-        .then(function (bolos) {
     var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
     var boloService = new BoloService(boloRepository);
 
@@ -264,10 +265,5 @@ router.get('/asset/:boloid/:attname', function (req, res) {
             res.send(attDTO.data);
         });
 });
-
-function ArchiveRestoreBolo(boloId, activate) {
-
-
-}
 
 module.exports = router;
