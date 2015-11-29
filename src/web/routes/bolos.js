@@ -11,6 +11,7 @@ var router = require('express').Router();
 var config = require('../config');
 var boloRepository = new config.BoloRepository();
 var boloService = new config.BoloService( boloRepository );
+var core_dir = path.resolve(__dirname + '../../../core/');
 
 //gets current time; useful for bolo creation and update
 function getDateTime() {
@@ -38,6 +39,9 @@ function setBoloData(fields) {
         createdOn: fields.enteredDT ? fields.enteredDT : getDateTime(),
         lastUpdatedOn: fields.lastUpdatedOn ? fields.lastUpdatedOn : getDateTime(),
         agency: "Pinecrest Police Department",
+        authorFName: "Jason",
+        authorLName: "Cohen",
+        authorUName: "Jason Cohen",
         category: fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
         firstName: fields.fname || '',
         lastName: fields.lname || '',
@@ -91,6 +95,8 @@ function cleanTemporaryFiles(files) {
 
 // list bolos at the root route
 router.get('/', function (req, res) {
+    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
+    var boloService = new BoloService(boloRepository);
     var pageSize = 2;
     var currentPage = req.query.page || 1;
 
@@ -106,12 +112,25 @@ router.get('/', function (req, res) {
         });
 });
 
+
 // list archive bolos
 router.get('/archive', function (req, res) {
     boloService.getArchiveBolos()
         .then(function (bolos) {
+    var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
+    var boloService = new BoloService(boloRepository);
+
+    var pageSize = 2;
+    var currentPage = req.query.page || 1;
+
+    boloService.getArchiveBolos(pageSize, currentPage)
+        .then(function (result) {
             res.render('bolo-archive', {
-                bolos: bolos
+                bolos: result.bolos,
+                paging: {
+                    pages: result.pages,
+                    currentPage: currentPage
+                }
             });
         });
 });

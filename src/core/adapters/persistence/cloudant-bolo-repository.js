@@ -81,7 +81,6 @@ function attachmentsFromCloudant(attachments) {
  */
 function transformAttachment(original) {
     var readFile = Promise.denodeify(fs.readFile);
-
     var createDTO = function (readBuffer) {
         return {
             'name': original.name,
@@ -255,20 +254,29 @@ CloudantBoloRepository.prototype.getBolos = function (pageSize, currentPage) {
             var bolos = result.rows.map(function (item) {
                 return boloFromCloudant(item.doc);
             });
-            var pages = Math.floor(result.total_rows/pageSize) + 1;
-
-            return Promise.resolve({ bolos: bolos, pages: pages });
+            var tPages = Math.floor(result.total_rows/pageSize);
+            var tReminder = result.total_rows%pageSize;
+            var pages = tReminder> 0? tPages + 1 : tPages;
+           
+           return Promise.resolve({ bolos: bolos, pages: pages });
         });
 };
 
-
-CloudantBoloRepository.prototype.getArchiveBolos = function () {
-    return db.view('bolo', 'all_archive', { include_docs: true })
+CloudantBoloRepository.prototype.getArchiveBolos = function (pageSize, currentPage) {
+    var limit = pageSize;
+    var skip = pageSize * (currentPage-1);
+    
+    return db.view('bolo', 'all_archive', { include_docs: true, limit: limit, skip: skip, descending: true })
         .then(function (result) {
             var bolos = result.rows.map(function (item) {
                 return boloFromCloudant(item.doc);
             });
-            return Promise.resolve(bolos);
+            
+            var tPages = Math.floor(result.total_rows/pageSize);
+            var tReminder = result.total_rows%pageSize;
+            var pages = tReminder> 0? tPages + 1 : tPages;
+            
+            return Promise.resolve({ bolos: bolos, pages: pages });
         });
 };
 
