@@ -34,7 +34,7 @@ $('.archive-bolo').click(function (bolo) {
         url: "/bolo/archive/" + id,
         method:"POST"
     }).done(function () {
-        window.location.assign( window.location.href );
+        window.location.assign("/bolo");
     });
 });
 
@@ -54,6 +54,6 @@ $('.restore-bolo').click(function (bolo) {
         url: "/bolo/restore/" + id,
         method:"POST"
     }).done(function () {
-        window.location.assign( window.location.href );
+        window.location.assign( "/bolo/archive" );
     });
 });
