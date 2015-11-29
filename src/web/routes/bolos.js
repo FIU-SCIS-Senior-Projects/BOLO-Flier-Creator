@@ -116,10 +116,17 @@ router.get('/archive', function (req, res) {
     var boloRepository = AdapterFactory.create('persistence', 'cloudant-bolo-repository');
     var boloService = new BoloService(boloRepository);
 
-    boloService.getArchiveBolos()
-        .then(function (bolos) {
+    var pageSize = 2;
+    var currentPage = req.query.page || 1;
+
+    boloService.getArchiveBolos(pageSize, currentPage)
+        .then(function (result) {
             res.render('bolo-archive', {
-                bolos: bolos
+                bolos: result.bolos,
+                paging: {
+                    pages: result.pages,
+                    currentPage: currentPage
+                }
             });
         });
 });

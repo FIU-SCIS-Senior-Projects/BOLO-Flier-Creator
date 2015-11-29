@@ -88,8 +88,8 @@ BoloService.prototype.getBolo = function (id) {
     return context.boloRepository.getBolo(id);
 };
 
-BoloService.prototype.getArchiveBolos = function ( ) {
-    return this.boloRepository.getArchiveBolos( );
+BoloService.prototype.getArchiveBolos = function (pageSize, currentPage ) {
+    return this.boloRepository.getArchiveBolos( pageSize, currentPage );
 };
 
 BoloService.prototype.activate = function ( id, activate ) {
