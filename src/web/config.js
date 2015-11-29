@@ -49,6 +49,7 @@ config.const = config.constants = {
 
 config.validation = {
     'password' : {
+        presence : true,
         /* https://www.owasp.org/index.php/Authentication_Cheat_Sheet#Implement_Proper_Password_Strength_Controls */
         length : {
             minimum : 10,
