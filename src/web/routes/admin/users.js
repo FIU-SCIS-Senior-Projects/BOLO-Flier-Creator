@@ -18,8 +18,6 @@ var userService     = new config.UserService( userRepository );
 var FERR = 'Flash Subject - User Route Errors';
 var FMSG = 'Flash Subject - User Route Messages';
 
-var MIN_PASS_LENGTH = config.constants.MIN_PASS_LENGTH;
-
 
 module.exports = router;
 
@@ -68,7 +66,8 @@ router.get( '/users/create', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
         'msg': req.flash( FMSG ),
-        'err': req.flash( FERR )
+        'err': req.flash( FERR ),
+        'form_errors': req.flash( 'form-errors' )
     };
     res.render( 'user-create-form', data );
 });
@@ -85,9 +84,20 @@ router.post( '/users/create', function ( req, res ) {
     };
 
     parseFormData( req ).then( function ( formDTO ) {
-        formDTO.fields.tier = formDTO.fields.role;
-        var userDTO = userService.formatDTO( formDTO.fields );
-        return userService.registerUser( userDTO );
+        var validationErrors = passwordUtil.validatePassword(
+            formDTO.fields.password, formDTO.fields.confirm
+        );
+
+        /** @todo validate the rest of the form **/
+
+        if ( validationErrors ) {
+            req.flash( 'form-errors', validationErrors );
+            res.redirect( 'back' );
+        } else {
+            formDTO.fields.tier = formDTO.fields.role;
+            var userDTO = userService.formatDTO( formDTO.fields );
+            return userService.registerUser( userDTO );
+        }
     }, function ( error ) {
         console.error( 'Error at /users/create >>> ', error.message );
         req.flash( FERR, 'Error processing form, please try again.' );
