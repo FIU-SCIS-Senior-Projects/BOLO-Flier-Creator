@@ -9,6 +9,8 @@ var validate        = require('validate.js');
 var config          = require('../config.js');
 var userService     = new config.UserService( new config.UserRepository() );
 
+var passwordUtil    = require('../lib/password-util');
+
 var FERR            = config.const.GFERR;
 var FMSG            = config.const.GFMSG;
 
@@ -36,22 +38,7 @@ function parseFormData ( req ) {
     });
 }
 
-function validatePassword ( pass, conf ) {
-        var constraints = {
-            'password': config.validation.password,
-            'confirmation': {
-                'equality': {
-                    'attribute': 'password',
-                    'message': ' should match password field.'
-                }
-            }
-        };
-
-        return validate( {
-            'password': pass,
-            'confirmation': conf
-        }, constraints );
-}
+var validatePassword = passwordUtil.validatePassword;
 
 module.exports = router;
 
