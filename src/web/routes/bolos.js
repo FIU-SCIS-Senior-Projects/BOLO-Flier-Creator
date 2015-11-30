@@ -47,7 +47,7 @@ function setBoloData(fields) {
 
 
 // list bolos at the root route
-router.get('/', function (req, res) {
+router.get('/bolo', function (req, res) {
     var pageSize = 2;
     var currentPage = req.query.page || 1;
 
