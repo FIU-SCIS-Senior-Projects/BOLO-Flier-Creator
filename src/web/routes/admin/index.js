@@ -15,12 +15,11 @@ var GFMSG   = config.const.GFMSG;
 module.exports = router;
 
 
-router.use( function ( req, res, next ) {
-    if ( req.user.tier !== User.ADMINISTRATOR ) {
-        req.flash( GFERR, 'Access to the admin area is restricted.' );
-        res.redirect( 'back' );
-    } else {
+router.use( '/admin*', function ( req, res, next ) {
+    if ( req.user.tier === User.ADMINISTRATOR ) {
         next();
+    } else {
+        res.render( 'unauthorized' );
     }
 });
 
