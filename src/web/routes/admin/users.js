@@ -6,7 +6,6 @@ var fs              = require('fs');
 var multiparty      = require('multiparty');
 var path            = require('path');
 var Promise         = require('promise');
-var router          = require('express').Router();
 
 var config          = require('../../config');
 var passwordUtil    = require('../../lib/password-util');
@@ -17,9 +16,6 @@ var userService     = new config.UserService( userRepository );
 
 var FERR = config.const.GFERR;
 var FMSG = config.const.GFMSG;
-
-
-module.exports = router;
 
 
 /** @todo Extract into a common library */
@@ -52,29 +48,23 @@ function parseFormData ( req ) {
     });
 }
 
-router.use( function ( req, res, next ) {
-    res.locals.admin_nav = 'admin-users';
-    next();
-});
-
 
 /**
- * GET /users/create
  * Responds with a form to create a new user.
  */
-router.get( '/users/create', function ( req, res ) {
+module.exports.getCreateForm = function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
         'form_errors': req.flash( 'form-errors' )
     };
     res.render( 'user-create-form', data );
-});
+};
+
 
 /**
- * POST /users/create
  * Process data to create a user, respond with the result.
  */
-router.post( '/users/create', function ( req, res ) {
+module.exports.postCreateForm = function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
     };
@@ -109,15 +99,14 @@ router.post( '/users/create', function ( req, res ) {
         req.flash( FERR, 'Error saving new user, please try again.' );
         res.redirect( 'back' );
     });
-});
+};
 
 /**
- * GET /users
  * Responds with a list of all system users.
  *
  * @todo implement sorting, filtering, and paging
  */
-router.get( '/users', function ( req, res ) {
+module.exports.getList = function ( req, res ) {
     var data = {};
 
     userService.getUsers().then( function ( users ) {
@@ -132,13 +121,12 @@ router.get( '/users', function ( req, res ) {
                 'again or contact the system administrator' );
         res.redirect( 'back' );
     });
-});
+};
 
 /**
- * GET /users/:id
  * Responds with account information for a specified user.
  */
-router.get( '/users/:id', function ( req, res ) {
+module.exports.getDetails = function ( req, res ) {
     var data = {};
 
     userService.getUser( req.params.id ).then( function ( user ) {
@@ -150,13 +138,12 @@ router.get( '/users/:id', function ( req, res ) {
         req.flash( FERR, 'Unable to get user information, please try again.' );
         res.redirect( 'back' );
     });
-});
+};
 
 /**
- * GET /users/:id/reset-password
  * Responds with a form to reset a user's password
  */
-router.get( '/users/:id/reset-password', function( req, res ) {
+module.exports.getPasswordReset = function ( req, res ) {
     var data = {
         'form_errors': req.flash( 'form-errors' )
     };
@@ -165,13 +152,12 @@ router.get( '/users/:id/reset-password', function( req, res ) {
         data.user = user;
         res.render( 'user-reset-password', data );
     });
-});
+};
 
 /**
- * POST /users/:id/reset-password
  * Process a request to reset a user's password.
  */
-router.post( '/users/:id/reset-password', function( req, res ) {
+module.exports.postPasswordReset = function ( req, res ) {
     var userID = req.params.id;
 
     parseFormData( req ).then( function ( formDTO ) {
@@ -199,13 +185,12 @@ router.post( '/users/:id/reset-password', function( req, res ) {
         req.flash( FERR, 'Unknown error occurred, please try again.' );
         res.redirect( 'back' );
     });
-});
+};
 
 /**
- * GET /users/:id/edit-details
  * Responds with a form for editing a user's details.
  */
-router.get( '/users/:id/edit-details', function ( req, res ) {
+module.exports.getEditDetails = function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
     };
@@ -224,13 +209,12 @@ router.get( '/users/:id/edit-details', function ( req, res ) {
         req.flash( FERR, 'Unkown error occurred, please try again.' );
         res.redirect( 'back' );
     });
-});
+};
 
 /**
- * POST /users/:id/edit-details
  * Process a request to update a user's details.
  */
-router.post( '/users/:id/edit-details', function ( req, res ) {
+module.exports.postEditDetails = function ( req, res ) {
     var id = req.params.id;
 
     parseFormData( req ).then( function ( formDTO ) {
@@ -251,13 +235,12 @@ router.post( '/users/:id/edit-details', function ( req, res ) {
         req.flash( FERR, 'Unknown error occurred, please try again.' );
         res.redirect( 'back' );
     });
-});
+};
 
 /**
- * GET /users/delete/:id
  * Attempts to delete user with the given id
  */
-router.get( '/users/:id/delete', function ( req, res ) {
+module.exports.getDelete = function ( req, res ) {
     userService.removeUser( req.params.id ).then(
         function ( result ) {
             req.flash( FMSG, 'Successfully deleted user.' );
@@ -268,5 +251,5 @@ router.get( '/users/:id/delete', function ( req, res ) {
             res.redirect( '/admin/users' );
         }
     );
-});
+};
 

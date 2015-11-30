@@ -5,7 +5,6 @@ var fs              = require('fs');
 var multiparty      = require('multiparty');
 var path            = require('path');
 var Promise         = require('promise');
-var router          = require('express').Router();
 
 var config          = require('../../config');
 var CommonService   = config.CommonService;
@@ -53,39 +52,31 @@ function setAgencyData(fields) {
     };
 }
 
-router.use( function ( req, res, next ) {
-    res.locals.admin_nav = 'admin-agency';
-    next();
-});
-
 /**
- * GET /
- * Default agency route
+ * Respond with a list
  */
-router.get('/', function (req, res) {
+module.exports.getList = function ( req, res ) {
     agencyService.getAgencies()
     .then(function (agencies) {
         res.render('agency-list', {
             agencies: agencies
         });
     });
-});
+};
 
 
 /**
- * GET /create
  * Respond with a form to create an agency.
  */
-router.get('/create', function (req, res) {
+module.exports.getCreateForm = function (req, res) {
     res.render('agency-create-form');
-});
+};
 
 
 /**
- * POST /create
  * Process a form to create an agency.
  */
-router.post('/create', function (req, res) {
+module.exports.postCreateForm = function ( req, res ) {
     parseFormData(req)
     .then(function (formDTO) {
         var agencyDTO = setAgencyData(formDTO.fields);
@@ -101,14 +92,13 @@ router.post('/create', function (req, res) {
         console.error('>>> create agency route error: ', error);
         res.redirect( 'back' );
     });
-});
+};
 
 
 /**
- * GET /edit/:id
  * Respond with a form to edit agency details
  */
-router.get('/edit/:id', function (req, res) {
+module.exports.getEditForm = function ( req, res ) {
     agencyService.getAgency(req.params.id)
     .then(function (agency) {
         res.render('agency-create-form', {
@@ -119,14 +109,13 @@ router.get('/edit/:id', function (req, res) {
         console.error( error );
         res.redirect( 'back' );
     });
-});
+};
 
 
 /**
- * POST /edit/:id
  * Process a form to edit/update agency details.
  */
-router.post('/edit/:id', function (req, res) {
+module.exports.postEditForm = function ( req, res ) {
     parseFormData( req )
     .then( function ( formDTO ) {
         var agencyDTO = setAgencyData( formDTO.fields );
@@ -141,17 +130,17 @@ router.post('/edit/:id', function (req, res) {
         console.error( '>>> edit agency route error: ', _error );
         res.redirect( 'back' );
     });
+};
 
-});
 
-
-// handle requests for agency attachments
-router.get( '/asset/:agencyId/:attname', function ( req, res ) {
-    agencyService.getAttachment( req.params.agencyId, req.params.attname )
+/**
+ * Get an attachment associated with the agency id.
+ */
+module.exports.getAttachment = function ( req, res ) {
+    agencyService.getAttachment( req.params.id , req.params.attname )
     .then( function ( attDTO ) {
         res.type( attDTO.content_type );
         res.send( attDTO.data );
     });
-});
+};
 
-module.exports = router;
