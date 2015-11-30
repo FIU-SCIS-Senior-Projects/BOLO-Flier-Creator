@@ -7,6 +7,7 @@ var validate        = require('validate.js');
 
 var config          = require('../config.js');
 var userService     = new config.UserService( new config.UserRepository() );
+var agencyService   = new config.AgencyService( new config.AgencyRepository() );
 
 var formUtil        = require('../lib/form-util');
 var passwordUtil    = require('../lib/password-util');
@@ -22,6 +23,7 @@ module.exports = router;
 router.get(  '/account'                 , getAccountDetails );
 router.get(  '/account/password'        , getChangePassword );
 router.post( '/account/password'        , postChangePassword );
+router.get(  '/account/notifications'   , getUpdateNotifications );
 
 
 /**
@@ -71,5 +73,19 @@ function postChangePassword ( req, res ) {
         console.error( 'Error at /account/password >>> ', error.message );
         req.flash( GFERR, 'Unknown error occurred, please try again.' );
         res.redirect( 'back' );
+    });
+}
+
+/**
+ * Respond with a form to manage notifications.
+ */
+function getUpdateNotifications ( req, res ) {
+    var data = {
+        'account_nav': 'account-notification'
+    };
+
+    agencyService.getAgencies().then( function ( agencies ) {
+        data.agencies = agencies;
+        res.render( 'account-notifications', data );
     });
 }
