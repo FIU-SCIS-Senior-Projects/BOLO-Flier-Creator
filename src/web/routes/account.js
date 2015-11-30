@@ -1,7 +1,6 @@
 /* jshint node:true */
 'use strict';
 
-var multiparty      = require('multiparty');
 var Promise         = require('promise');
 var router          = require('express').Router();
 var validate        = require('validate.js');
@@ -9,36 +8,14 @@ var validate        = require('validate.js');
 var config          = require('../config.js');
 var userService     = new config.UserService( new config.UserRepository() );
 
+var formUtil        = require('../lib/form-util');
 var passwordUtil    = require('../lib/password-util');
 
 var GFERR           = config.const.GFERR;
 var GFMSG           = config.const.GFMSG;
 
-
-function parseFormData ( req ) {
-    return new Promise( function ( resolve, reject ) {
-        var form = new multiparty.Form();
-        var files = [];
-        var fields = {};
-        var result = { 'files': files, 'fields': fields };
-
-        form.on( 'error', function ( error ) { reject( error ); } );
-        form.on( 'close', function () { resolve( result ); } );
-
-        form.on( 'field', function ( field, value ) { fields[field] = value; } );
-        form.on( 'file' , function ( name, file) {
-            files.push({
-                'name': file.originalFilename,
-                'content_type': file.headers['content-type'],
-                'path': file.path
-            });
-        });
-
-        form.parse( req );
-    });
-}
-
-var validatePassword = passwordUtil.validatePassword;
+var parseFormData       = formUtil.parseFormData;
+var validatePassword    = passwordUtil.validatePassword;
 
 
 module.exports = router;

@@ -1,42 +1,20 @@
 /* jshint node: true */
 'use strict';
 
-var fs              = require('fs');
-var multiparty      = require('multiparty');
-var path            = require('path');
-var Promise         = require('promise');
+var Promise             = require('promise');
 
-var config          = require('../../config');
-var CommonService   = config.CommonService;
-var agencyRepository = new config.AgencyRepository();
-var agencyService   = new config.AgencyService( agencyRepository );
+var config              = require('../../config');
+var agencyRepository    = new config.AgencyRepository();
+var agencyService       = new config.AgencyService( agencyRepository );
 
-var GFERR           = config.const.GFERR;
-var GFMSG           = config.const.GFMSG;
+var formUtil            = require('../../lib/form-util');
 
+var GFERR               = config.const.GFERR;
+var GFMSG               = config.const.GFMSG;
 
-function parseFormData(req) {
-    return new Promise(function (resolve, reject) {
-        var form = new multiparty.Form();
-        var files = [];
-        var fields = {};
-        var result = { 'files': files, 'fields': fields };
+var parseFormData       = formUtil.parseFormData;
+var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
-        form.on('error', function (error) { reject(error); });
-        form.on('close', function () { resolve(result); });
-
-        form.on('field', function (field, value) { fields[field] = value; });
-        form.on('file', function (name, file) {
-            files.push({
-                'name': file.originalFilename,
-                'content_type': file.headers['content-type'],
-                'path': file.path
-            });
-        });
-
-        form.parse(req);
-    });
-}
 
 function setAgencyData(fields) {
     return {
@@ -84,7 +62,7 @@ module.exports.postCreateForm = function ( req, res ) {
         return Promise.all([result, formDTO]);
     })
     .then(function (pData) {
-        if (pData[1].files.length) CommonService.cleanTemporaryFiles(pData[1].files);
+        if (pData[1].files.length) cleanTemporaryFiles(pData[1].files);
         res.redirect('/admin/agency');
     })
     .catch(function (error) {
@@ -123,7 +101,7 @@ module.exports.postEditForm = function ( req, res ) {
         return Promise.all([ result, formDTO ]);
     })
     .then( function ( pData ) {
-        if ( pData[1].files.length ) CommonService.cleanTemporaryFiles( pData[1].files );
+        if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
         res.redirect( '/admin/agency' );
     })
     .catch( function ( _error ) {

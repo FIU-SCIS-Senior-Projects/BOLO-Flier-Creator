@@ -2,51 +2,20 @@
 'use strict';
 
 var _               = require('lodash');
-var fs              = require('fs');
-var multiparty      = require('multiparty');
-var path            = require('path');
 var Promise         = require('promise');
 
 var config          = require('../../config');
-var passwordUtil    = require('../../lib/password-util');
-
 var userRepository  = new config.UserRepository();
 var userService     = new config.UserService( userRepository );
 
+var formUtil        = require('../../lib/form-util');
+var passwordUtil    = require('../../lib/password-util');
 
 var FERR = config.const.GFERR;
 var FMSG = config.const.GFMSG;
 
-
-/** @todo Extract into a common library */
-function cleanTemporaryFiles ( files ) {
-    files.forEach( function ( file ) {
-        fs.unlink( file.path );
-    });
-}
-
-function parseFormData ( req ) {
-    return new Promise( function ( resolve, reject ) {
-        var form = new multiparty.Form();
-        var files = [];
-        var fields = {};
-        var result = { 'files': files, 'fields': fields };
-
-        form.on( 'error', function ( error ) { reject( error ); } );
-        form.on( 'close', function () { resolve( result ); } );
-
-        form.on( 'field', function ( field, value ) { fields[field] = value; } );
-        form.on( 'file' , function ( name, file) {
-            files.push({
-                'name': file.originalFilename,
-                'content_type': file.headers['content-type'],
-                'path': file.path
-            });
-        });
-
-        form.parse( req );
-    });
-}
+var parseFormData = formUtil.parseFormData;
+var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
 
 /**

@@ -1,9 +1,6 @@
 /* jshint node: true */
 'use strict';
 
-/* Module Dependencies */
-var fs              = require('fs');
-var multiparty      = require('multiparty');
 var Promise         = require('promise');
 var router          = require('express').Router();
 
@@ -12,10 +9,14 @@ var CommonService   = config.CommonService;
 var boloRepository  = new config.BoloRepository();
 var boloService     = new config.BoloService( boloRepository );
 
+var formUtil        = require('../lib/form-util');
+
 var GFERR           = config.const.GFERR;
 var GFMSG           = config.const.GFMSG;
 
-var getDateTime     = CommonService.getDateTime;
+var getDateTime         = CommonService.getDateTime;
+var parseFormData       = formUtil.parseFormData;
+var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
 function setBoloData(fields) {
     return {
@@ -44,35 +45,6 @@ function setBoloData(fields) {
     };
 }
 
-function parseFormData(req) {
-    return new Promise(function (resolve, reject) {
-        var form = new multiparty.Form();
-        var files = [];
-        var fields = {};
-        var result = { 'files': files, 'fields': fields };
-
-        form.on('error', function (error) { reject(error); });
-        form.on('close', function () { resolve(result); });
-
-        form.on('field', function (field, value) { fields[field] = value; });
-        form.on('file', function (name, file) {
-            if (file.originalFilename)
-                files.push({
-                    'name': file.originalFilename,
-                    'content_type': file.headers['content-type'],
-                    'path': file.path
-                });
-        });
-
-        form.parse(req);
-    });
-}
-
-function cleanTemporaryFiles(files) {
-    files.forEach(function (file) {
-        fs.unlink(file.path);
-    });
-}
 
 // list bolos at the root route
 router.get('/', function (req, res) {
@@ -92,7 +64,7 @@ router.get('/', function (req, res) {
 });
 
 // list archive bolos
-router.get('/archive', function (req, res) {
+router.get('/bolo/archive', function (req, res) {
     boloService.getArchiveBolos()
         .then(function (bolos) {
             res.render('bolo-archive', {
@@ -102,7 +74,7 @@ router.get('/archive', function (req, res) {
 });
 
 // render the bolo create form
-router.get('/create', function (req, res) {
+router.get('/bolo/create', function (req, res) {
     res.render('bolo-create-form');
 });
 
@@ -129,7 +101,7 @@ router.post('/create', function (req, res) {
 });
 
 // render the bolo edit form
-router.get('/edit/:id', function (req, res) {
+router.get('/bolo/edit/:id', function (req, res) {
     boloService.getBolo(req.params.id)
         .then(function (bolo) {
             res.render('bolo-create-form', {
@@ -142,7 +114,7 @@ router.get('/edit/:id', function (req, res) {
 });
 
 // handle requests to process edits on a specific bolo
-router.post('/edit/:id', function (req, res) {
+router.post('/bolo/edit/:id', function (req, res) {
     parseFormData(req)
         .then(function (formDTO) {
             var boloDTO = setBoloData(formDTO.fields);
@@ -162,7 +134,7 @@ router.post('/edit/:id', function (req, res) {
 });
 
 // handle requests to inactivate a specific bolo
-router.post('/archive/:id', function (req, res) {
+router.post('/bolo/archive/:id', function (req, res) {
     var activate = false;
 
     boloService.activate(req.params.id, activate)
@@ -178,7 +150,7 @@ router.post('/archive/:id', function (req, res) {
         });
 });
 
-router.post('/restore/:id', function (req, res) {
+router.post('/bolo/restore/:id', function (req, res) {
     var activate = true;
 
     boloService.activate(req.params.id, activate)
@@ -195,7 +167,7 @@ router.post('/restore/:id', function (req, res) {
 });
 
 
-router.post('/delete/:id', function (req, res) {
+router.post('/bolo/delete/:id', function (req, res) {
     boloService.removeBolo(req.params.id)
         .then(function (success) {
             if (!success) {
@@ -210,7 +182,7 @@ router.post('/delete/:id', function (req, res) {
 });
 
 // handle requests to view the details of a bolo
-router.get('/details/:id', function (req, res) {
+router.get('/bolo/details/:id', function (req, res) {
     boloService.getBolo(req.params.id)
         .then(function (bolo) {
             res.render('bolo-details', {
@@ -223,7 +195,7 @@ router.get('/details/:id', function (req, res) {
 });
 
 // handle requests for bolo attachments
-router.get('/asset/:boloid/:attname', function (req, res) {
+router.get('/bolo/asset/:boloid/:attname', function (req, res) {
     boloService.getAttachment(req.params.boloid, req.params.attname)
         .then(function (attDTO) {
             res.type(attDTO.content_type);
