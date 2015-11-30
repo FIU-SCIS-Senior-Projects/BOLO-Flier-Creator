@@ -89,7 +89,7 @@ describe( 'user domain entity', function () {
 
         it( 'returns an array of differing attributes', function () {
             /* arrange */
-            other.data.id = 'crappyID';
+            other.id = 'crappyID';
 
             /* act */
             var diff = user.diff( other );
@@ -100,7 +100,7 @@ describe( 'user domain entity', function () {
 
         it( 'checks equality of objects by own attributes', function () {
             /* arrange */
-            other.data.tier = 2;
+            other.tier = 2;
 
             /* act */
             var result = user.same( other );
