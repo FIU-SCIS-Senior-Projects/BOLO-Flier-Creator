@@ -2,35 +2,20 @@
 'use strict';
 
 /* Module Dependencies */
-var fs = require('fs');
-var multiparty = require('multiparty');
-var path = require('path');
-var Promise = require('promise');
-var router = require('express').Router();
+var fs              = require('fs');
+var multiparty      = require('multiparty');
+var Promise         = require('promise');
+var router          = require('express').Router();
 
-var config = require('../config');
-var boloRepository = new config.BoloRepository();
-var boloService = new config.BoloService( boloRepository );
+var config          = require('../config');
+var CommonService   = config.CommonService;
+var boloRepository  = new config.BoloRepository();
+var boloService     = new config.BoloService( boloRepository );
 
-//gets current time; useful for bolo creation and update
-function getDateTime() {
-    var date = new Date();
-    var hour = date.getHours();
-    var minutes = date.getMinutes();
-    var seconds = date.getSeconds();
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var day = date.getDate();
+var GFERR           = config.const.GFERR;
+var GFMSG           = config.const.GFMSG;
 
-    //Append 0 to all values less than 10;
-    hour = (hour < 10 ? "0" : "") + hour;
-    minutes = (minutes < 10 ? "0" : "") + minutes;
-    seconds = (seconds < 10 ? "0" : "") + seconds;
-    month = (month < 10 ? "0" : "") + month;
-    day = (day < 10 ? "0" : "") + day;
-    return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
-}
-
+var getDateTime     = CommonService.getDateTime;
 
 function setBoloData(fields) {
     return {

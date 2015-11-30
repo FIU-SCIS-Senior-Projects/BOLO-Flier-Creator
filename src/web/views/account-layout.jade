@@ -17,4 +17,5 @@ block content
                 li(class=( account_nav === 'account-notification' ? 'active' : '' ) )
                     a( href="/account/notifications" ) Notifications
         .col-sm-9
+            include ./partials/global-alerts.jade
             block account-content

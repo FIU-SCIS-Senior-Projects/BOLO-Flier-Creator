@@ -15,8 +15,8 @@ var userRepository  = new config.UserRepository();
 var userService     = new config.UserService( userRepository );
 
 
-var FERR = 'Flash Subject - User Route Errors';
-var FMSG = 'Flash Subject - User Route Messages';
+var FERR = config.const.GFERR;
+var FMSG = config.const.GFMSG;
 
 
 module.exports = router;
@@ -65,8 +65,6 @@ router.use( function ( req, res, next ) {
 router.get( '/users/create', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
-        'msg': req.flash( FMSG ),
-        'err': req.flash( FERR ),
         'form_errors': req.flash( 'form-errors' )
     };
     res.render( 'user-create-form', data );
@@ -79,8 +77,6 @@ router.get( '/users/create', function ( req, res ) {
 router.post( '/users/create', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
-        'msg': req.flash( FMSG ),
-        'err': req.flash( FERR )
     };
 
     parseFormData( req ).then( function ( formDTO ) {
@@ -122,10 +118,7 @@ router.post( '/users/create', function ( req, res ) {
  * @todo implement sorting, filtering, and paging
  */
 router.get( '/users', function ( req, res ) {
-    var data = {
-        'msg': req.flash( FMSG ),
-        'err': req.flash( FERR )
-    };
+    var data = {};
 
     userService.getUsers().then( function ( users ) {
         data.users = users.filter( function ( oneUser ) {
@@ -146,10 +139,7 @@ router.get( '/users', function ( req, res ) {
  * Responds with account information for a specified user.
  */
 router.get( '/users/:id', function ( req, res ) {
-    var data = {
-        'msg': req.flash( FMSG ),
-        'err': req.flash( FERR )
-    };
+    var data = {};
 
     userService.getUser( req.params.id ).then( function ( user ) {
         data.user = user;
@@ -168,8 +158,6 @@ router.get( '/users/:id', function ( req, res ) {
  */
 router.get( '/users/:id/reset-password', function( req, res ) {
     var data = {
-        'msg': req.flash( FMSG ),
-        'err': req.flash( FERR ),
         'form_errors': req.flash( 'form-errors' )
     };
 
@@ -220,8 +208,6 @@ router.post( '/users/:id/reset-password', function( req, res ) {
 router.get( '/users/:id/edit-details', function ( req, res ) {
     var data = {
         'roles': userService.getRoleNames(),
-        'msg': req.flash( FMSG ),
-        'err': req.flash( FERR )
     };
 
     /** @todo Fix this temporary thing **/

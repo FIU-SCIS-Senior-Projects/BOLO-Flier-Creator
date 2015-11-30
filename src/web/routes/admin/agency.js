@@ -12,6 +12,9 @@ var CommonService   = config.CommonService;
 var agencyRepository = new config.AgencyRepository();
 var agencyService   = new config.AgencyService( agencyRepository );
 
+var GFERR           = config.const.GFERR;
+var GFMSG           = config.const.GFMSG;
+
 
 function parseFormData(req) {
     return new Promise(function (resolve, reject) {
