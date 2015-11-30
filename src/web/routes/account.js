@@ -11,8 +11,8 @@ var userService     = new config.UserService( new config.UserRepository() );
 
 var passwordUtil    = require('../lib/password-util');
 
-var FERR            = config.const.GFERR;
-var FMSG            = config.const.GFMSG;
+var GFERR           = config.const.GFERR;
+var GFMSG           = config.const.GFMSG;
 
 
 function parseFormData ( req ) {
@@ -46,8 +46,6 @@ module.exports = router;
 router.get( '/', function ( req, res ) {
     var data = {
         'account_nav': 'account-home',
-        'msg': req.flash( FMSG ),
-        'err': req.flash( FERR ),
         'user': req.user
     };
     res.render( 'account-details', data );
@@ -56,8 +54,6 @@ router.get( '/', function ( req, res ) {
 router.get( '/password', function ( req, res ) {
     var data = {
         'account_nav': 'account-password',
-        'msg': req.flash( FMSG ),
-        'err': req.flash( FERR ),
         'form_errors': req.flash( 'form-errors' )
     };
 
@@ -78,12 +74,12 @@ router.post( '/password', function ( req, res ) {
         }
     })
     .then( function ( result ) {
-        req.flash( FMSG, 'Password change successful.' );
+        req.flash( GFMSG, 'Password change successful.' );
         res.redirect( '/account' );
     })
     .catch( function ( error ) {
         console.error( 'Error at /account/password >>> ', error.message );
-        req.flash( FERR, 'Unknow error occurred, please try again.' );
+        req.flash( GFERR, 'Unknown error occurred, please try again.' );
         res.redirect( 'back' );
     });
 });
