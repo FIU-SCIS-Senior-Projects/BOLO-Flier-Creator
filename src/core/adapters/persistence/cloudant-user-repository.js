@@ -118,29 +118,28 @@ CloudantUserRepository.prototype.getAll = function () {
 CloudantUserRepository.prototype.getById = function ( id ) {
     return db.get( id )
         .then( function ( doc ) {
-            if ( !doc._id ) throw new Error( doc );
+            if ( !doc._id ) { return null; }
             return fromCloudant( doc );
         })
         .catch( function ( error ) {
-            return Promise.reject(
-                new Error( "Failed to get user by id: " + error )
-            );
+            var msg = error.reason || error.mesage || error;
+            throw new Error( "Unable to retrieve user data: " + msg );
         });
 };
 
 CloudantUserRepository.prototype.getByUsername = function ( id ) {
-    return db
-        .view( 'users', 'by_username', {
-            'key': id,
-            'include_docs': true
-        })
-        .then( function ( found ) {
-            if ( !found.rows.length ) return Promise.resolve( null );
-            return fromCloudant( found.rows[0].doc );
-        })
-        .catch( function ( error ) {
-            return new Error( "Failed to get user by username" );
-        });
+    return db.view( 'users', 'by_username', {
+        'key': id,
+        'include_docs': true
+    })
+    .then( function ( found ) {
+        if ( !found.rows.length ) { return null; }
+        return fromCloudant( found.rows[0].doc );
+    })
+    .catch( function ( error ) {
+        var msg = error.reason || error.mesage || error;
+        throw new Error( "Unable to retrive user data: " + msg );
+    });
 };
 
 CloudantUserRepository.prototype.remove = function ( id ) {
