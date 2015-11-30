@@ -1,9 +1,15 @@
 /* jshint node: true */
 'use strict';
 
-var _ = require('lodash');
-var Entity = require('./entity');
+if ( undefined === process.env.PASSWORD_SALT ) {
+    throw new Error( 'Required environment variable missing: PASSWORD_SALT' );
+}
 
+var _       = require('lodash');
+var crypto  = require('crypto');
+var Entity  = require('./entity');
+
+var SALT = process.env.PASSWORD_SALT;
 
 var schema = {
     'username': {
@@ -53,6 +59,11 @@ for ( var role in EnumRoles ) {
     Object.defineProperty( User, role, {
         'value': EnumRoles[role], 'writable': false, 'enumerable': true
     });
+}
+
+/* Reference http://thatextramile.be/blog/2012/01/stop-storing-passwords-already/ */
+function hash ( passwd ) {
+    return crypto.createHmac( 'sha256', SALT).update( passwd ).digest( 'hex' );
 }
 
 
@@ -116,6 +127,28 @@ User.prototype.isValid = function () {
 
     return ( result.length === required.length );
 };
+
+/**
+ * Chack if the supplied password is equal to the stored password. Will only
+ * validate if the stored passwod is hashed.
+ *
+ * @param {String} - the password to validate
+ * @returns {boolean} true if valid, false otherwise
+ */
+User.prototype.isValidPassword = function ( password ) {
+    return this.password === hash( password );
+};
+
+/**
+ * Hash the password property value. Care should be taken when using this
+ * method as there is no way to check if the password is already hashed.
+ * Applying this method to an already hashed password could potentially
+ * corrupt the user's password if persisted to an external storage device.
+ */
+User.prototype.hashPassword = function () {
+    this.password = hash( this.password );
+};
+
 
 /**
  * Check if the supplied user object has the same attributes.
