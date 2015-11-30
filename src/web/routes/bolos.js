@@ -79,7 +79,7 @@ router.get('/bolo/create', function (req, res) {
 });
 
 // process bolo creation user form input
-router.post('/create', function (req, res) {
+router.post('/bolo/create', function (req, res) {
     parseFormData(req)
         .then(function (formDTO) {
             var boloDTO = setBoloData(formDTO.fields);
