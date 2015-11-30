@@ -1,9 +1,14 @@
 extends ./account-layout.jade
+include ./includes/mixins.jade
 
 block jumbo-desc
     p Your Account Details
 
 block account-content
+    div
+        +alert_message_array( msg )
+        +alert_error_array( err )
+
     h3 #{user.username}
     table.details
         tr

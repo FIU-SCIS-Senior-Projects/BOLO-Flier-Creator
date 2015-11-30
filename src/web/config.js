@@ -2,6 +2,7 @@
 'use strict';
 
 var path                = require('path');
+var validate            = require('validate.js');
 
 require('dotenv').config({
     'path': path.resolve( __dirname, '../../.env' )
@@ -27,6 +28,7 @@ config.UserRepository   = require( path.join( core, 'adapters/persistence/clouda
 
 config.CommonService    = require( path.join( core, 'service/common-service' ) );
 
+
 /* Application Config */
 config.const = config.constants = {
     /* Flash Message Subjects */
@@ -34,7 +36,39 @@ config.const = config.constants = {
     'GFMSG'             : 'Flash Subject - Global Message',
 
     /* Password Config */
-    'MIN_PASS_LENGTH'   : 8
+    'MIN_PASS_LENGTH'   : 10 /* OWASP Recommendation */ /** @todo remove dependcies of this constant in favor of validate.js config **/
 };
 
+
+/**
+ * Validation Policy
+ *
+ * @see http://validatejs.org#validators for documentation detailing the list
+ * of pre-defined validators or how to create custom validators
+ */
+
+config.validation = {
+    'password' : {
+        presence : true,
+        /* https://www.owasp.org/index.php/Authentication_Cheat_Sheet#Implement_Proper_Password_Strength_Controls */
+        length : {
+            minimum : 10,
+            maximum : 128
+        },
+        /* https://www.owasp.org/index.php/OWASP_Validation_Regex_Repository
+         * 10 to 128 character password requiring at least 3 out 4 (uppercase
+         * and lowercase letters, numbers and special characters) and no more
+         * than 2 equal characters in a row
+         * Symbols: ! ~ < > , ; : _ = ? * + # . " & § % ° ( ) | [ ] - $ ^ @ /
+         */
+        format : {
+            pattern : /^(?:(?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))(?!.*(.)\1{2,})[A-Za-z0-9!~<>,;:_=?*+#."&§%°()\|\[\]\-\$\^\@\/]{10,128}$/,
+            message : ' must contain at least 3 out of 4 (uppercase and ' +
+                'lowercase letters, numbers and special characters) and no ' +
+                'more than 2 equal characters in a row. Valid special ' +
+                'characters: ! ~ < > , ; : _ = ? * + # . " & § % ° ( ) | [ ' +
+                '] - $ ^ @ /'
+        }
+    }
+};
 

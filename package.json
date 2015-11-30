@@ -31,7 +31,8 @@
     "passport": "^0.3.0",
     "passport-local": "^1.0.0",
     "promise": "^7.0.4",
-    "request": "^2.64.0"
+    "request": "^2.64.0",
+    "validate.js": "^0.9.0"
   },
   "repository": {},
   "engines": {
