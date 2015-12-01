@@ -25,6 +25,7 @@ router.get(  '/account/password'        , getChangePassword );
 router.post( '/account/password'        , postChangePassword );
 router.get(  '/account/notifications'   , getUserNotifications );
 router.post( '/account/notifications/unsubscribe'   , postUnsubscribeNotifications );
+router.get(  '/account/notifications/subscribe'     , getAvailableAgencyNotifications );
 router.post( '/account/notifications/subscribe'     , postSubscribeNotifications );
 
 
@@ -118,13 +119,27 @@ function postUnsubscribeNotifications ( req, res ) {
     });
 }
 
+function getAvailableAgencyNotifications ( req, res ) {
+    var data = { 'account_nav': 'account-notification' };
+
+    agencyService.getAgencies().then( function ( agencies ) {
+        data.agencies = agencies;
+        res.render( 'account-notifications-add', data );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at ', req.originalUrl, ' >>> ', error.message );
+        req.flash( GFERR, 'Unknown error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
+}
+
 /**
  * Process form data to subscribe the user to the requested agency
  * notifications
  */
 function postSubscribeNotifications ( req, res ) {
     parseFormData( req ).then( function ( formDTO ) {
-        return userService.registerNotifications(
+        return userService.addNotifications(
             req.user.id, formDTO.fields['agencies[]']
         );
     })
@@ -134,7 +149,7 @@ function postSubscribeNotifications ( req, res ) {
         } else {
             req.flash( GFMSG, 'Notifications successfully updated.' );
         }
-        res.redirect( 'back' );
+        res.redirect( '/account/notifications' );
     })
     .catch( function ( error ) {
         console.error( 'Error at ', req.originalUrl, ' >>> ', error.message );

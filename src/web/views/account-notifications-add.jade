@@ -12,20 +12,13 @@ mixin add_agency_row ( agency, selected )
 
 
 block jumbo-desc
-    p BOLO Email Notifications
+    p Manage your email notifications.
 
 
 block account-content
     - var ROUTE = '/account/notifications'
 
-    p.lead You are currently receiving BOLO notifications for the following
-        | agencies.
-
-    form( action=ROUTE + "/unsubscribe" enctype="multipart/form-data" method="post" )
-        .form-group
-            a.btn.btn-primary( href=ROUTE +"/subscribe" ) Add subscriptions
-            button.btn.btn-warning( type="submit" value="save" ) Unsubscribe Notifications
-
+    form( action=ROUTE + "/subscribe" enctype="multipart/form-data" method="post" )
         table.table.table-striped
             thead: tr
                 th <!-- Checkbox -->
@@ -37,3 +30,5 @@ block account-content
                 each agency in agencies
                     +add_agency_row( agency )
 
+        .form-group
+            button.btn.btn-primary( type="submit" value="save" ) Submit
