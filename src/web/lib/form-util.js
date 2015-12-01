@@ -15,7 +15,16 @@ module.exports.parseFormData = function ( req ) {
         form.on( 'error', function ( error ) { reject( error ); } );
         form.on( 'close', function () { resolve( result ); } );
 
-        form.on( 'field', function ( field, value ) { fields[field] = value; } );
+        form.on( 'field', function ( field, value ) {
+            var f = field.slice();
+            if ( /\[\]$/.test( f ) ) {
+                if ( ! fields[f] ) fields[f] = [];
+                fields[f].push( value );
+            } else {
+                fields[f] = value;
+            }
+        });
+
         form.on( 'file' , function ( name, file) {
             files.push({
                 'name': file.originalFilename,
