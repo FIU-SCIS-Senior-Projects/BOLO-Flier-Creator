@@ -61,7 +61,7 @@ AgencyService.prototype.updateAgency = function ( agencyData, attachments ) {
 
     return context.AgencyRepository.getAgency( updated.data.id )
     .then( function ( original ) {
-        
+
         var atts = _.assign( {}, original.data.attachments );
         original.diff( updated ).forEach( function ( key ) {
             original.data[key] = updated.data[key];
@@ -82,14 +82,13 @@ AgencyService.prototype.updateAgency = function ( agencyData, attachments ) {
 /**
  * Retrieve a collection of agencies
  */
-AgencyService.prototype.getAgencies = function () {
-    var context = this;
-    return context.AgencyRepository.getAgencies();
+AgencyService.prototype.getAgencies = function ( ids ) {
+    return this.AgencyRepository.getAgencies( ids );
 };
 
-AgencyService.prototype.getAgency= function (id) {
+AgencyService.prototype.getAgency = function ( id ) {
     var context = this;
-    return context.AgencyRepository.getAgency(id);
+    return context.AgencyRepository.getAgency( id );
 };
 
 /**

@@ -189,14 +189,17 @@ CloudantAgencyRepository.prototype.getAgency = function (id) {
 /**
  * Retrieve a collection of agencies from the cloudant database
  */
-CloudantAgencyRepository.prototype.getAgencies = function () {
-    return db.view( 'agency', 'all_active', { include_docs: true } )
-        .then( function ( result ) {
-            var agencies = result.rows.map( function ( item ) {
-                return agencyFromCloudant( item.doc );
-            });
-            return Promise.resolve( agencies );
+CloudantAgencyRepository.prototype.getAgencies = function ( ids ) {
+    var opts = { 'include_docs': true, };
+
+    if ( _.isArray( ids ) ) opts.keys = ids;
+
+    return db.view( 'agency', 'all_active', opts ).then( function ( result ) {
+        var agencies = result.rows.map( function ( row ) {
+            return agencyFromCloudant( row.doc );
         });
+        return agencies;
+    });
 };
 
 CloudantAgencyRepository.prototype.getAttachment = function ( id, attname ) {
