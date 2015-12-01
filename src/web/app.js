@@ -70,8 +70,12 @@ app.use( auth.passport.session() );
  * Routes
  */
 var isAuthenticated = function ( req, res, next ) {
-    if ( req.isAuthenticated() ) next();
-    else res.redirect( '/login' );
+    if ( req.isAuthenticated() ) {
+        next();
+    } else {
+        req.session.login_redirect = req.originalUrl;
+        res.redirect( '/login' );
+    }
 };
 
 app.use( express.static( path.join( __dirname, 'public' ) ) );
