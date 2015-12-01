@@ -23,8 +23,9 @@ module.exports = router;
 router.get(  '/account'                 , getAccountDetails );
 router.get(  '/account/password'        , getChangePassword );
 router.post( '/account/password'        , postChangePassword );
-router.get(  '/account/notifications'   , getUpdateNotifications );
-router.post( '/account/notifications'   , postUpdateNotifications );
+router.get(  '/account/notifications'   , getUserNotifications );
+router.post( '/account/notifications/unsubscribe'   , postUnsubscribeNotifications );
+router.post( '/account/notifications/subscribe'     , postSubscribeNotifications );
 
 
 /**
@@ -80,21 +81,48 @@ function postChangePassword ( req, res ) {
 /**
  * Respond with a form to manage notifications.
  */
-function getUpdateNotifications ( req, res ) {
+function getUserNotifications ( req, res ) {
     var data = {
         'account_nav': 'account-notification'
     };
 
-    agencyService.getAgencies().then( function ( agencies ) {
+    agencyService.getAgencies( req.user.notifications  )
+    .then( function ( agencies ) {
         data.agencies = agencies;
         res.render( 'account-notifications', data );
     });
 }
 
 /**
- * Process form data from the manage notifications form page.
+ * Process form data to unsubscribe the user from the requested agency
+ * notifications.
  */
-function postUpdateNotifications ( req, res ) {
+function postUnsubscribeNotifications ( req, res ) {
+    parseFormData( req ).then( function ( formDTO ) {
+        return userService.removeNotifications(
+            req.user.id, formDTO.fields['agencies[]']
+        );
+    })
+    .then( function ( user ) {
+        if ( ! user ) {
+            req.flash( GFERR, 'Notifications update error occured.' );
+        } else {
+            req.flash( GFMSG, 'Notifications successfully updated.' );
+        }
+        res.redirect( 'back' );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at ', req.originalUrl, ' >>> ', error.message );
+        req.flash( GFERR, 'Unknown error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
+}
+
+/**
+ * Process form data to subscribe the user to the requested agency
+ * notifications
+ */
+function postSubscribeNotifications ( req, res ) {
     parseFormData( req ).then( function ( formDTO ) {
         return userService.registerNotifications(
             req.user.id, formDTO.fields['agencies[]']

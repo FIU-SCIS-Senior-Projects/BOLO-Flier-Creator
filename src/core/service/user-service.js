@@ -171,11 +171,25 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
     });
 };
 
-UserService.prototype.registerNotifications = function ( id, agencylist ) {
+UserService.prototype.removeNotifications = function ( id, agencylist ) {
     var context = this;
 
     return context.userRepository.getById( id ).then( function ( user ) {
-        user.notifications = _.uniq( user.notifications.concat( agencylist ) );
+        user.notifications = _.difference( user.notifications, agencylist );
+        return context.userRepository.update( user );
+    })
+    .catch( function ( error ) {
+        throw new Error(
+            'Error registering new notifications: ', + error.message
+        );
+    });
+};
+
+UserService.prototype.addNotifications = function ( id, agencylist ) {
+    var context = this;
+
+    return context.userRepository.getById( id ).then( function ( user ) {
+        user.notifications = _.union( user.notifications, agencylist );
         return context.userRepository.update( user );
     })
     .catch( function ( error ) {
