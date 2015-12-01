@@ -8,11 +8,9 @@ var passport = require('passport');
 var router = require('express').Router();
 var LocalStrategy = require('passport-local').Strategy;
 
-var core = path.resolve( __dirname, '../../core' );
-var UserService = require( path.join( core, 'service/user-service' ) );
-var AdapterFactory = require( path.join( core, 'adapters' ) );
-var userRepository = AdapterFactory.create( 'persistence', 'cloudant-user-repository' );
-var userService = new UserService( userRepository );
+var config = require('../config');
+var userRepository = new config.UserRepository();
+var userService = new config.UserService( userRepository );
 
 var _csrf = csrf({ 'cookie': true });
 var _bodyparser = bodyParser.urlencoded({ 'extended': true });
@@ -26,8 +24,9 @@ passport.use( new LocalStrategy(
                 var msg = 'Either username or password is incorrect.';
                 return done( null, false, { 'message': msg } );
             }
-
-            return done( null, account );
+            return done( null, false, {
+                'message': 'Invalid login credentials.'
+            });
         });
     }
 ));
@@ -73,13 +72,20 @@ router.get( '/login',
  * Process Username and Password for Login.
  */
 router.post( '/login',
-    _bodyparser,
-    _csrf,
+    _bodyparser, _csrf,
     passport.authenticate( 'local', {
-        'successRedirect': '/',
         'failureRedirect': '/login',
         'failureFlash': true
-    }));
+    }),
+    function ( req, res ) {
+        var login_redirect = null;
+        if ( req.session.login_redirect ) {
+            login_redirect = req.session.login_redirect;
+            req.session.login_redirect = null;
+        }
+        res.redirect( login_redirect || '/' );
+    }
+);
 
 
 /*
