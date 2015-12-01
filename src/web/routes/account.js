@@ -24,6 +24,7 @@ router.get(  '/account'                 , getAccountDetails );
 router.get(  '/account/password'        , getChangePassword );
 router.post( '/account/password'        , postChangePassword );
 router.get(  '/account/notifications'   , getUpdateNotifications );
+router.post( '/account/notifications'   , postUpdateNotifications );
 
 
 /**
@@ -87,5 +88,29 @@ function getUpdateNotifications ( req, res ) {
     agencyService.getAgencies().then( function ( agencies ) {
         data.agencies = agencies;
         res.render( 'account-notifications', data );
+    });
+}
+
+/**
+ * Process form data from the manage notifications form page.
+ */
+function postUpdateNotifications ( req, res ) {
+    parseFormData( req ).then( function ( formDTO ) {
+        return userService.registerNotifications(
+            req.user.id, formDTO.fields['agencies[]']
+        );
+    })
+    .then( function ( user ) {
+        if ( ! user ) {
+            req.flash( GFERR, 'Notifications update error occured.' );
+        } else {
+            req.flash( GFMSG, 'Notifications successfully updated.' );
+        }
+        res.redirect( 'back' );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at ', req.originalUrl, ' >>> ', error.message );
+        req.flash( GFERR, 'Unknown error occurred, please try again.' );
+        res.redirect( 'back' );
     });
 }

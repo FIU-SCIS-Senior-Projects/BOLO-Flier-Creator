@@ -171,6 +171,20 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
     });
 };
 
+UserService.prototype.registerNotifications = function ( id, agencylist ) {
+    var context = this;
+
+    return context.userRepository.getById( id ).then( function ( user ) {
+        user.notifications = _.uniq( user.notifications.concat( agencylist ) );
+        return context.userRepository.update( user );
+    })
+    .catch( function ( error ) {
+        throw new Error(
+            'Error registering new notifications: ', + error.message
+        );
+    });
+};
+
 /**
  * Remove a user from the system.
  *

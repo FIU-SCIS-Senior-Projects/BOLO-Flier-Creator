@@ -4,7 +4,7 @@ include ./includes/mixins.jade
 
 mixin add_agency_row ( agency, selected )
     tr
-        td.text-center: input( type="checkbox" name=agency.id )
+        td.text-center: input( type="checkbox" name="agencies[]" value=agency.id )
         td #{agency.name}
         td #{agency.city}
         td #{agency.state.toUpperCase()}

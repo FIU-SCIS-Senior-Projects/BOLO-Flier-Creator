@@ -41,7 +41,8 @@ var userTemplate = {
     'agency'        : null,
     'badge'         : null,
     'sectunit'      : null,
-    'ranktitle'     : null
+    'ranktitle'     : null,
+    'notifications' : []
 };
 
 var required = Object.keys( schema ).filter( function ( key ) {
