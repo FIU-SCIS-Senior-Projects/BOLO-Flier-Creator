@@ -190,6 +190,10 @@ UserService.prototype.registerNotifications = function ( id, agencylist ) {
  *
  * @param {String} - the id of the user to remove
  * @returns {Object} - a response from the persistence layer
+ *
+ * @todo find out the policy for removing users, does removing a user affect
+ * BOLOs attached to the user? Should a user really be deleted or maybe just
+ * disabled?
  */
 UserService.prototype.removeUser = function ( id ) {
     return this.userRepository.remove( id );

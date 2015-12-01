@@ -10,6 +10,13 @@ block jumbo
 block content
     include ./partials/global-alerts.jade
 
+    //- Temporary fix for missing alerts after migrating to global-alerts
+    if ( error.length )
+        +alert_error_array( error )
+
+    if ( messages.length )
+        +alert_message_array( messages )
+
     form#login(action="/login" method="post")
         input(type="hidden" name="_csrf" value=loginToken)
         +input_text("username", "Username", "", true, "", "text")
