@@ -8,7 +8,6 @@ var router = require('express').Router();
 var LocalStrategy = require('passport-local').Strategy;
 
 var config = require('../config');
-
 var userRepository = new config.UserRepository();
 var userService = new config.UserService( userRepository );
 
@@ -23,7 +22,7 @@ passport.use( new LocalStrategy(
                 return done( null, account );
             }
             return done( null, false, {
-                'messages': 'Invalid login credentials.'
+                'message': 'Invalid login credentials.'
             });
         });
     }
@@ -70,13 +69,20 @@ router.get( '/login',
  * Process Username and Password for Login.
  */
 router.post( '/login',
-    _bodyparser,
-    _csrf,
+    _bodyparser, _csrf,
     passport.authenticate( 'local', {
-        'successRedirect': '/',
         'failureRedirect': '/login',
         'failureFlash': true
-    }));
+    }),
+    function ( req, res ) {
+        var login_redirect = null;
+        if ( req.session.login_redirect ) {
+            login_redirect = req.session.login_redirect;
+            req.session.login_redirect = null;
+        }
+        res.redirect( login_redirect || '/' );
+    }
+);
 
 
 /*
