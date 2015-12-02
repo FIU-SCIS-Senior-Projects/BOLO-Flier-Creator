@@ -12,11 +12,14 @@ mixin add_agency_row ( agency, selected )
 
 
 block jumbo-desc
-    p Manage your email notifications.
+    p BOLO Email Notifications
 
 
 block account-content
     - var ROUTE = '/account/notifications'
+
+    p.lead Subscribe to be notified about BOLOs from a specific agency.
+    p: a( href=ROUTE ) < Go back to your notifications
 
     form( action=ROUTE + "/subscribe" enctype="multipart/form-data" method="post" )
         table.table.table-striped

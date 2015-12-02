@@ -18,14 +18,9 @@ block jumbo-desc
 block account-content
     - var ROUTE = '/account/notifications'
 
-    p.lead You are currently receiving BOLO notifications for the following
-        | agencies.
+    p.lead You are currently receiving BOLO notifications for the following agencies.
 
     form( action=ROUTE + "/unsubscribe" enctype="multipart/form-data" method="post" )
-        .form-group
-            a.btn.btn-primary( href=ROUTE +"/subscribe" ) Add subscriptions
-            button.btn.btn-warning( type="submit" value="save" ) Unsubscribe Notifications
-
         table.table.table-striped
             thead: tr
                 th <!-- Checkbox -->
@@ -37,3 +32,6 @@ block account-content
                 each agency in agencies
                     +add_agency_row( agency )
 
+        .form-group
+            button.btn.btn-warning( type="submit" value="save" ) Unsubscribe Selected
+            a.pull-right( href=ROUTE + "/subscribe" ) Want to subscribe to other agencies?

@@ -106,9 +106,9 @@ function postUnsubscribeNotifications ( req, res ) {
     })
     .then( function ( user ) {
         if ( ! user ) {
-            req.flash( GFERR, 'Notifications update error occured.' );
+            req.flash( GFERR, 'Subscriptions update error occured.' );
         } else {
-            req.flash( GFMSG, 'Notifications successfully updated.' );
+            req.flash( GFMSG, 'Subscriptions successfully updated.' );
         }
         res.redirect( 'back' );
     })
@@ -145,9 +145,9 @@ function postSubscribeNotifications ( req, res ) {
     })
     .then( function ( user ) {
         if ( ! user ) {
-            req.flash( GFERR, 'Notifications update error occured.' );
+            req.flash( GFERR, 'Subscriptions update error occured.' );
         } else {
-            req.flash( GFMSG, 'Notifications successfully updated.' );
+            req.flash( GFMSG, 'Subscriptions successfully updated.' );
         }
         res.redirect( '/account/notifications' );
     })
