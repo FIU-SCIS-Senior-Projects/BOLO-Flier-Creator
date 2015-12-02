@@ -42,3 +42,16 @@ module.exports.cleanTempFiles = function ( files ) {
         fs.unlink( f.path );
     });
 };
+
+/**
+ * Form Error Type
+ */
+function FormError ( message ) {
+    this.name = 'FormError';
+    this.message = message || 'An error occurred processing the form.';
+    this.stack = ( new Error() ).stack;
+}
+FormError.prototype = Object.create( Error.prototype );
+FormError.prototype.contructor = FormError;
+module.exports.FormError = FormError;
+
