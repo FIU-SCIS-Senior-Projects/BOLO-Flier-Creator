@@ -26,6 +26,7 @@ config.AgencyRepository = require( path.join( core, 'adapters/persistence/clouda
 config.UserService      = require( path.join( core, 'service/user-service' ) );
 config.UserRepository   = require( path.join( core, 'adapters/persistence/cloudant-user-repository' ) );
 
+config.EmailService     = require( path.join( core, 'adapters/email/sendgrid-email-service' ) );
 config.CommonService    = require( path.join( core, 'service/common-service' ) );
 
 
@@ -34,9 +35,18 @@ config.const = config.constants = {
     /* Flash Message Subjects */
     'GFERR'             : 'Flash Subject - Global Error',
     'GFMSG'             : 'Flash Subject - Global Message',
+};
 
-    /* Password Config */
-    'MIN_PASS_LENGTH'   : 10 /* OWASP Recommendation */ /** @todo remove dependcies of this constant in favor of validate.js config **/
+/**
+ * This configuration is a good candidate for a system admin controlled
+ * system configuation property.
+ *
+ * @todo Extract this into system configuration page accesible by a system
+ * administrator (but not an agency administrator)
+ */
+config.email = {
+    'from'              : 'bolo.flyer@gmail.com',
+    'fromName'          : 'BOLO Flier Creator'
 };
 
 
