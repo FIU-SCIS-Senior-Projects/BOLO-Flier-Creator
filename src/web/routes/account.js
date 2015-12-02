@@ -95,14 +95,35 @@ function getUserNotifications ( req, res ) {
 }
 
 /**
+ * Repond with a list of available agencies to subscribe to.
+ */
+function getAvailableAgencyNotifications ( req, res ) {
+    var data = { 'account_nav': 'account-notification' };
+
+    agencyService.getAgencies().then( function ( agencies ) {
+        data.agencies = agencies;
+        res.render( 'account-notifications-add', data );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at ', req.originalUrl, ' >>> ', error.message );
+        req.flash( GFERR, 'Unknown error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
+}
+
+/**
  * Process form data to unsubscribe the user from the requested agency
  * notifications.
  */
 function postUnsubscribeNotifications ( req, res ) {
     parseFormData( req ).then( function ( formDTO ) {
-        return userService.removeNotifications(
-            req.user.id, formDTO.fields['agencies[]']
-        );
+        var selected = formDTO.fields['agencies[]'] || [];
+
+        if ( ! selected.length ) {
+            return null;
+        }
+
+        return userService.removeNotifications( req.user.id, selected );
     })
     .then( function ( user ) {
         if ( ! user ) {
@@ -119,26 +140,18 @@ function postUnsubscribeNotifications ( req, res ) {
     });
 }
 
-function getAvailableAgencyNotifications ( req, res ) {
-    var data = { 'account_nav': 'account-notification' };
-
-    agencyService.getAgencies().then( function ( agencies ) {
-        data.agencies = agencies;
-        res.render( 'account-notifications-add', data );
-    })
-    .catch( function ( error ) {
-        console.error( 'Error at ', req.originalUrl, ' >>> ', error.message );
-        req.flash( GFERR, 'Unknown error occurred, please try again.' );
-        res.redirect( 'back' );
-    });
-}
-
 /**
  * Process form data to subscribe the user to the requested agency
  * notifications
  */
 function postSubscribeNotifications ( req, res ) {
     parseFormData( req ).then( function ( formDTO ) {
+        var selected = formDTO.fields['agencies[]'] || [];
+
+        if ( ! selected.length ) {
+            return req.user;
+        }
+
         return userService.addNotifications(
             req.user.id, formDTO.fields['agencies[]']
         );
