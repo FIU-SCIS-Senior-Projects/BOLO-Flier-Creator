@@ -3,11 +3,13 @@
 
 var Promise         = require('promise');
 var router          = require('express').Router();
+var util            = require('util');
 var validate        = require('validate.js');
 
 var config          = require('../config.js');
 var userService     = new config.UserService( new config.UserRepository() );
 var agencyService   = new config.AgencyService( new config.AgencyRepository() );
+var emailService    = config.EmailService;
 
 var formUtil        = require('../lib/form-util');
 var passwordUtil    = require('../lib/password-util');
@@ -17,6 +19,8 @@ var GFMSG           = config.const.GFMSG;
 
 var parseFormData       = formUtil.parseFormData;
 var validatePassword    = passwordUtil.validatePassword;
+
+var FormError           = formUtil.FormError;
 
 
 module.exports = router;
@@ -58,24 +62,49 @@ function getChangePassword ( req, res ) {
 function postChangePassword ( req, res ) {
     parseFormData( req ).then( function ( formDTO ) {
         var validationErrors = validatePassword(
-            formDTO.fields.pass_new, formDTO.fields.pass_conf
+            formDTO.fields.password, formDTO.fields.confirm
         );
 
         if ( validationErrors ) {
             req.flash( 'form-errors', validationErrors );
-            res.redirect( 'back' );
-        } else {
-            return userService.resetPassword( req.user.id, formDTO.fields.pass_new );
+            throw new FormError();
         }
+
+        return userService.resetPassword( req.user.id, formDTO.fields.password );
     })
     .then( function ( result ) {
+        sendPasswordChangedEmail( req.user );
         req.flash( GFMSG, 'Password change successful.' );
         res.redirect( '/account' );
     })
     .catch( function ( error ) {
-        console.error( 'Error at /account/password >>> ', error.message );
+        if ( 'FormError' !== error.name ) throw error;
+        res.redirect( 'back' );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at %s >>> %s', req.originalUrl, error.message );
         req.flash( GFERR, 'Unknown error occurred, please try again.' );
         res.redirect( 'back' );
+    });
+}
+
+function sendPasswordChangedEmail ( user ) {
+    /** @todo look into a way to incorporate email templates configurable by
+     * the system administrator **/
+    var message = util.format(
+        'Hello %s,\n\n' +
+        'This is just a friendly notification to let you know that ' +
+        'your accout password has just been changed. Please contact your ' +
+        'agency administrator if you did not authorize this.\n\n' +
+        '-- BOLO Flier Creator Team',
+        user.fname
+    );
+    emailService.send({
+        'to': user.email,
+        'from': config.email.from,
+        'fromName': config.email.fromName,
+        'subject': 'BOLO Flier Creator - Account Update',
+        'text': message
     });
 }
 
@@ -170,3 +199,4 @@ function postSubscribeNotifications ( req, res ) {
         res.redirect( 'back' );
     });
 }
+
