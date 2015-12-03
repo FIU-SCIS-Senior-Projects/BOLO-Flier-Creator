@@ -52,6 +52,8 @@ module.exports.postCreateForm = function ( req, res ) {
         }
 
         formDTO.fields.tier = formDTO.fields.role;
+        formDTO.fields.agency = req.user.agency;
+        formDTO.fields.notifications = [ req.user.agency ];
         var userDTO = userService.formatDTO( formDTO.fields );
         return userService.registerUser( userDTO );
     }, function ( error ) {
