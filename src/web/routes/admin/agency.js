@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var _                   = require('lodash');
 var multiparty          = require('multiparty');
 var Promise             = require('promise');
 
@@ -16,62 +17,25 @@ var GFMSG               = config.const.GFMSG;
 var parseFormData       = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
-function setFileName(fieldName, originalFileName)
-{
-    var result = originalFileName;
-    if(fieldName == "logo_upload")
-    {
-        result = "logo";
-    }
-    else if (fieldName == "shield_upload")
-    {
-        result= "shield";
-    }
-    else
-    {
-        result = originalFileName;
+function getAgencyAttachments ( fields ) {
+    var result = [];
+    var fileDTO;
+
+    if ( fields.logo_upload ) {
+        fileDTO = _.assign( {}, fields.logo_upload );
+        fileDTO.name = 'logo';
+        result.push( fileDTO );
     }
 
-    return result;
+    if ( fields.shield_upload ) {
+        fileDTO = _.assign( {}, fields.shield_upload );
+        fileDTO.name = 'shield';
+        result.push( fileDTO );
+    }
+
+    return ( result.length ) ? result : null;
 }
 
-function parseFormData(req) {
-    return new Promise(function (resolve, reject) {
-        var form = new multiparty.Form();
-        var files = [];
-        var fields = {};
-        var result = { 'files': files, 'fields': fields };
-
-        form.on('error', function (error) { reject(error); });
-        form.on('close', function () { resolve(result); });
-
-        form.on('field', function (field, value) { fields[field] = value; });
-        form.on('file', function (name, file) {
-            if (file.originalFilename) {
-                files.push({
-                    'name': setFileName(file.fieldName, file.originalFilename),
-                    'content_type': file.headers['content-type'],
-                    'path': file.path
-                });
-            }
-        });
-    });
-}
-
-
-function setAgencyData(fields) {
-    return {
-        id: fields.id || '',
-        name: fields.name || '',
-        address: fields.address || '',
-        city: fields.city || '',
-        state: fields.state || '',
-        zip: fields.zip || '',
-        phone: fields.phone || '',
-        isActive: fields.isActive || true
-        //enteredDT   : fields.enteredDT ? fields.enteredDT : CommonService.getDateTime()
-    };
-}
 
 /**
  * Respond with a list
@@ -98,19 +62,19 @@ module.exports.getCreateForm = function (req, res) {
  * Process a form to create an agency.
  */
 module.exports.postCreateForm = function ( req, res ) {
-    parseFormData(req)
-    .then(function (formDTO) {
-        var agencyDTO = setAgencyData(formDTO.fields);
-        var result = agencyService.createAgency(agencyDTO, formDTO.files);
-        return Promise.all([result, formDTO]);
+    parseFormData( req ).then( function ( formDTO ) {
+        var agencyDTO = agencyService.formatDTO( formDTO.fields );
+        var atts = getAgencyAttachments( formDTO.fields );
+        var result = agencyService.createAgency( agencyDTO, atts );
+        return Promise.all( [ result, formDTO ] );
     })
     .then(function (pData) {
         if (pData[1].files.length) cleanTemporaryFiles(pData[1].files);
         res.redirect('/admin/agency');
     })
     .catch(function (error) {
-        /** @todo send back form data with error message */
-        console.error('>>> create agency route error: ', error);
+        console.error( 'Error occurred at %s >>> %s', req.originalUrl, err.message );
+        flash( GFERR, 'Internal server occurred while processing your request, please try again.' );
         res.redirect( 'back' );
     });
 };
@@ -137,18 +101,19 @@ module.exports.getEditForm = function ( req, res ) {
  * Process a form to edit/update agency details.
  */
 module.exports.postEditForm = function ( req, res ) {
-    parseFormData( req )
-    .then( function ( formDTO ) {
-        var agencyDTO = setAgencyData( formDTO.fields );
-        var result = agencyService.updateAgency( agencyDTO, formDTO.files );
+    parseFormData( req ).then( function ( formDTO ) {
+        var agencyDTO = agencyService.formatDTO( formDTO.fields );
+        var atts = getAgencyAttachments( formDTO.fields );
+        var result = agencyService.updateAgency( agencyDTO, atts );
         return Promise.all([ result, formDTO ]);
     })
     .then( function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
         res.redirect( '/admin/agency' );
     })
-    .catch( function ( _error ) {
-        console.error( '>>> edit agency route error: ', _error );
+    .catch( function ( err ) {
+        console.error( 'Error occurred at %s >>> %s', req.originalUrl, err.message );
+        flash( GFERR, 'Internal server occurred while processing your request, please try again.' );
         res.redirect( 'back' );
     });
 };
@@ -164,4 +129,3 @@ module.exports.getAttachment = function ( req, res ) {
         res.send( attDTO.data );
     });
 };
-
