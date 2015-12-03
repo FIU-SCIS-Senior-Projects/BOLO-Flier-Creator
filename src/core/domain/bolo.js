@@ -5,15 +5,7 @@ var _ = require('lodash');
 var Entity = require('./entity');
 
 var schema = {
-    authorFName: {
-        required: true,
-        type: 'string'
-    },
-    authorLName: {
-        required: true,
-        type: 'string'
-    },
-    authorUName: {
+    author: {
         required: true,
         type: 'string'
     },
@@ -27,14 +19,12 @@ var required = Object.keys(schema).filter(function (key) {
     return schema[key].required;
 });
 
-var boloTemplate = {
-    id              : '',
+var defaults = {
+    id              : null,
     createdOn       : '',
     lastUpdatedOn   : '',
     agency          : '',
-    authorFName     : '',
-    authorLName     : '',
-    authorUName     : '',
+    author          : '',
     category        : '',
     firstName       : '',
     lastName        : '',
@@ -68,7 +58,7 @@ module.exports = Bolo;
  * @param {Object} data - Object containing Bolo Data properties
  */
 function Bolo( data ) {
-    this.data = _.extend( {}, boloTemplate, data );
+    this.data = _.extend( {}, defaults, data );
     Entity.setDataAccessors( this.data, this );
 }
 
@@ -76,18 +66,19 @@ function Bolo( data ) {
  * Checks if the bolo is valid
  *
  * @returns {bool} true if passes validation, false otherwise
+ *
+ * @todo Naive validation implementation, refactor using a robust validation
+ * library like Joi. It might be useful to implement validation with a Bolo
+ * Template object
  */
 Bolo.prototype.isValid = function () {
-    // TODO Naive validation implementation, refactor using a robust validation
-    // library like Joi. It might be useful to implement validation with a
-    // Bolo Template object
     var data = this.data;
-    var result = required.reduce(function (reqs, key) {
-        if (data[key] && typeof data[key] === schema[key].type)
-            return reqs.concat(key);
-    }, []) || [];
-    // if all required keys were pushed, then valid
-    return (result.length === required.length);
+
+    var result = required.filter( function ( key ) {
+        return ( data[key] && typeof data[key] === schema[key].type );
+    });
+
+    return ( result.length === required.length );
 };
 
 /**
