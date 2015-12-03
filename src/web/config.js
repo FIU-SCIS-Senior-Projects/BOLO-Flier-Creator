@@ -35,6 +35,9 @@ config.const = config.constants = {
     /* Flash Message Subjects */
     'GFERR'             : 'Flash Subject - Global Error',
     'GFMSG'             : 'Flash Subject - Global Message',
+
+    /* http://momentjs.com/docs/#/displaying/ */
+    'DATE_FORMAT'       : 'MM-DD-YY HH:mm:ss'
 };
 
 /**
