@@ -49,13 +49,13 @@ block admin-content
         h2 Attached Images
         ul.list-group
             if agency && agency.data.attachments
-                - var index = 0
                 each val, key in agency.data.attachments
-                    li.list-group-item
-                        if index == 0
+                    if key == "logo"
+                        li.list-group-item
                             p Logo: 
                                 a(href=route + "/asset/" + agency.id + "/" + key) #{key}
-                        else
+                each val, key in agency.data.attachments
+                    if key == "shield"
+                        li.list-group-item
                             p Shield: 
                                 a(href=route + "/asset/" + agency.id + "/" + key) #{key}
-                    - index++

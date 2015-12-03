@@ -24,6 +24,9 @@ function setBoloData(fields) {
         createdOn: fields.enteredDT ? fields.enteredDT : getDateTime(),
         lastUpdatedOn: fields.lastUpdatedOn ? fields.lastUpdatedOn : getDateTime(),
         agency: "Pinecrest Police Department",
+        authorFName: "Jason",
+        authorLName: "Cohen",
+        authorUName: "Jason Cohen",
         category: fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
         firstName: fields.fname || '',
         lastName: fields.lname || '',
@@ -63,12 +66,20 @@ router.get('/bolo', function (req, res) {
         });
 });
 
+
 // list archive bolos
 router.get('/bolo/archive', function (req, res) {
-    boloService.getArchiveBolos()
-        .then(function (bolos) {
+    var pageSize = 2;
+    var currentPage = req.query.page || 1;
+
+    boloService.getArchiveBolos(pageSize, currentPage)
+        .then(function (result) {
             res.render('bolo-archive', {
-                bolos: bolos
+                bolos: result.bolos,
+                paging: {
+                    pages: result.pages,
+                    currentPage: currentPage
+                }
             });
         });
 });
@@ -202,10 +213,5 @@ router.get('/bolo/asset/:boloid/:attname', function (req, res) {
             res.send(attDTO.data);
         });
 });
-
-function ArchiveRestoreBolo(boloId, activate) {
-
-
-}
 
 module.exports = router;

@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var multiparty          = require('multiparty');
 var Promise             = require('promise');
 
 var config              = require('../../config');
@@ -14,6 +15,48 @@ var GFMSG               = config.const.GFMSG;
 
 var parseFormData       = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
+
+function setFileName(fieldName, originalFileName)
+{
+    var result = originalFileName;
+    if(fieldName == "logo_upload")
+    {
+        result = "logo";
+    }
+    else if (fieldName == "shield_upload")
+    {
+        result= "shield";
+    }
+    else
+    {
+        result = originalFileName;
+    }
+
+    return result;
+}
+
+function parseFormData(req) {
+    return new Promise(function (resolve, reject) {
+        var form = new multiparty.Form();
+        var files = [];
+        var fields = {};
+        var result = { 'files': files, 'fields': fields };
+
+        form.on('error', function (error) { reject(error); });
+        form.on('close', function () { resolve(result); });
+
+        form.on('field', function (field, value) { fields[field] = value; });
+        form.on('file', function (name, file) {
+            if (file.originalFilename) {
+                files.push({
+                    'name': setFileName(file.fieldName, file.originalFilename),
+                    'content_type': file.headers['content-type'],
+                    'path': file.path
+                });
+            }
+        });
+    });
+}
 
 
 function setAgencyData(fields) {
