@@ -23,10 +23,6 @@ function setBoloData(fields) {
         id: fields.id || '',
         createdOn: fields.enteredDT ? fields.enteredDT : getDateTime(),
         lastUpdatedOn: fields.lastUpdatedOn ? fields.lastUpdatedOn : getDateTime(),
-        agency: "Pinecrest Police Department",
-        authorFName: "Jason",
-        authorLName: "Cohen",
-        authorUName: "Jason Cohen",
         category: fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
         firstName: fields.fname || '',
         lastName: fields.lname || '',
@@ -94,9 +90,12 @@ router.post('/bolo/create', function (req, res) {
     parseFormData(req)
         .then(function (formDTO) {
             var boloDTO = setBoloData(formDTO.fields);
+
             boloDTO.authorFName = req.user.fname;
             boloDTO.authorLName = req.user.lname;
             boloDTO.authorUName = req.user.username;
+            boloDTO.agency = req.user.agency;
+
             var result = boloService.createBolo(boloDTO, formDTO.files);
             return Promise.all([result, formDTO]);
         })
