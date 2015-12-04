@@ -35,6 +35,7 @@ app.set( 'port', process.env.PORT || 3000 );
 app.set( 'views', path.join( __dirname, 'views' ) );
 app.set( 'view engine', 'jade' );
 app.locals._ = _;
+app.locals.config_bootstrap = config.bootstrap;
 
 var isDev = ( 'development' == app.get('env') );
 var secretKey = new Buffer( process.env.SESSION_SECRET || 'pw0rd' ).toString();
