@@ -41,7 +41,16 @@ function getAccountDetails ( req, res ) {
         'account_nav': 'account-home',
         'user': req.user
     };
-    res.render( 'account-details', data );
+
+    agencyService.getAgency( data.user.agency ).then( function ( agency ) {
+        data.agency = agency;
+        res.render( 'account-details', data );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at %s >>> %s', req.originalUrl, error.message );
+        req.flash( GFERR, 'Unknown error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
 }
 
 /**
