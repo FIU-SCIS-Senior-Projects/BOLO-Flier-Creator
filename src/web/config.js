@@ -51,7 +51,9 @@ config.const = config.constants = {
  */
 config.email = {
     'from'              : 'bolo.flyer@gmail.com',
-    'fromName'          : 'BOLO Flier Creator'
+    'fromName'          : 'BOLO Flier Creator',
+
+    'template_path'     : path.resolve( __dirname, './views/email' )
 };
 
 

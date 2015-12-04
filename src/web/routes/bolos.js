@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var jade            = require('jade');
 var moment          = require('moment');
 var Promise         = require('promise');
 var router          = require('express').Router();
@@ -21,37 +22,34 @@ var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
 
 /**
- * Send emails to subscribed users of the associated bolo's agency.
+ * Send email notification of a new bolo.
  */
-function notifySubscribedUsers( bolo ) {
-    /** @todo move this into a user configurable templating system **/
-    var HTMLmessage = util.format(
-        '<p>Hi,</p>' +
-        '<p>' +
-        'A new <a href="%s">%s BOLO</a> has been recently created. To view ' +
-        'this and other BOLOs log into <a href="%s">BOLO Flier Creator</a>' +
-        '</p>' +
-        '<p>-- The BOLO Flier Creator Team</p>',
-        config.appURL + '/bolo/' + bolo.id, bolo.category, config.appURL
-    );
-
+function sendBoloNotificationEmail ( bolo, template ) {
     return userService.getAgencySubscribers( bolo.agency )
     .then( function ( users ) {
         var subscribers = users.map( function( user ) {
             return user.email;
         });
 
+        var tmp = config.email.template_path + '/' + template + '.jade';
+        var tdata = {
+            'bolo': bolo,
+            'app_url': config.appURL
+        };
+        /** @todo check if this is async **/
+        var html = jade.renderFile( tmp, tdata );
+
         return emailService.send({
             'to': subscribers,
             'from': config.email.from,
             'fromName': config.email.fromName,
             'subject' : 'BOLO Alert: ' + bolo.category,
-            'html': HTMLmessage
+            'html': html
         });
     })
     .catch( function ( error ) {
         console.error(
-            'Unknown error occurred while sending notifications to users',
+            'Unknown error occurred while sending notifications to users' +
             'subscribed to agency id %s for BOLO %s\n %s',
             bolo.agency, bolo.id, error.message
         );
@@ -119,7 +117,7 @@ router.post( '/bolo/create', function ( req, res ) {
     })
     .then(function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
-        notifySubscribedUsers( pData[0] );
+        sendBoloNotificationEmail( pData[0], 'new-bolo-notification' );
         req.flash( GFMSG, 'BOLO successfully created.' );
         res.redirect( '/bolo' );
     })
@@ -159,6 +157,7 @@ router.post( '/bolo/edit/:id', function ( req, res ) {
     })
     .then( function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+        sendBoloNotificationEmail( pData[0], 'update-bolo-notification' );
         req.flash( GFMSG, 'BOLO successfully updated.' );
         res.redirect( '/bolo' );
     })
