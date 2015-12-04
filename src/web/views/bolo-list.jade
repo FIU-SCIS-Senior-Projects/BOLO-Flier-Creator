@@ -13,9 +13,11 @@ block content
         for bolo in bolos
             div.col-sm-6.col-md-4
                 div.thumbnail
-                    if bolo.data.attachments
+                    if Object.keys( bolo.attachments ).length
                         - var keys = Object.keys( bolo.data.attachments )
                         img(src="/bolo/asset/" + bolo.id + "/" + keys[0] alt="" style="height:300px")
+                    else
+                        img( src="/img/nopic.png" alt="no image" style="height: 300px" )
                     div.caption
                         h3 #{bolo.category}
                         if bolo.status
