@@ -112,7 +112,13 @@ router.post( '/bolo/create', function ( req, res ) {
         boloDTO.authorLName = req.user.lname;
         boloDTO.authorUName = req.user.username;
 
-        var result = boloService.createBolo( boloDTO, formDTO.files );
+        var atts = formDTO.files.filter( function ( file ) {
+            var test = file.content_type && /image/.test( file.content_type );
+            console.log( test, ' -- ', file );
+            return test;
+        });
+
+        var result = boloService.createBolo( boloDTO, atts );
         return Promise.all([result, formDTO]);
     })
     .then(function ( pData ) {
@@ -152,6 +158,11 @@ router.post( '/bolo/edit/:id', function ( req, res ) {
     parseFormData( req ).then( function ( formDTO ) {
         var boloDTO = boloService.formatDTO( formDTO.fields );
         boloDTO.lastUpdatedOn = moment().format( config.const.DATE_FORMAT );
+
+        var atts = formDTO.files.filter( function ( file ) {
+            return file.content_type && /image/.test( file.content_type );
+        });
+
         var result = boloService.updateBolo( boloDTO, formDTO.files );
         return Promise.all( [ result, formDTO ] );
     })
