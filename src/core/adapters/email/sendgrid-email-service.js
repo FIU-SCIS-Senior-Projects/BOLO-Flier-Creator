@@ -7,6 +7,13 @@ if ( ! process.env.SENDGRID_API_KEY ) {
 var sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
 
+/**
+ * Send an email (payload) via the SendGrid service.
+ *
+ * @param {Object} - an object containing email details {to, from, fromName,
+ * subject, text, html}
+ * @returns {Promise|Object} the response object
+ */
 module.exports.send = function ( payload ) {
     var email = new sendgrid.Email( payload );
     return new Promise( function ( resolve, reject ) {

@@ -20,6 +20,9 @@ var parseFormData       = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
 
+/**
+ * Send emails to subscribed users of the associated bolo's agency.
+ */
 function notifySubscribedUsers( bolo ) {
     /** @todo move this into a user configurable templating system **/
     var HTMLmessage = util.format(
@@ -71,7 +74,6 @@ router.get('/bolo', function (req, res) {
             });
         });
 });
-
 
 // list archive bolos
 router.get('/bolo/archive', function (req, res) {
@@ -184,6 +186,9 @@ router.post('/bolo/archive/:id', function (req, res) {
         });
 });
 
+/**
+ * Process a request to restore a bolo from the archive.
+ */
 router.post('/bolo/restore/:id', function (req, res) {
     var activate = true;
 
@@ -200,7 +205,9 @@ router.post('/bolo/restore/:id', function (req, res) {
         });
 });
 
-
+/**
+ * Process a request delete a bolo with the provided id
+ */
 router.post('/bolo/delete/:id', function (req, res) {
     boloService.removeBolo(req.params.id)
         .then(function (success) {

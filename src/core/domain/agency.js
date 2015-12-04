@@ -5,14 +5,15 @@ var _ = require('lodash');
 var Entity = require('./entity');
 
 var agencyTemplate = {
-    'id'        : '',
-    'name'      : '',
-    'address'   : '',
-    'city'      : '',
-    'state'     : '',
-    'zip'       : '',
-    'phone'     : '',
-    'isActive'  : true
+    'id'            : '',
+    'name'          : '',
+    'address'       : '',
+    'city'          : '',
+    'state'         : '',
+    'zip'           : '',
+    'phone'         : '',
+    'isActive'      : true,
+    'attachments'   : {}
 };
 
 /** @module core/domain */

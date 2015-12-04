@@ -5,6 +5,9 @@ var fs          = require('fs');
 var multiparty  = require('multiparty');
 var Promise     = require('promise');
 
+/**
+ * General helper method for parsing form data with attachments.
+ */
 module.exports.parseFormData = function ( req ) {
     return new Promise( function ( resolve, reject ) {
         var form = new multiparty.Form();
@@ -41,6 +44,10 @@ module.exports.parseFormData = function ( req ) {
     });
 };
 
+/**
+ * General helper method for cleaning up temporary files that were stored
+ * during parsing of form data.
+ */
 module.exports.cleanTempFiles = function ( files ) {
     files.forEach( function ( f ) {
         fs.unlink( f.path );
