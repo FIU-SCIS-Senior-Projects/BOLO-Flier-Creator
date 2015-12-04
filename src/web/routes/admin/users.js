@@ -16,6 +16,7 @@ var FMSG = config.const.GFMSG;
 
 var parseFormData = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
+var FormError = formUtil.FormError;
 
 
 /**
@@ -47,12 +48,14 @@ module.exports.postCreateForm = function ( req, res ) {
 
         if ( validationErrors ) {
             req.flash( 'form-errors', validationErrors );
-            res.redirect( 'back' );
-        } else {
-            formDTO.fields.tier = formDTO.fields.role;
-            var userDTO = userService.formatDTO( formDTO.fields );
-            return userService.registerUser( userDTO );
+            throw new FormError();
         }
+
+        formDTO.fields.tier = formDTO.fields.role;
+        formDTO.fields.agency = req.user.agency;
+        formDTO.fields.notifications = [ req.user.agency ];
+        var userDTO = userService.formatDTO( formDTO.fields );
+        return userService.registerUser( userDTO );
     }, function ( error ) {
         console.error( 'Error at /users/create >>> ', error.message );
         req.flash( FERR, 'Error processing form, please try again.' );
@@ -61,6 +64,10 @@ module.exports.postCreateForm = function ( req, res ) {
     .then( function ( response ) {
         req.flash( FMSG, 'Successfully registered user.' );
         res.redirect( '/admin/users' );
+    })
+    .catch( function ( error ) {
+        if ( 'FormError' !== error.name ) throw error;
+        res.redirect( 'back' );
     })
     .catch( function ( error ) {
         /** @todo inform of duplicate registration errors */
@@ -136,10 +143,10 @@ module.exports.postPasswordReset = function ( req, res ) {
 
         if ( validationErrors ) {
             req.flash( 'form-errors', validationErrors );
-            res.redirect( 'back' );
-        } else {
-            return userService.resetPassword( userID, formDTO.fields.password );
+            throw new FormError();
         }
+
+        return userService.resetPassword( userID, formDTO.fields.password );
     }, function( error ) {
         console.error( 'Error at /users/:id/reset-password >>> ', error.message );
         req.flash( FERR, 'Error processing form, please try again.' );
@@ -148,6 +155,10 @@ module.exports.postPasswordReset = function ( req, res ) {
     .then( function ( ) {
         req.flash( FMSG, 'Password reset successful.' );
         res.redirect( '/admin/users/' + userID );
+    })
+    .catch( function ( error ) {
+        if ( 'FormError' !== error.name ) throw error;
+        res.redirect( 'back' );
     })
     .catch( function ( error ) {
         console.error( 'Error at /users/:id/reset-password >>> ', error.message );

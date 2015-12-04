@@ -12,10 +12,7 @@ module.exports.parseFormData = function ( req ) {
         var fields = {};
         var result = { 'files': files, 'fields': fields };
 
-        form.on( 'error', function ( error ) { reject( error ); } );
-        form.on( 'close', function () { resolve( result ); } );
-
-        form.on( 'field', function ( field, value ) {
+        function addFormField ( field, value ) {
             var f = field.slice();
             if ( /\[\]$/.test( f ) ) {
                 if ( ! fields[f] ) fields[f] = [];
@@ -23,15 +20,22 @@ module.exports.parseFormData = function ( req ) {
             } else {
                 fields[f] = value;
             }
-        });
+        }
 
-        form.on( 'file' , function ( name, file) {
-            files.push({
+        function addFormFile ( name, file ) {
+            var dto = {
                 'name': file.originalFilename,
                 'content_type': file.headers['content-type'],
                 'path': file.path
-            });
-        });
+            };
+            files.push( dto );
+            addFormField( file.fieldName, dto );
+        }
+
+        form.on( 'field', addFormField );
+        form.on( 'file' , addFormFile );
+        form.on( 'error', function ( error ) { reject( error ); } );
+        form.on( 'close', function () { resolve( result ); } );
 
         form.parse( req );
     });

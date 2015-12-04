@@ -1,53 +1,59 @@
 /* jshint node: true */
 'use strict';
 
+var moment          = require('moment');
 var Promise         = require('promise');
 var router          = require('express').Router();
+var util            = require('util');
 
 var config          = require('../config');
-var CommonService   = config.CommonService;
-var boloRepository  = new config.BoloRepository();
-var boloService     = new config.BoloService( boloRepository );
+var userService     = new config.UserService( new config.UserRepository() );
+var boloService     = new config.BoloService( new config.BoloRepository() );
+var emailService    = config.EmailService;
 
 var formUtil        = require('../lib/form-util');
 
 var GFERR           = config.const.GFERR;
 var GFMSG           = config.const.GFMSG;
 
-var getDateTime         = CommonService.getDateTime;
 var parseFormData       = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
-function setBoloData(fields) {
-    return {
-        id: fields.id || '',
-        createdOn: fields.enteredDT ? fields.enteredDT : getDateTime(),
-        lastUpdatedOn: fields.lastUpdatedOn ? fields.lastUpdatedOn : getDateTime(),
-        agency: "Pinecrest Police Department",
-        authorFName: "Jason",
-        authorLName: "Cohen",
-        authorUName: "Jason Cohen",
-        category: fields.bolo_category != 'Select an option...' ? fields.bolo_category : '',
-        firstName: fields.fname || '',
-        lastName: fields.lname || '',
-        dob: fields.dob || '',
-        dlNumber: fields.dl_number || '',
-        race: fields.race || '',
-        sex: fields.sex != 'Select an option...' ? fields.sex : '',
-        height: fields.height || '',
-        weight: fields.weight || '',
-        hairColor: fields.hair_color != 'Select an option...' ? fields.hair_color : '',
-        tattoos: fields.tattoos || '',
-        address: fields.address || '',
-        additional: fields.last_known_address || '',
-        summary: fields.summary || '',
-        attachments: {},
-        video_url: fields.video_url || '',
-        isActive: fields.isActive || true,
-        status: fields.status || "New"
-    };
-}
 
+function notifySubscribedUsers( bolo ) {
+    /** @todo move this into a user configurable templating system **/
+    var HTMLmessage = util.format(
+        '<p>Hi,</p>' +
+        '<p>' +
+        'A new <a href="%s">%s BOLO</a> has been recently created. To view ' +
+        'this and other BOLOs log into <a href="%s">BOLO Flier Creator</a>' +
+        '</p>' +
+        '<p>-- The BOLO Flier Creator Team</p>',
+        config.appURL + '/bolo/' + bolo.id, bolo.category, config.appURL
+    );
+
+    return userService.getAgencySubscribers( bolo.agency )
+    .then( function ( users ) {
+        var subscribers = users.map( function( user ) {
+            return user.email;
+        });
+
+        return emailService.send({
+            'to': subscribers,
+            'from': config.email.from,
+            'fromName': config.email.fromName,
+            'subject' : 'BOLO Alert: ' + bolo.category,
+            'html': HTMLmessage
+        });
+    })
+    .catch( function ( error ) {
+        console.error(
+            'Unknown error occurred while sending notifications to users',
+            'subscribed to agency id %s for BOLO %s\n %s',
+            bolo.agency, bolo.id, error.message
+        );
+    });
+}
 
 // list bolos at the root route
 router.get('/bolo', function (req, res) {
@@ -86,62 +92,79 @@ router.get('/bolo/archive', function (req, res) {
 
 // render the bolo create form
 router.get('/bolo/create', function (req, res) {
-    res.render('bolo-create-form');
+    var data = {
+        'form_errors': req.flash( 'form-errors' )
+    };
+    res.render( 'bolo-create-form', data );
 });
 
 // process bolo creation user form input
-router.post('/bolo/create', function (req, res) {
-    parseFormData(req)
-        .then(function (formDTO) {
-            var boloDTO = setBoloData(formDTO.fields);
-            boloDTO.authorFName = req.user.fname;
-            boloDTO.authorLName = req.user.lname;
-            boloDTO.authorUName = req.user.username;
-            var result = boloService.createBolo(boloDTO, formDTO.files);
-            return Promise.all([result, formDTO]);
-        })
-        .then(function (pData) {
-            if (pData[1].files.length) cleanTemporaryFiles(pData[1].files);
-            res.redirect('/bolo');
-        })
-        .catch(function (_error) {
-            /** @todo send back form data with error message */
-            console.error('>>> create bolo route error: ', _error);
-            res.redirect('/bolo/create');
-        });
+router.post( '/bolo/create', function ( req, res ) {
+    parseFormData(req).then(function ( formDTO ) {
+        var boloDTO = boloService.formatDTO( formDTO.fields );
+
+        boloDTO.createdOn = moment().format( config.const.DATE_FORMAT );
+        boloDTO.lastUpdatedOn = boloDTO.createdOn;
+        boloDTO.author = req.user.id;
+        boloDTO.agency = req.user.agency;
+
+        boloDTO.authorFName = req.user.fname;
+        boloDTO.authorLName = req.user.lname;
+        boloDTO.authorUName = req.user.username;
+
+        var result = boloService.createBolo( boloDTO, formDTO.files );
+        return Promise.all([result, formDTO]);
+    })
+    .then(function ( pData ) {
+        if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+        notifySubscribedUsers( pData[0] );
+        req.flash( GFMSG, 'BOLO successfully created.' );
+        res.redirect( '/bolo' );
+    })
+    .catch(function ( error ) {
+        console.error( 'Error at %s >>> %s', req.originalUrl, error.message );
+        req.flash( GFERR, 'Internal server error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
 });
 
 // render the bolo edit form
 router.get('/bolo/edit/:id', function (req, res) {
-    boloService.getBolo(req.params.id)
-        .then(function (bolo) {
-            res.render('bolo-create-form', {
-                bolo: bolo
-            });
-        })
-        .catch(function (_error) {
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+    var data = {
+        'form_errors': req.flash( 'form-errors' )
+    };
+
+    /** @todo do we trust that this is really an id? **/
+
+    boloService.getBolo( req.params.id ).then( function ( bolo ) {
+        data.bolo = bolo;
+        res.render( 'bolo-edit-form', data );
+    })
+    .catch( function ( error ) {
+        console.error( 'Error at %s >>> %s', req.originalUrl, error.message );
+        req.flash( GFERR, 'Internal server error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
 });
 
 // handle requests to process edits on a specific bolo
-router.post('/bolo/edit/:id', function (req, res) {
-    parseFormData(req)
-        .then(function (formDTO) {
-            var boloDTO = setBoloData(formDTO.fields);
-            boloDTO.lastUpdatedOn = getDateTime();
-            var result = boloService.updateBolo(boloDTO, formDTO.files);
-            return Promise.all([result, formDTO]);
-        })
-        .then(function (pData) {
-            if (pData[1].files.length) cleanTemporaryFiles(pData[1].files);
-            res.redirect('/bolo');
-        })
-        .catch(function (_error) {
-            console.error('>>> edit bolo route error: ', _error);
-            res.redirect('back');
-        });
-
+router.post( '/bolo/edit/:id', function ( req, res ) {
+    parseFormData( req ).then( function ( formDTO ) {
+        var boloDTO = boloService.formatDTO( formDTO.fields );
+        boloDTO.lastUpdatedOn = moment().format( config.const.DATE_FORMAT );
+        var result = boloService.updateBolo( boloDTO, formDTO.files );
+        return Promise.all( [ result, formDTO ] );
+    })
+    .then( function ( pData ) {
+        if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+        req.flash( GFMSG, 'BOLO successfully updated.' );
+        res.redirect( '/bolo' );
+    })
+    .catch(function ( error ) {
+        console.error( 'Error at %s >>> %s', req.originalUrl, error.message );
+        req.flash( GFERR, 'Internal server error occurred, please try again.' );
+        res.redirect( 'back' );
+    });
 });
 
 // handle requests to inactivate a specific bolo

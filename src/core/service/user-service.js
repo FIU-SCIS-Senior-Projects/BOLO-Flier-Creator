@@ -108,6 +108,10 @@ UserService.prototype.getUsers = function () {
     return this.userRepository.getAll();
 };
 
+UserService.prototype.getAgencySubscribers = function ( agencyID ) {
+    return this.userRepository.getByAgencySubscription( agencyID );
+};
+
 /**
  * Reset a user's password.
  *
@@ -142,11 +146,10 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
     var context = this;
 
     return context.userRepository.getById( id ).then( function ( user ) {
-        var cache = { 'tier': user.tier };
-
-        var blacklisted = function ( key ) {
-            return 'password' === key;
-        };
+        function blacklisted ( key ) {
+            var list = [ 'password', 'tier' ];
+            return ( -1 !== list.indexOf( key ) );
+        }
 
         Object.keys( user.data ).forEach( function ( key ) {
             if ( userDTO[key] && ! blacklisted( key ) ) {
@@ -154,8 +157,8 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
             }
         });
 
-        if ( typeof user.tier === 'string' ) {
-            user.tier = User[user.tier] || cache.tier;
+        if ( typeof userDTO.tier === 'string' && undefined !== User[userDTO.tier] ) {
+            user.tier = User[userDTO.tier];
         }
 
         return context.userRepository.update( user );

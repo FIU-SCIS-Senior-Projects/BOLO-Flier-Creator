@@ -27,21 +27,25 @@ var schema = {
     'tier': {
         'required'  : true,
         'type'      : 'number'
+    },
+    'agency': {
+        'required'  : true,
+        'type'      : 'string'
     }
 };
 
-var userTemplate = {
+var defaults = {
     'id'            : null,
     'username'      : null,
     'email'         : null,
-    'fname'         : null,
-    'lname'         : null,
+    'fname'         : '',
+    'lname'         : '',
     'password'      : null,
     'tier'          : 1,
     'agency'        : null,
-    'badge'         : null,
-    'sectunit'      : null,
-    'ranktitle'     : null,
+    'badge'         : '',
+    'sectunit'      : '',
+    'ranktitle'     : '',
     'notifications' : []
 };
 
@@ -80,7 +84,7 @@ module.exports = User;
  * @param {Object} - Object containing User Data properties.
  */
 function User ( data ) {
-    this.data = _.extend( {}, userTemplate, data );
+    this.data = _.extend( {}, defaults, data );
     Entity.setDataAccessors( this.data, this );
 }
 
@@ -166,9 +170,8 @@ User.prototype.same = function ( other ) {
  */
 User.prototype.diff = function ( other ) {
     var source = this;
-    return Object.getOwnPropertyNames( source.data )
-        .filter( function ( key ) {
-            return source.data[key] !== other.data[key];
-        });
+    return Object.getOwnPropertyNames( source.data ).filter( function ( key ) {
+        return source.data[key] !== other.data[key];
+    });
 };
 

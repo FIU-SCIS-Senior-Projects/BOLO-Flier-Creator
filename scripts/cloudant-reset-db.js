@@ -39,6 +39,9 @@ var USERS_DESIGN_DOC = {
         },
         "revs": {
             "map": "function (doc) { if ( 'user' === doc.Type ) emit( null, doc._rev ); }"
+        },
+        "notifications": {
+            "map": "function (doc) { if ( 'user' === doc.Type ) { for ( var i = 0; i < doc.notifications.length; i++ ) { emit( doc.notifications[i], doc.email ); } } }"
         }
     }
 };

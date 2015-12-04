@@ -96,7 +96,6 @@ CloudantUserRepository.prototype.update = function ( user ) {
         return fromCloudant( newdoc );
     })
     .catch( function ( error ) {
-        console.log( error );
         throw error;
     });
 };
@@ -139,6 +138,21 @@ CloudantUserRepository.prototype.getByUsername = function ( id ) {
     .catch( function ( error ) {
         var msg = error.reason || error.mesage || error;
         throw new Error( "Unable to retrive user data: " + msg );
+    });
+};
+
+CloudantUserRepository.prototype.getByAgencySubscription = function ( agency ) {
+    return db.view( 'users', 'notifications', {
+        'key': agency
+    })
+    .then( function ( response ) {
+        return response.rows.map( function ( row ) {
+            return fromCloudant( row.value );
+        });
+    })
+    .catch( function ( error ) {
+        var msg = error.reason || error.message || error;
+        throw new Error( "Unable to get agency subscribers." );
     });
 };
 

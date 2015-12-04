@@ -98,3 +98,15 @@ AgencyService.prototype.getAttachment = function ( id, attname ) {
     var context = this;
     return context.AgencyRepository.getAttachment( id, attname );
 };
+
+AgencyService.formatDTO = formatDTO;
+AgencyService.prototype.formatDTO = formatDTO;
+function formatDTO ( dto ) {
+    var newdto = new Agency().data;
+
+    Object.keys( newdto ).forEach( function ( key ) {
+        newdto[key] = dto[key] || newdto[key];
+    });
+
+    return newdto;
+}
