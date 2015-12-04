@@ -1,0 +1,9 @@
+extends ./layout.jade
+
+block content
+    p Hi,
+    p A new
+        a(href=app_url + '/bolo/details/' + bolo.id ) #{bolo.category} BOLO 
+        | has been recently posted on the BOLO Flier Creator app. 
+        a( href=app_url ) Login 
+        | to view this and other BOLOs.

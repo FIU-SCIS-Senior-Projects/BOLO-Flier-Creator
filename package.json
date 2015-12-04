@@ -25,13 +25,16 @@
     "jimp": "^0.2.9",
     "lodash": "^3.10.1",
     "method-override": "2.3.3",
+    "moment": "^2.10.6",
     "morgan": "1.6.1",
     "multiparty": "^4.1.2",
     "node-uuid": "^1.4.3",
     "passport": "^0.3.0",
     "passport-local": "^1.0.0",
     "promise": "^7.0.4",
-    "request": "^2.64.0"
+    "request": "^2.64.0",
+    "sendgrid": "^2.0.0",
+    "validate.js": "^0.9.0"
   },
   "repository": {},
   "engines": {

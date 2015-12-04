@@ -4,16 +4,6 @@ block jumbo-desc
     p User Details
 
 block admin-content
-    div
-        each m in msg
-            if m.length
-                +alert_info( m )
-        each e in err
-            if e.message
-                +alert_error( e.message )
-            else if e.length
-                +alert_error( e )
-
     h3 #{user.username}
     table.details
         tr
@@ -27,7 +17,7 @@ block admin-content
             td #{user.badge}
         tr
             td Section / Unit
-            td #{user.secunit}
+            td #{user.sectunit}
         tr
             td Rank / Title
             td #{user.ranktitle}

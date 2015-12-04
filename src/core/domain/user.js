@@ -1,9 +1,15 @@
 /* jshint node: true */
 'use strict';
 
-var _ = require('lodash');
-var Entity = require('./entity');
+if ( undefined === process.env.PASSWORD_SALT ) {
+    throw new Error( 'Required environment variable missing: PASSWORD_SALT' );
+}
 
+var _       = require('lodash');
+var crypto  = require('crypto');
+var Entity  = require('./entity');
+
+var SALT = process.env.PASSWORD_SALT;
 
 var schema = {
     'username': {
@@ -21,21 +27,26 @@ var schema = {
     'tier': {
         'required'  : true,
         'type'      : 'number'
+    },
+    'agency': {
+        'required'  : true,
+        'type'      : 'string'
     }
 };
 
-var userTemplate = {
+var defaults = {
     'id'            : null,
     'username'      : null,
     'email'         : null,
-    'fname'         : null,
-    'lname'         : null,
+    'fname'         : '',
+    'lname'         : '',
     'password'      : null,
     'tier'          : 1,
     'agency'        : null,
-    'badge'         : null,
-    'sectunit'      : null,
-    'ranktitle'     : null
+    'badge'         : '',
+    'sectunit'      : '',
+    'ranktitle'     : '',
+    'notifications' : []
 };
 
 var required = Object.keys( schema ).filter( function ( key ) {
@@ -55,6 +66,11 @@ for ( var role in EnumRoles ) {
     });
 }
 
+/* Reference http://thatextramile.be/blog/2012/01/stop-storing-passwords-already/ */
+function hash ( passwd ) {
+    return crypto.createHmac( 'sha256', SALT).update( passwd ).digest( 'hex' );
+}
+
 
 /** @module core/domain */
 module.exports = User;
@@ -68,7 +84,7 @@ module.exports = User;
  * @param {Object} - Object containing User Data properties.
  */
 function User ( data ) {
-    this.data = _.extend( {}, userTemplate, data );
+    this.data = _.extend( {}, defaults, data );
     Entity.setDataAccessors( this.data, this );
 }
 
@@ -118,6 +134,28 @@ User.prototype.isValid = function () {
 };
 
 /**
+ * Chack if the supplied password is equal to the stored password. Will only
+ * validate if the stored passwod is hashed.
+ *
+ * @param {String} - the password to validate
+ * @returns {boolean} true if valid, false otherwise
+ */
+User.prototype.isValidPassword = function ( password ) {
+    return this.password === hash( password );
+};
+
+/**
+ * Hash the password property value. Care should be taken when using this
+ * method as there is no way to check if the password is already hashed.
+ * Applying this method to an already hashed password could potentially
+ * corrupt the user's password if persisted to an external storage device.
+ */
+User.prototype.hashPassword = function () {
+    this.password = hash( this.password );
+};
+
+
+/**
  * Check if the supplied user object has the same attributes.
  *
  */
@@ -132,9 +170,8 @@ User.prototype.same = function ( other ) {
  */
 User.prototype.diff = function ( other ) {
     var source = this;
-    return Object.getOwnPropertyNames( source.data )
-        .filter( function ( key ) {
-            return source.data[key] !== other.data[key];
-        });
+    return Object.getOwnPropertyNames( source.data ).filter( function ( key ) {
+        return source.data[key] !== other.data[key];
+    });
 };
 

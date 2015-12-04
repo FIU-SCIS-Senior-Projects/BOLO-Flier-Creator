@@ -17,24 +17,21 @@ mixin select_options(name, label, options, required, selectedValue)
     label.control-label(for=name)= label
     select.form-control(name=name)
       each val in options
-          if selectedValue == val
-            +option(val,true)
-          else
-            +option(val,false)
+        if selectedValue == val
+          +option(val,true)
+        else
+          +option(val,false)
 
 block jumbo-desc
     p New User Registration
 
 block admin-content
   div
-    each m in msg
-      if m.length
-        +alert_info( m )
-    each e in err
-      if e.message
-        +alert_error( e.message )
-      else if e.length
-        +alert_error( e )
+    - var ferrs = ( form_errors.length ) ? form_errors[0] : {};
+    if ferrs.password
+      +alert_error_array( ferrs.password )
+    if ferrs.confirmation
+      +alert_error_array( ferrs.confirmation )
 
   form(action="/admin/users/create" enctype="multipart/form-data" method="post")
     +input_mx("username", "Username (required)", "", true, "")
@@ -42,7 +39,7 @@ block admin-content
     +input_mx("fname", "First Name", "", false, "")
     +input_mx("lname", "Last Name", "", false,  "")
     +input_mx("password", "Password (required)", "", true,  "", "password")
-    +input_mx("password", "Repeat Password (required)", "", true,  "", "password")
+    +input_mx("confirm", "Repeat Password (required)", "", true,  "", "password")
 
     if ( roles )
         .form-group
@@ -63,7 +60,7 @@ block admin-content
         = ' No'
 
     +input_mx("badge", "Badge No.", "", false,  "")
-    +input_mx("secunit", "Section / Unit", "", false,  "")
+    +input_mx("sectunit", "Section / Unit", "", false,  "")
     +input_mx("ranktitle", "Rank / Title", "", false,  "")
 
     .form-group

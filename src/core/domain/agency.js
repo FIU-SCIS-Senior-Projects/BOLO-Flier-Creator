@@ -5,13 +5,15 @@ var _ = require('lodash');
 var Entity = require('./entity');
 
 var agencyTemplate = {
-    'id'        : '',
-    'name'      : '',
-    'address'   : '',
-    'city'      : '',
-    'state'     : '',
-    'zip'       : '',
-    'phone'     : ''
+    'id'            : '',
+    'name'          : '',
+    'address'       : '',
+    'city'          : '',
+    'state'         : '',
+    'zip'           : '',
+    'phone'         : '',
+    'isActive'      : true,
+    'attachments'   : {}
 };
 
 /** @module core/domain */
@@ -29,16 +31,6 @@ function Agency(data) {
     this.data = _.extend({}, agencyTemplate, data);
     Entity.setDataAccessors( this.data, this );
 }
-
-/**
- * Attach an image file reference to the agency data.
- *
- * @param {Object} - Meta data object containing a UUID and filename
- */
-Agency.prototype.attachImage = function (meta) {
-    this.data.image = this.data.image || '';
-    this.data.image = this.data.image.concat(meta);
-};
 
 /**
  * Checks if the agency is valid

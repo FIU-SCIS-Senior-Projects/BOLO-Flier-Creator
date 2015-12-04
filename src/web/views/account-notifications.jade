@@ -1,0 +1,37 @@
+extends ./account-layout.jade
+include ./includes/mixins.jade
+
+
+mixin add_agency_row ( agency, selected )
+    tr
+        td.text-center: input( type="checkbox" name="agencies[]" value=agency.id )
+        td #{agency.name}
+        td #{agency.city}
+        td #{agency.state.toUpperCase()}
+        td #{agency.zip}
+
+
+block jumbo-desc
+    p BOLO Email Notifications
+
+
+block account-content
+    - var ROUTE = '/account/notifications'
+
+    p.lead You are currently receiving BOLO notifications for the following agencies.
+
+    form( action=ROUTE + "/unsubscribe" enctype="multipart/form-data" method="post" )
+        table.table.table-striped
+            thead: tr
+                th <!-- Checkbox -->
+                th Agency
+                th City
+                th State
+                th Zip
+            tbody
+                each agency in agencies
+                    +add_agency_row( agency )
+
+        .form-group
+            button.btn.btn-warning( type="submit" value="save" ) Unsubscribe Selected
+            a.pull-right( href=ROUTE + "/subscribe" ) Want to subscribe to other agencies?

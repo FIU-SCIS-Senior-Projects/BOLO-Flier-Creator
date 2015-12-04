@@ -18,17 +18,17 @@
 </tr>
 <tr>
 	<td>select</td>
-	<td>name=bolo_category</td>
+	<td>name=category</td>
 	<td>label=ARSON</td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=fname</td>
+	<td>name=firstName</td>
 	<td>Joe</td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=lname</td>
+	<td>name=lastName</td>
 	<td>Montana</td>
 </tr>
 <tr>
@@ -38,7 +38,7 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=dl_number</td>
+	<td>name=dlNumber</td>
 	<td>D123-123-123-1234-9</td>
 </tr>
 <tr>
@@ -63,7 +63,7 @@
 </tr>
 <tr>
 	<td>select</td>
-	<td>name=hair_color</td>
+	<td>name=hairColor</td>
 	<td>label=Red</td>
 </tr>
 <tr>
@@ -78,7 +78,7 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=addition_info</td>
+	<td>name=additional</td>
 	<td>None</td>
 </tr>
 <tr>
@@ -91,7 +91,6 @@
 	<td>css=button.btn.btn-primary</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

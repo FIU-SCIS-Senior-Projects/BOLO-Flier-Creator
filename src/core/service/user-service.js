@@ -34,15 +34,15 @@ function UserService ( userRepository ) {
  * password. Null if authentication fails.
  */
 UserService.prototype.authenticate = function ( username, password ) {
-    var userPromise = this.userRepository.getByUsername( username );
-
-    return userPromise
+    return this.userRepository.getByUsername( username )
     .then( function ( user ) {
-        if ( user && user.data.password == password ) {
-            return Promise.resolve( user );
+        if ( user && user.isValidPassword( password ) ) {
+            return user;
         }
-
-        return Promise.resolve( null );
+        return null;
+    })
+    .catch( function ( error ) {
+        throw new Error( 'Unable to retrieve user data.' );
     });
 };
 
@@ -88,19 +88,28 @@ UserService.prototype.registerUser = function ( userDTO ) {
     }
 
     return context.userRepository.getByUsername( newuser.username )
-        .then( function ( existingUser ) {
-            if ( existingUser ) {
-                throw new Error(
-                    'User already registered: ' + existingUser.username
-                );
-            }
-
-            return context.userRepository.insert( newuser );
-        });
+    .then( function ( existingUser ) {
+        if ( existingUser ) {
+            throw new Error(
+                'User already registered: ' + existingUser.username
+            );
+        }
+        newuser.hashPassword();
+        return context.userRepository.insert( newuser );
+    });
 };
 
+/**
+ * Get all user objects.
+ *
+ * @returns {Promise{User|Array}} Promises an Array of User objects.
+ */
 UserService.prototype.getUsers = function () {
     return this.userRepository.getAll();
+};
+
+UserService.prototype.getAgencySubscribers = function ( agencyID ) {
+    return this.userRepository.getByAgencySubscription( agencyID );
 };
 
 /**
@@ -115,6 +124,7 @@ UserService.prototype.resetPassword = function ( id, password ) {
 
     return context.userRepository.getById( id ).then( function ( user ) {
         user.password = password;
+        user.hashPassword();
         return context.userRepository.update( user );
     }, function ( error ) {
         throw new Error( 'Unable to get current user data: ', error.message );
@@ -136,14 +146,19 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
     var context = this;
 
     return context.userRepository.getById( id ).then( function ( user ) {
-        var cache = { 'tier': user.tier };
+        function blacklisted ( key ) {
+            var list = [ 'password', 'tier' ];
+            return ( -1 !== list.indexOf( key ) );
+        }
 
         Object.keys( user.data ).forEach( function ( key ) {
-            if ( userDTO[key] ) user[key] = userDTO[key];
+            if ( userDTO[key] && ! blacklisted( key ) ) {
+                user[key] = userDTO[key];
+            }
         });
 
-        if ( typeof user.tier === 'string' ) {
-            user.tier = User[user.tier] || cache.tier;
+        if ( typeof userDTO.tier === 'string' && undefined !== User[userDTO.tier] ) {
+            user.tier = User[userDTO.tier];
         }
 
         return context.userRepository.update( user );
@@ -160,10 +175,56 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
 };
 
 /**
+ * Remove a list of notifications from the specified user (by id)
+ *
+ * @param {String} - the id of the user to remove notifications from
+ * @param {String|Array} - array of agency ids to remove from the user
+ * @returns {Promise|User} an updated user object
+ */
+UserService.prototype.removeNotifications = function ( id, agencylist ) {
+    var context = this;
+
+    return context.userRepository.getById( id ).then( function ( user ) {
+        user.notifications = _.difference( user.notifications, agencylist );
+        return context.userRepository.update( user );
+    })
+    .catch( function ( error ) {
+        throw new Error(
+            'Error registering new notifications: ', + error.message
+        );
+    });
+};
+
+/**
+ * Add a list of notifications to the specified user (by id)
+ *
+ * @param {String} - the id of the user to add notifications to
+ * @param {String|Array} - array of agency ids to add to the user
+ * @returns {Promise|User} an updated user object
+ */
+UserService.prototype.addNotifications = function ( id, agencylist ) {
+    var context = this;
+
+    return context.userRepository.getById( id ).then( function ( user ) {
+        user.notifications = _.union( user.notifications, agencylist );
+        return context.userRepository.update( user );
+    })
+    .catch( function ( error ) {
+        throw new Error(
+            'Error registering new notifications: ', + error.message
+        );
+    });
+};
+
+/**
  * Remove a user from the system.
  *
  * @param {String} - the id of the user to remove
  * @returns {Object} - a response from the persistence layer
+ *
+ * @todo find out the policy for removing users, does removing a user affect
+ * BOLOs attached to the user? Should a user really be deleted or maybe just
+ * disabled?
  */
 UserService.prototype.removeUser = function ( id ) {
     return this.userRepository.remove( id );

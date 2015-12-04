@@ -4,6 +4,7 @@
 var expect = require('chai').expect;
 var path = require('path');
 
+process.env.PASSWORD_SALT = 'abc123';
 var src = path.resolve( __dirname, '../../src' );
 var User = require( path.join( src, 'core/domain/user' ) );
 
@@ -14,6 +15,7 @@ describe( 'user domain entity', function () {
     var defaultUserData;
 
     before( function () {
+
         defaultUserData = {
             'id'            : '234dsflj3242lj',
             'username'      : 'tron',
@@ -35,6 +37,33 @@ describe( 'user domain entity', function () {
 
         /* assert */
         expect( other.data ).to.not.equal( user.data );
+    });
+
+    it( 'can hash the password attribute', function () {
+        /* arrange */
+        user.password = 'some-password';
+        user.hashPassword();
+
+        /* assert */
+        expect( user.password ).to.not.equal( 'some-password' );
+    });
+
+    it( 'does not validate unhashed passwords', function () {
+        /* arrange */
+        user.password = 'abracadabra';
+
+        /* assert */
+        expect( user.isValidPassword( 'abracadabra' ) ).to.be.false;
+    });
+
+    it( 'validates hashed passwords', function () {
+        /* arrange */
+        user.password = 'abracadabra';
+        user.hashPassword();
+
+        /* assert */
+        expect( user.isValidPassword( 'some-password' ) ).to.be.false;
+        expect( user.isValidPassword( 'abracadabra' ) ).to.be.true;
     });
 
     describe( 'roles', function () {
@@ -60,7 +89,7 @@ describe( 'user domain entity', function () {
 
         it( 'returns an array of differing attributes', function () {
             /* arrange */
-            other.data.id = 'crappyID';
+            other.id = 'crappyID';
 
             /* act */
             var diff = user.diff( other );
@@ -71,7 +100,7 @@ describe( 'user domain entity', function () {
 
         it( 'checks equality of objects by own attributes', function () {
             /* arrange */
-            other.data.tier = 2;
+            other.tier = 2;
 
             /* act */
             var result = user.same( other );

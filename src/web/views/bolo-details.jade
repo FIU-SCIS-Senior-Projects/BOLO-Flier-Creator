@@ -5,8 +5,11 @@ block jumbo
   .jumbotron
     .container
           h1 BOLO Details
-          p Show the bolo in details
+          p Detailed BOLO information.
+
 block content
+    include ./partials/global-alerts.jade
+
     h1=bolo.data.category
     div.container-fluid
         div.row

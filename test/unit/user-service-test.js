@@ -41,11 +41,13 @@ describe( 'user service module', function () {
     describe( 'authenticates user credentials', function () {
         it( 'promises a User object for valid credentials', function () {
             /* arrange */
-            var username    = user.data.username,
-                password    = user.data.password;
+            var username    = user.username,
+                password    = user.password;
+
+            user.hashPassword();
 
             mockUserRepo.getByUsername = sinon.stub()
-                .withArgs( user.data.username )
+                .withArgs( user.username )
                 .returns( Promise.resolve( user ) );
 
             /* act */

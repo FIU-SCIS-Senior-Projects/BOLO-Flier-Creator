@@ -79,14 +79,22 @@ var isAuthenticated = function ( req, res, next ) {
 };
 
 app.use( express.static( path.join( __dirname, 'public' ) ) );
+
 app.use( function ( req, res, next ) {
     if ( req.user ) res.locals.userLoggedIn = true;
     next();
 });
+
+app.use( function ( req, res, next ) {
+    res.locals.g_err = req.flash( config.const.GFERR );
+    res.locals.g_msg = req.flash( config.const.GFMSG );
+    next();
+});
+
 app.use( auth.router );
-app.use( '/admin', isAuthenticated, routes.admin );
-app.use( '/bolo', isAuthenticated, routes.bolos );
-app.use( '/account', isAuthenticated, routes.account );
+app.use( isAuthenticated, routes.bolos );
+app.use( isAuthenticated, routes.account );
+app.use( isAuthenticated, routes.admin );
 app.get( '/', isAuthenticated, function ( req, res, next ) {
     res.redirect( '/bolo' );
 });

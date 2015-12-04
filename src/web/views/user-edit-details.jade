@@ -7,16 +7,6 @@ block jumbo-desc
 
 
 block admin-content
-    div
-        each m in msg
-            if m.length
-                +alert_info( m )
-        each e in err
-            if e.message
-                +alert_error( e.message )
-            else if e.length
-                +alert_error( e )
-
     - var route = "/admin/users/" + user.id;
 
     h3 Username: #{user.username}
@@ -37,7 +27,7 @@ block admin-content
                         option(value=role, selected=sel) #{formattedRole}
 
         +input_mx("badge", "Badge No.", "", false,  user.badge)
-        +input_mx("secunit", "Section / Unit", "", false, user.secunit)
+        +input_mx("sectunit", "Section / Unit", "", false, user.sectunit)
         +input_mx("ranktitle", "Rank / Title", "", false, user.ranktitle)
 
         .form-group

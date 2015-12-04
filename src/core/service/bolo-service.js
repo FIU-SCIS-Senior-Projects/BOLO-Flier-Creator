@@ -47,28 +47,33 @@ BoloService.prototype.createBolo = function ( boloData, attachments ) {
         });
 };
 
-BoloService.prototype.updateBolo = function ( boloData, attachments ) {
+/**
+ * Update BOLO data.
+ *
+ * @param {Object} - bolo update data (should include id)
+ * @param {Object|Array} - Array of attachment objects.
+ * @returns {Promise|Bolo} the updated Bolo object
+ */
+BoloService.prototype.updateBolo = function ( updateDTO, attachments ) {
     var context = this;
-    var updated = new Bolo( boloData );
 
-    if ( ! updated.isValid() ) {
-        throw new Error( "invalid bolo data" );
-    }
+    return this.boloRepository.getBolo( updateDTO.id )
+    .then( function ( bolo ) {
+        function blacklisted ( key ) {
+            var list = [
+               'authorFName', 'authorLName', 'authorUName', 'attachments'
+            ];
+            return ( -1 !== list.indexOf( key ) );
+        }
 
-    return context.boloRepository.getBolo( updated.data.id )
-    .then( function ( original ) {
-        var atts = _.assign( {}, original.data.attachments );
-
-        original.diff( updated ).forEach( function ( key ) {
-            original.data[key] = updated.data[key];
+        Object.keys( bolo.data ).forEach( function ( key ) {
+            /** @todo review how to deal with array inputs **/
+            if ( updateDTO[key] && ! blacklisted( key ) ) {
+                bolo[key] = updateDTO[key];
+            }
         });
 
-        original.data.attachments = atts;
-
-        return context.boloRepository.update( original, attachments );
-    })
-    .then( function ( updated ) {
-        return updated;
+        return context.boloRepository.update( bolo, attachments );
     })
     .catch( function ( error ) {
         return Promise.reject( { success: false, error: error.message } );
@@ -100,8 +105,6 @@ BoloService.prototype.removeBolo = function ( id ) {
     return this.boloRepository.delete( id );
 };
 
-
-
 /**
  * Get an attachment for a specified Bolo.
  *
@@ -113,3 +116,16 @@ BoloService.prototype.removeBolo = function ( id ) {
 BoloService.prototype.getAttachment = function ( id, attname ) {
     return this.boloRepository.getAttachment( id, attname );
 };
+
+BoloService.formatDTO = formatDTO;
+BoloService.prototype.formatDTO = formatDTO;
+function formatDTO ( dto ) {
+    var newdto = new Bolo().data;
+
+    Object.keys( newdto ).forEach( function ( key ) {
+        newdto[key] = dto[key] || newdto[key];
+    });
+
+    return newdto;
+}
+

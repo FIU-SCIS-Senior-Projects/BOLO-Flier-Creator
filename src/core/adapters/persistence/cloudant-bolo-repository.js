@@ -98,12 +98,6 @@ function transformAttachment(original) {
         .catch(errorHandler);
 }
 
-function createAgencyBoloID(agencyName) {
-    var prefix = agencyName.toLowerCase().replace(/\s*/g, '');
-    var id = uuid.v4().replace(/-/g, '');
-    return prefix.concat('_', id);
-}
-
 
 module.exports = CloudantBoloRepository;
 
@@ -133,33 +127,32 @@ CloudantBoloRepository.prototype.insert = function (bolo, attachments) {
     var atts = attachments || [];
 
     var newdoc = boloToCloudant(bolo);
-    newdoc._id = createAgencyBoloID(newdoc.agency);
+    newdoc._id = uuid.v4().replace(/-/g, '');
     newdoc.isActive = true;
 
-    var handleBoloInsert = function (attDTOs) {
-
+    function handleBoloInsert (attDTOs) {
         if (attDTOs.length) {
             return db.insertMultipart(newdoc, attDTOs, newdoc._id);
         } else {
             return db.insert(newdoc, newdoc._id);
         }
-    };
+    }
 
-    var handleInsertResponse = function (response) {
+    function handleInsertResponse (response) {
         if (!response.ok) handleInsertErrorResponse(response.reason);
         return context.getBolo(response.id);
-    };
+    }
 
-    var handleInsertErrorResponse = function (error) {
+    function handleInsertErrorResponse (error) {
         throw new Error(
             'Unable to create new document: ' + error.reason
-            );
-    };
+        );
+    }
 
-    return Promise.all(atts.map(transformAttachment))
-        .then(handleBoloInsert)
-        .then(handleInsertResponse)
-        .catch(handleInsertErrorResponse);
+    return Promise.all( atts.map( transformAttachment ) )
+        .then( handleBoloInsert )
+        .then( handleInsertResponse )
+        .catch( handleInsertErrorResponse );
 };
 
 
@@ -257,25 +250,25 @@ CloudantBoloRepository.prototype.getBolos = function (pageSize, currentPage) {
             var tPages = Math.floor(result.total_rows/pageSize);
             var tReminder = result.total_rows%pageSize;
             var pages = tReminder> 0? tPages + 1 : tPages;
-           
-           return Promise.resolve({ bolos: bolos, pages: pages });
+
+            return Promise.resolve({ bolos: bolos, pages: pages });
         });
 };
 
 CloudantBoloRepository.prototype.getArchiveBolos = function (pageSize, currentPage) {
     var limit = pageSize;
     var skip = pageSize * (currentPage-1);
-    
+
     return db.view('bolo', 'all_archive', { include_docs: true, limit: limit, skip: skip, descending: true })
         .then(function (result) {
             var bolos = result.rows.map(function (item) {
                 return boloFromCloudant(item.doc);
             });
-            
+
             var tPages = Math.floor(result.total_rows/pageSize);
             var tReminder = result.total_rows%pageSize;
             var pages = tReminder> 0? tPages + 1 : tPages;
-            
+
             return Promise.resolve({ bolos: bolos, pages: pages });
         });
 };

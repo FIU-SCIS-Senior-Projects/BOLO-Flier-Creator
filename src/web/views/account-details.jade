@@ -1,4 +1,5 @@
 extends ./account-layout.jade
+include ./includes/mixins.jade
 
 block jumbo-desc
     p Your Account Details
@@ -17,13 +18,16 @@ block account-content
             td #{user.badge}
         tr
             td Section / Unit
-            td #{user.secunit}
+            td #{user.sectunit}
         tr
             td Rank / Title
             td #{user.ranktitle}
         tr
             td Role
             td #{user.roleName()}
+        tr
+            td Agency
+            td #{agency.name}
 
     p.lead Please contact your Agency administrator for changes to your
         | account details.
