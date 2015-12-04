@@ -4,10 +4,12 @@
 var moment          = require('moment');
 var Promise         = require('promise');
 var router          = require('express').Router();
+var util            = require('util');
 
 var config          = require('../config');
-var boloRepository  = new config.BoloRepository();
-var boloService     = new config.BoloService( boloRepository );
+var userService     = new config.UserService( new config.UserRepository() );
+var boloService     = new config.BoloService( new config.BoloRepository() );
+var emailService    = config.EmailService;
 
 var formUtil        = require('../lib/form-util');
 
@@ -17,6 +19,41 @@ var GFMSG           = config.const.GFMSG;
 var parseFormData       = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
+
+function notifySubscribedUsers( bolo ) {
+    /** @todo move this into a user configurable templating system **/
+    var HTMLmessage = util.format(
+        '<p>Hi,</p>' +
+        '<p>' +
+        'A new <a href="%s">%s BOLO</a> has been recently created. To view ' +
+        'this and other BOLOs log into <a href="%s">BOLO Flier Creator</a>' +
+        '</p>' +
+        '<p>-- The BOLO Flier Creator Team</p>',
+        config.appURL + '/bolo/' + bolo.id, bolo.category, config.appURL
+    );
+
+    return userService.getAgencySubscribers( bolo.agency )
+    .then( function ( users ) {
+        var subscribers = users.map( function( user ) {
+            return user.email;
+        });
+
+        return emailService.send({
+            'to': subscribers,
+            'from': config.email.from,
+            'fromName': config.email.fromName,
+            'subject' : 'BOLO Alert: ' + bolo.category,
+            'html': HTMLmessage
+        });
+    })
+    .catch( function ( error ) {
+        console.error(
+            'Unknown error occurred while sending notifications to users',
+            'subscribed to agency id %s for BOLO %s\n %s',
+            bolo.agency, bolo.id, error.message
+        );
+    });
+}
 
 // list bolos at the root route
 router.get('/bolo', function (req, res) {
@@ -80,6 +117,7 @@ router.post( '/bolo/create', function ( req, res ) {
     })
     .then(function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+        notifySubscribedUsers( pData[0] );
         req.flash( GFMSG, 'BOLO successfully created.' );
         res.redirect( '/bolo' );
     })

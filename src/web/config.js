@@ -31,6 +31,8 @@ config.CommonService    = require( path.join( core, 'service/common-service' ) )
 
 
 /* Application Config */
+config.appURL           = process.env.APP_URL || 'http://localhost:3000';
+
 config.const = config.constants = {
     /* Flash Message Subjects */
     'GFERR'             : 'Flash Subject - Global Error',

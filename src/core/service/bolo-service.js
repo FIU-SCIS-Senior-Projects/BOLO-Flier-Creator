@@ -127,5 +127,5 @@ function formatDTO ( dto ) {
     });
 
     return newdto;
-};
+}
 

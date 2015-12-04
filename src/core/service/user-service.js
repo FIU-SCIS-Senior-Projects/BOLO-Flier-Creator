@@ -108,6 +108,10 @@ UserService.prototype.getUsers = function () {
     return this.userRepository.getAll();
 };
 
+UserService.prototype.getAgencySubscribers = function ( agencyID ) {
+    return this.userRepository.getByAgencySubscription( agencyID );
+};
+
 /**
  * Reset a user's password.
  *
