@@ -174,6 +174,13 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
     });
 };
 
+/**
+ * Remove a list of notifications from the specified user (by id)
+ *
+ * @param {String} - the id of the user to remove notifications from
+ * @param {String|Array} - array of agency ids to remove from the user
+ * @returns {Promise|User} an updated user object
+ */
 UserService.prototype.removeNotifications = function ( id, agencylist ) {
     var context = this;
 
@@ -188,6 +195,13 @@ UserService.prototype.removeNotifications = function ( id, agencylist ) {
     });
 };
 
+/**
+ * Add a list of notifications to the specified user (by id)
+ *
+ * @param {String} - the id of the user to add notifications to
+ * @param {String|Array} - array of agency ids to add to the user
+ * @returns {Promise|User} an updated user object
+ */
 UserService.prototype.addNotifications = function ( id, agencylist ) {
     var context = this;
 

@@ -5,6 +5,9 @@ var config      = require('../config.js');
 
 var validate    = require('validate.js');
 
+/**
+ * Helper method for validating password and password confimation input.
+ */
 module.exports.validatePassword = function ( pass, conf ) {
         var constraints = {
             'password': config.validation.password,

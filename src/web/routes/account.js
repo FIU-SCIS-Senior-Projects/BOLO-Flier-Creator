@@ -97,6 +97,9 @@ function postChangePassword ( req, res ) {
     });
 }
 
+/**
+ * Send an email when a user's password has been changed successfully.
+ */
 function sendPasswordChangedEmail ( user ) {
     /** @todo look into a way to incorporate email templates configurable by
      * the system administrator **/

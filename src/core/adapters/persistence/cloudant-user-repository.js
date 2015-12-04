@@ -82,6 +82,12 @@ CloudantUserRepository.prototype.insert = function ( user ) {
         });
 };
 
+/**
+ * Update a User in the repository.
+ *
+ * @param {User} - a user object containing the updated information
+ * @returns {Promise|User} - a newly updated User object
+ */
 CloudantUserRepository.prototype.update = function ( user ) {
     var newdoc = toCloudant( user );
 
@@ -100,6 +106,11 @@ CloudantUserRepository.prototype.update = function ( user ) {
     });
 };
 
+/**
+ * Get all users in the repository
+ *
+ * @returns {Promise|User|Array} an array of all user's in the repository.
+ */
 CloudantUserRepository.prototype.getAll = function () {
     return db.view( 'users', 'by_username', { 'include_docs': true } )
         .then( function ( docs ) {
@@ -114,6 +125,12 @@ CloudantUserRepository.prototype.getAll = function () {
         });
 };
 
+/**
+ * Get a user by id.
+ *
+ * @param {String} - the id of the user to get
+ * @returns {Promise|User} promises a user object for the supplied id
+ */
 CloudantUserRepository.prototype.getById = function ( id ) {
     return db.get( id )
         .then( function ( doc ) {
@@ -126,6 +143,12 @@ CloudantUserRepository.prototype.getById = function ( id ) {
         });
 };
 
+/**
+ * Get a user by username.
+ *
+ * @param {String} - the username of the user to get
+ * @returns {Promise|User} promises a user object for the supplied username
+ */
 CloudantUserRepository.prototype.getByUsername = function ( id ) {
     return db.view( 'users', 'by_username', {
         'key': id,
@@ -141,6 +164,13 @@ CloudantUserRepository.prototype.getByUsername = function ( id ) {
     });
 };
 
+/**
+ * Get users by agency subsciption.
+ *
+ * @param {String} - the id of the agency users are subscribed to
+ * @returns {Promise|User|Array} promises an array of users subscribed for
+ * notifications to the supplied agency id
+ */
 CloudantUserRepository.prototype.getByAgencySubscription = function ( agency ) {
     return db.view( 'users', 'notifications', {
         'key': agency
@@ -156,6 +186,12 @@ CloudantUserRepository.prototype.getByAgencySubscription = function ( agency ) {
     });
 };
 
+/**
+ * Remove users from the repository.
+ *
+ * @param {String} - id of the user to remove
+ * @returns {Object} a response object containing an `okay` boolean property
+ */
 CloudantUserRepository.prototype.remove = function ( id ) {
     // **UNDOCUMENTED OPERATION** cloudant/nano library destroys the database
     // if a null/undefined argument is passed into the `docname` argument for

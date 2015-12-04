@@ -17,6 +17,10 @@ var GFMSG               = config.const.GFMSG;
 var parseFormData       = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
+/**
+ * Custom handling of agency attachments. Agencies should only have two
+ * attachments. One for the logo and one for the shield.
+ */
 function getAgencyAttachments ( fields ) {
     var result = [];
     var fileDTO;
@@ -72,9 +76,9 @@ module.exports.postCreateForm = function ( req, res ) {
         if (pData[1].files.length) cleanTemporaryFiles(pData[1].files);
         res.redirect('/admin/agency');
     })
-    .catch(function (error) {
-        console.error( 'Error occurred at %s >>> %s', req.originalUrl, err.message );
-        flash( GFERR, 'Internal server occurred while processing your request, please try again.' );
+    .catch( function ( error ) {
+        console.error( 'Error occurred at %s >>> %s', req.originalUrl, error.message );
+        req.flash( GFERR, 'Internal server occurred while processing your request, please try again.' );
         res.redirect( 'back' );
     });
 };
@@ -113,7 +117,7 @@ module.exports.postEditForm = function ( req, res ) {
     })
     .catch( function ( err ) {
         console.error( 'Error occurred at %s >>> %s', req.originalUrl, err.message );
-        flash( GFERR, 'Internal server occurred while processing your request, please try again.' );
+        req.flash( GFERR, 'Internal server occurred while processing your request, please try again.' );
         res.redirect( 'back' );
     });
 };
