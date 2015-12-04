@@ -1,0 +1,34 @@
+extends ./admin-layout.jade
+include ./includes/mixins.jade
+
+
+block jumbo-desc
+    p Edit User Details
+
+
+block admin-content
+    - var route = "/admin/users/" + user.id;
+
+    h3 Username: #{user.username}
+    br
+
+    form(action=route + "/edit-details" enctype="multipart/form-data" method="post")
+        +input_mx("fname", "First Name", "", false, user.fname)
+        +input_mx("lname", "Last Name", "", false,  user.lname)
+        +input_mx("email", "Email (required)", "", true, user.email)
+
+        if ( roles )
+            .form-group
+                label.control-label(for="role") Role
+                select.form-control(name="role")
+                    each role in roles
+                        - var formattedRole = _.startCase( role.toLowerCase() );
+                        - var sel = ( role === user.roleName() );
+                        option(value=role, selected=sel) #{formattedRole}
+
+        +input_mx("badge", "Badge No.", "", false,  user.badge)
+        +input_mx("sectunit", "Section / Unit", "", false, user.sectunit)
+        +input_mx("ranktitle", "Rank / Title", "", false, user.ranktitle)
+
+        .form-group
+            button.btn.btn-primary(type="submit" value="save") Submit

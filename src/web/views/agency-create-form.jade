@@ -1,0 +1,61 @@
+extends ./admin-layout.jade
+include ./includes/mixins.jade
+
+block jumbo-desc
+    if agency
+        p Fill out the form to submit and update an existing agency
+    else
+        p Fill out the form and submit to create a new sadas agency.
+
+block admin-content
+    //- Dropdown Box Selections
+    -
+        var states = [
+          "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FM", "FL",
+          "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+          "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM",
+          "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", "RI", "SC",
+          "SD", "TN", "TX", "UT", "VT", "VI", "VA", "WA", "WV", "WI", "WY"
+        ]
+
+    - var route = '/admin/agency';
+    - var form_action = ( agency ) ? '/edit/' + agency.id : '/create';
+
+    if agency
+        p.lead Fill out the form to submit and update an existing agency
+    else
+        p.lead Fill out the form and submit to create a new agency.
+
+    form#create-agency(action=(route + form_action) enctype="multipart/form-data" method="post")
+        +input_mx("name", "Agency Name", "", false, agency?agency.name:"")
+        +input_mx("address", "Address", "", false,  agency?agency.address:"")
+        +input_mx("city", "City", "", false,  agency?agency.city:"")
+        +select_options("state", "State", states, false, agency?agency.state : "")
+        +input_mx("zip", "Zip Code", "", false,  agency?agency.zip:"")
+        +input_mx("phone", "Phone Number", "", false, agency?agency.phone:"")
+        input(name="id" type="hidden" value=agency?agency.id:"")
+        .form-group
+            label.control-label(for="image_upload") Logo Attachment
+            div#form-add-img-group
+                input(name="logo_upload" type="file" accept="image/*")
+        .form-group
+            label.control-label(for="image_upload") Shield Attachment
+            div#form-add-img-group
+                input(name="shield_upload" type="file" accept="image/*")
+        .form-group
+            button.btn.btn-primary(type="submit" value="save") Submit
+
+    .container
+        h2 Attached Images
+        ul.list-group
+            if agency && agency.data.attachments
+                each val, key in agency.data.attachments
+                    if key == "logo"
+                        li.list-group-item
+                            p Logo: 
+                                a(href=route + "/asset/" + agency.id + "/" + key) #{key}
+                each val, key in agency.data.attachments
+                    if key == "shield"
+                        li.list-group-item
+                            p Shield: 
+                                a(href=route + "/asset/" + agency.id + "/" + key) #{key}

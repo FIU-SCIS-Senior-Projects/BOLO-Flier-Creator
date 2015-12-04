@@ -1,0 +1,21 @@
+extends ./layout.jade
+include ./includes/mixins.jade
+
+block jumbo
+    .jumbotron
+        .container
+            h1 BOLO Version 3.0
+            p Homepage
+
+block content
+    div
+        each m in msg
+            if m.length
+                +alert_info( m )
+        each e in err
+            if e.message
+                +alert_error( e.message )
+            else if e.length
+                +alert_error( e )
+
+    h1 The homepage will eventually list BOLOs in your area. Stay tuned.

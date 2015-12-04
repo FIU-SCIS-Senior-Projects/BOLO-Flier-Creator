@@ -1,0 +1,76 @@
+include ./includes/mixins.jade
+extends ./layout.jade
+
+
+mixin input_textarea(name, label, placeholder, required, value)
+    .form-group
+        label.control-label( for=name ) #{label}
+        textarea.form-control( name=name type="text" placeholder=placeholder ) #{value}
+
+
+block jumbo
+    .jumbotron
+        .container
+            h1 Create a BOLO
+            p Fill out the form and submit to create a new BOLO.
+
+
+block content
+    include ./partials/global-alerts.jade
+
+    -
+        var categories = [
+            'ARSON', 'BURGLARY', 'DOMESTIC SECURITY', 'ESCAPE', 'FRAUD',
+            'HOME INVASION', 'HOMICIDE', 'MISSING JUVENILE', 'MISSING PERSON',
+            'NARCOTICS', 'NEED TO IDENTIFY', 'OFFICER SAFETY', 'PC TO ARREST',
+            'ROBBERY', 'RUNAWAY', 'SEX OFFENSE', 'SITUATIONAL AWARENESS',
+            'THEFT - AUTO', 'THEFT - BOAT', 'THEFT - GRAND', 'THEFT - PETIT',
+            'WANTED', 'FIELD INTERVIEW', 'INFORMATION'
+        ]
+
+        var races = [
+            'Hispanic', 'White', 'Asian', 'Black or African American',
+            'American Indian or Alaska Native',
+            'Native Hawaiian or Other Pacific Islander'
+        ]
+
+        var hair_colors = [
+            'Black', 'Blonde', 'Red', 'Brown', 'Gray', 'White', 'Sandy',
+            'Bald (No hair)'
+        ]
+
+        var bolo_status = [
+            'New', 'Canceled', 'In Custody', 'Located', 'Recovered'
+        ]
+
+    form#create-bolo-form(action="/bolo/create" enctype="multipart/form-data" method="post")
+        input( type="hidden" name="status" value="New" )
+        +select_options( "category", "Category", categories, true, "" )
+
+        +input_mx( "firstName", "First Name", "", false, "" )
+        +input_mx( "lastName", "Last Name", "", false,  "" )
+        +input_mx( "dob", "Date of Birth (DD/MM/YYYY )", "DD/MM/YYYY", "" )
+        +input_mx( "dlNumber", "Drivers License Number", "", false, "" )
+        +select_options( "race", "Race", races, false, "" )
+        +select_options( "sex", "Sex", ["Male", "Female"], false, "" )
+        +input_mx( "height", "Height - Feet-Inches (e.g. 05-09)", "e.g. 05-09", false, "" )
+        +input_mx( "weight", "Weight - Pounds", "", false, "" )
+        +select_options( "hairColor", "Hair Color", hair_colors, false, "" )
+        +input_textarea( "tattoos", "Tattoos", "", false, "" )
+
+        .form-group
+            label.control-label( for="image_upload" ) Image Attachment
+            div#form-add-img-group
+                input( name="image_upload[]" type="file" accept="image/*" )
+            a#form-add-img-btn
+                span.glyphicon.glyphicon-plus
+                | Add Image
+
+        +input_mx( "video_url", "Video Link", "", false, "", "url" )
+        +input_textarea( "additional", "Additional Info", "", false, "" )
+        +input_textarea( "summary", "Summary", "", false, "" )
+
+        .form-group
+            button.btn.btn-primary( type="submit" value="save" ) Submit
+            button.btn.btn-default( type="submit" disabled=true value="preview" ) Preview
+            button.btn.btn-default( type="submit" disabled=true value="pdf" ) PDF

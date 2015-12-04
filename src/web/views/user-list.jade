@@ -1,0 +1,32 @@
+extends admin-layout
+include includes/mixins
+
+block jumbo-desc
+    p User Directory
+
+block admin-content
+    p.lead Total Users: #{users.length}
+
+    if users.length
+        table.table.table-striped
+            thead
+                tr
+                    th Username
+                    th Name
+                    th Email
+                    th Role
+                    th 
+                    th 
+            tbody
+                each user in users
+                    tr
+                        td= user.username
+                        td= user.fname + ' ' + user.lname
+                        td= user.email
+                        td= user.roleName()
+                        td
+                            a(href="/admin/users/" + user.id) View
+                        td
+                            a(href="/admin/users/" + user.id + "/delete") Delete
+
+    a.btn.btn-default(href="/admin/users/create") Add New User

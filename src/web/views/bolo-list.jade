@@ -1,0 +1,43 @@
+extends layout
+
+block jumbo
+    .jumbotron
+        .container
+            h1 Current BOLOs
+            p Listing of current BOLOs
+
+block content
+    include ./partials/global-alerts.jade
+
+    div.row
+        for bolo in bolos
+            div.col-sm-6.col-md-4
+                div.thumbnail
+                    if Object.keys( bolo.attachments ).length
+                        - var keys = Object.keys( bolo.data.attachments )
+                        img(src="/bolo/asset/" + bolo.id + "/" + keys[0] alt="" style="height:300px")
+                    else
+                        img( src="/img/nopic.png" alt="no image" style="height: 300px" )
+                    div.caption
+                        h3 #{bolo.category}
+                        if bolo.status
+                            p.text-danger.strong #{bolo.status}
+                        p.text-danger.strong Updated on: #{bolo.lastUpdatedOn}
+                        p Author: #{bolo.authorFName} #{bolo.authorLName}
+                        p
+                             a.btn.btn-default(href="/bolo/edit/" + bolo.id, role="button") Edit
+                             a.btn.btn-default(href="/bolo/details/" + bolo.id, role="button") Details
+                             a.btn.btn-danger(role="button", type="submit" class="archive-bolo", data-bid=bolo.id) Archive
+
+    #paging
+    - var n = 1
+    div.text-center
+        ul.pagination
+            while n <= paging.pages
+                -var page = n++
+                if page == paging.currentPage
+                    li.active
+                        a(href="/bolo?page=" + page)= page
+                else
+                    li
+                        a(href="/bolo?page=" + page)= page

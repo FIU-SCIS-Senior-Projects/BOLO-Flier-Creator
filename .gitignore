@@ -1,6 +1,14 @@
 # .gitignore
 
 #
+# General Ignores
+#
+jsdoc
+coverage
+manifest.yml
+.vscode
+
+#
 # Node.js Ignores
 #
 # Based on:
@@ -86,3 +94,4 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+*.ini

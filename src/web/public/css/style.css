@@ -1,0 +1,42 @@
+
+/** Bootstrap Overrides **/
+.navbar {
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+
+/** Baic Custom Styling **/
+.btn {
+    margin: 3px;
+}
+
+table.details {
+    margin-bottom: 2rem;
+}
+
+table.details td {
+    border-top: 1px solid #ECF0F1;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 1rem 2rem;
+}
+
+table.details td:first-child {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+table.details td:last-child {
+    width: 99%;
+}
+.btn {
+    margin: 3px;
+}
+.strong {
+    font-weight: 700;
+}
+.pagination>li>a, .pagination>li>span
+{
+    border: 1px solid #ffffff;
+    /*background:  #2c3e50;*/   
+}

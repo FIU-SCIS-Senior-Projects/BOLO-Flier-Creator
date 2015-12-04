@@ -1,0 +1,67 @@
+extends admin-layout
+include includes/mixins
+
+//- Template Mixins
+mixin input_mx(name, label, placeholder, required, value, type)
+  .form-group
+    label.control-label(for=name)= label
+    input.form-control(name=name type=type?type:"text" placeholder=placeholder, value=value)
+
+mixin input_textarea(name, label, placeholder, required, value)
+  .form-group
+    label.control-label(for=name)= label
+    textarea.form-control(name=name type="text" placeholder=placeholder)= value
+
+mixin select_options(name, label, options, required, selectedValue)
+  .form-group
+    label.control-label(for=name)= label
+    select.form-control(name=name)
+      each val in options
+        if selectedValue == val
+          +option(val,true)
+        else
+          +option(val,false)
+
+block jumbo-desc
+    p New User Registration
+
+block admin-content
+  div
+    - var ferrs = ( form_errors.length ) ? form_errors[0] : {};
+    if ferrs.password
+      +alert_error_array( ferrs.password )
+    if ferrs.confirmation
+      +alert_error_array( ferrs.confirmation )
+
+  form(action="/admin/users/create" enctype="multipart/form-data" method="post")
+    +input_mx("username", "Username (required)", "", true, "")
+    +input_mx("email", "Email (required)", "", true, "")
+    +input_mx("fname", "First Name", "", false, "")
+    +input_mx("lname", "Last Name", "", false,  "")
+    +input_mx("password", "Password (required)", "", true,  "", "password")
+    +input_mx("confirm", "Repeat Password (required)", "", true,  "", "password")
+
+    if ( roles )
+        .form-group
+            label.control-label(for="role") Role
+            select.form-control(name="role")
+                each role in roles
+                    - var formattedRole = _.startCase( role.toLowerCase() );
+                    option(value=role, selected) #{formattedRole}
+
+    .form-group
+      label.control-label() Notifications
+      br
+      label.checkbox-inline
+        input(type="radio" required name="notifications" value=true)
+        = ' Yes'
+      label.checkbox-inline
+        input(type="radio" required name="notifications" value=false)
+        = ' No'
+
+    +input_mx("badge", "Badge No.", "", false,  "")
+    +input_mx("sectunit", "Section / Unit", "", false,  "")
+    +input_mx("ranktitle", "Rank / Title", "", false,  "")
+
+    .form-group
+      button.btn.btn-primary(type="submit" value="save") Submit

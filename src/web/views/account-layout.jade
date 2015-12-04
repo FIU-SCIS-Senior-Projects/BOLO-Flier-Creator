@@ -1,0 +1,21 @@
+extends ./layout.jade
+
+block jumbo
+    .jumbotron
+        .container
+            h1 Account Management
+            block jumbo-desc
+
+block content
+    .row
+        .col-sm-3
+            ul.nav.nav-pills.nav-stacked( role="nav" )
+                li( class=( account_nav === 'account-home' ? 'active' : '' ) )
+                    a( href="/account" ) Account Details
+                li( class=( account_nav === 'account-password' ? 'active' : '' ) )
+                    a( href="/account/password" ) Change Password
+                li( class=( account_nav === 'account-notification' ? 'active' : '' ) )
+                    a( href="/account/notifications" ) Notifications
+        .col-sm-9
+            include ./partials/global-alerts.jade
+            block account-content

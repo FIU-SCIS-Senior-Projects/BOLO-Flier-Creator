@@ -1,0 +1,30 @@
+extends ./admin-layout.jade
+
+block jumbo-desc
+    p Agency Directory
+
+block admin-content
+    table.table.table-striped
+        thead
+            tr
+                th="Name"
+                th="Address"
+                th="City"
+                th="Zip"
+                th="State"
+                th="Phone"
+        tbody
+        for agency in agencies
+           tr
+                td= agency.name
+                td= agency.address
+                td= agency.city
+                td= agency.zip
+                td= agency.state
+                td= agency.phone
+                td
+                    a(href="/admin/agency/edit/"+ agency.id role="button") Edit
+                td
+                    a(href="#" role="button") Delete
+
+    a.btn.btn-default(href="/admin/agency/create") Add New Agency 

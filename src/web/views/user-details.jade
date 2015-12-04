@@ -1,0 +1,31 @@
+extends admin-layout
+
+block jumbo-desc
+    p User Details
+
+block admin-content
+    h3 #{user.username}
+    table.details
+        tr
+            td Name
+            td #{user.fname} #{user.lname}
+        tr
+            td Email
+            td #{user.email}
+        tr
+            td Badge Number
+            td #{user.badge}
+        tr
+            td Section / Unit
+            td #{user.sectunit}
+        tr
+            td Rank / Title
+            td #{user.ranktitle}
+        tr
+            td Role
+            td #{user.roleName()}
+
+    - var resource = "/admin/users/" + user.id
+    a.btn.btn-default(href=resource + "/edit-details") Edit Account Details
+    a.btn.btn-default(href=resource + "/reset-password") Reset Password
+    a.btn.btn-danger(href=resource + "/delete") Delete User

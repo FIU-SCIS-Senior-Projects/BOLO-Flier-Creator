@@ -1,0 +1,43 @@
+include includes/mixins
+extends layout
+
+block jumbo
+  .jumbotron
+    .container
+          h1 BOLO Details
+          p Detailed BOLO information.
+
+block content
+    include ./partials/global-alerts.jade
+
+    h1=bolo.data.category
+    div.container-fluid
+        div.row
+            div.col-xs-12.col-md-7
+                form.form-horizontal
+                +form_labels_row("Bolo ID", bolo.data.id )
+                +form_labels_row("Author", bolo.data.authorFName + " " +  bolo.data.authorLName )
+                +form_labels_row("Name", bolo.data.firstName + " " +  bolo.data.lastName)
+                +form_labels_row("Race", bolo.data.race, bolo.data.race?"":"hidden")
+                +form_labels_row("Height", bolo.data.height)
+                +form_labels_row("Weight", bolo.data.weight + "lbs")
+                +form_labels_row("Address", bolo.data.address, bolo.data.address?"":"hidden")
+                +form_labels_row("DOB", bolo.data.dob, bolo.data.dob?"":"hidden")
+                +form_labels_row("Sex", bolo.data.sex, bolo.data.sex?"":"hidden")
+                +form_labels_row("Hair Color", bolo.data.hairColor, bolo.data.hairColor?"":"hidden")
+                +form_labels_row("Tattoos/Scars", bolo.data.tattoos, bolo.data.tattoos?"":"hidden")
+                +form_labels_row("License #", bolo.data.dlNumber, bolo.data.dlNumber?"":"hidden")
+                +form_labels_row("Height", bolo.data.height, bolo.data.height?"":"hidden")
+                +form_labels_row("Weight", bolo.data.weight + "lbs", bolo.data.weight?"":"hidden")
+                +form_labels_row("Address", bolo.data.address, bolo.data.address?"":"hidden")
+                +form_labels_row("Sex", bolo.data.sex, bolo.data.sex?"":"hidden")
+                +form_labels_row("Hair Color", bolo.data.hairColor, bolo.data.hairColor?"":"hidden")
+                +form_labels_row("Tattoos/Scars", bolo.data.tattoos,bolo.data.tattoos?"":"hidden")
+                +form_labels_row("License #", bolo.data.dlNumber, bolo.data.dlNumber?"":"hidden")
+                +form_labels_row("Created on", bolo.data.createdOn, bolo.data.createdOn?"":"hidden")
+                +form_labels_row("Aditional Info", bolo.data.additional, bolo.data.additional?"":"hidden")
+                +form_labels_row("Summary", bolo.data.summary, bolo.data.summary?"":"hidden")
+            div.col-xs-12.col-md-5
+                if bolo.data.attachments
+                - var keys = Object.keys( bolo.data.attachments )
+                img(src="/bolo/asset/" + bolo.data.id + "/" + keys[0] alt="", width=300)

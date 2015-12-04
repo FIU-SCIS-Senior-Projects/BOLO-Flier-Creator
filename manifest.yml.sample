@@ -1,0 +1,12 @@
+
+applications:
+- services:
+    - <cloudant-service-name>
+  disk_quota: 1024M
+  host: <bluemix-instance-route>
+  name: <bluemix-app-name>
+  path: .
+  domain: mybluemix.net
+  instances: 1
+  memory: 256M
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:3000/" />
+<title>Create_BOLO_Success</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create_BOLO_Success</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/bolo/create</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=category</td>
+	<td>label=ARSON</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=firstName</td>
+	<td>Joe</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=lastName</td>
+	<td>Montana</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=dob</td>
+	<td>10/31/1967</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=dlNumber</td>
+	<td>D123-123-123-1234-9</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=race</td>
+	<td>label=Hispanic</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=sex</td>
+	<td>label=Male</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=height</td>
+	<td>05-10</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=weight</td>
+	<td>209</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=hairColor</td>
+	<td>label=Red</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=tattoos</td>
+	<td>None</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=image_upload[]</td>
+	<td>/Users/rydr/Downloads/Images/01-1920-1200.jpg</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=additional</td>
+	<td>None</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=summary</td>
+	<td>This guy is not who you think he is!</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=button.btn.btn-primary</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
