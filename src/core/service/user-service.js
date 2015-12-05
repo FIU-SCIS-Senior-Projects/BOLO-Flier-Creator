@@ -147,8 +147,16 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
 
     return context.userRepository.getById( id ).then( function ( user ) {
         function blacklisted ( key ) {
-            var list = [ 'password', 'tier' ];
+            var list = [ 'password', 'tier', 'notifications' ];
             return ( -1 !== list.indexOf( key ) );
+        }
+
+        if ( typeof userDTO.tier === 'string' && undefined !== User[userDTO.tier] ) {
+            user.tier = User[userDTO.tier];
+        }
+
+        if ( userDTO.agency && userDTO.agency !== user.agency ) {
+            user.notifications.push( userDTO.agency );
         }
 
         Object.keys( user.data ).forEach( function ( key ) {
@@ -156,10 +164,6 @@ UserService.prototype.updateUser = function ( id, userDTO ) {
                 user[key] = userDTO[key];
             }
         });
-
-        if ( typeof userDTO.tier === 'string' && undefined !== User[userDTO.tier] ) {
-            user.tier = User[userDTO.tier];
-        }
 
         return context.userRepository.update( user );
     }, function ( error ) {
