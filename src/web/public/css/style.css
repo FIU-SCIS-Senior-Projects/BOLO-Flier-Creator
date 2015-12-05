@@ -8,6 +8,20 @@
     margin-bottom: 22px;
 }
 
+/** Sticky footer with fixed navbar **/
+/** http://getbootstrap.com/2.3.2/examples/sticky-footer-navbar.html# **/
+html, body {
+    height: 100%;
+}
+#wrap {
+    min-height: 100%;
+    margin: 0 auto -155px; /* the bottom margin is the negative value of the footer's height */
+}
+#footer, .push {
+    height: 155px; /* .push must be the same height as .footer */
+}
+
+
 /** Custom Styles **/
 .details-image img {
     max-width: 90%;
