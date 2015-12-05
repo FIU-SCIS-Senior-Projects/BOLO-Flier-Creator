@@ -58,7 +58,7 @@ function sendBoloNotificationEmail ( bolo, template ) {
 
 // list bolos at the root route
 router.get('/bolo', function (req, res) {
-    var pageSize = 2;
+    var pageSize = config.const.BOLOS_PER_PAGE;
     var currentPage = req.query.page || 1;
 
     boloService.getBolos(pageSize, currentPage)
@@ -75,7 +75,7 @@ router.get('/bolo', function (req, res) {
 
 // list archive bolos
 router.get('/bolo/archive', function (req, res) {
-    var pageSize = 2;
+    var pageSize = config.const.BOLOS_PER_PAGE;
     var currentPage = req.query.page || 1;
 
     boloService.getArchiveBolos(pageSize, currentPage)

@@ -42,6 +42,9 @@ config.const = config.constants = {
     'GFERR'             : 'Flash Subject - Global Error',
     'GFMSG'             : 'Flash Subject - Global Message',
 
+    /* BOLO Page Settings */
+    'BOLOS_PER_PAGE'    : 6,
+
     /* http://momentjs.com/docs/#/displaying/ */
     'DATE_FORMAT'       : 'MM-DD-YY HH:mm:ss'
 };
