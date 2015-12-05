@@ -1,12 +1,18 @@
 extends ./account-layout.jade
 include ./includes/mixins.jade
 
+
+block styles
+    link(href="/css/vendor/callouts.css" rel="stylesheet")
+
+
 block jumbo-desc
     p Your Account Details
 
+
 block account-content
     h3 #{user.username}
-    table.details
+    table.table
         tr
             td Name
             td #{user.fname} #{user.lname}
@@ -29,5 +35,9 @@ block account-content
             td Agency
             td #{agency.name}
 
-    p.lead Please contact your Agency administrator for changes to your
-        | account details.
+    if ( ! /administrator/i.test( user.roleName() ) )
+        .bs-callout.bs-callout-info
+            p Please contact your Agency administrator for changes to your
+                | account details.
+    else
+        a( href='/admin/users/' + user.id +'/edit-details' ) Update Your Account Details

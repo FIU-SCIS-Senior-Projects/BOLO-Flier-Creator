@@ -108,17 +108,18 @@ module.exports.getList = function ( req, res ) {
 /**
  * Responds with account information for a specified user.
  */
-module.exports.getDetails = function ( req, res ) {
+module.exports.getDetails = function ( req, res, next ) {
     var data = {};
 
     userService.getUser( req.params.id ).then( function ( user ) {
         data.user = user;
+        return agencyService.getAgency( user.agency );
+    }).then( function ( agency ) {
+        data.agency = agency;
         res.render( 'user-details', data );
-    })
-    .catch( function ( error ) {
-        console.error( 'Error at /users/:id >>> ', error.message );
+    }).catch( function ( error ) {
         req.flash( FERR, 'Unable to get user information, please try again.' );
-        res.redirect( 'back' );
+        next( error );
     });
 };
 
