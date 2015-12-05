@@ -78,7 +78,7 @@ module.exports.postCreateForm = function ( req, res, next ) {
     })
     .then(function (pData) {
         if (pData[1].files.length) cleanTemporaryFiles(pData[1].files);
-        req.flash( 'Agency registration successful.' );
+        req.flash( GFMSG, 'Agency registration successful.' );
         res.redirect('/admin/agency');
     }).catch( function ( error ) {
         next( error );
@@ -109,6 +109,7 @@ module.exports.postEditForm = function ( req, res, next ) {
         return Promise.all([ result, formDTO ]);
     }).then( function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+        req.flash( GFMSG, 'Agency details update successful.' );
         res.redirect( '/admin/agency' );
     }).catch( function ( error ) {
         next( error );
