@@ -186,8 +186,17 @@ module.exports.getEditDetails = function ( req, res ) {
         return _.snakeCase( role ).toUpperCase();
     });
 
-    userService.getUser( req.params.id ).then( function ( user ) {
-        data.user = user;
+    var promises = Promise.all([
+        userService.getUser( req.params.id ),
+        agencyService.getAgencies()
+    ]);
+
+    promises.then( function ( data ) {
+        data.user = data[0];
+        data.agencies = data[1];
+        data.forEach( function ( d ) {
+            console.log( JSON.stringify( d, null, 4 ) );
+        });
         res.render( 'user-edit-details', data );
     })
     .catch( function ( error ) {
