@@ -16,17 +16,14 @@ block admin-content
                     th Email
                     th Role
                     th 
-                    th 
             tbody
                 each user in users
                     tr
-                        td= user.username
-                        td= user.fname + ' ' + user.lname
-                        td= user.email
-                        td= user.roleName()
-                        td
-                            a(href="/admin/users/" + user.id) View
-                        td
-                            a(href="/admin/users/" + user.id + "/delete") Delete
+                        td #{user.username}
+                        td #{user.fname} #{user.lname}
+                        td #{user.email}
+                        td #{user.roleName()}
+                        td: a.text-large(href="/admin/users/" + user.id)
+                            span.glyphicon.glyphicon-cog( aria-hidden="true" )
 
     a.btn.btn-default(href="/admin/users/create") Add New User
