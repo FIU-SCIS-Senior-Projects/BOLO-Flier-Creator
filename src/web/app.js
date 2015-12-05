@@ -101,6 +101,15 @@ app.get( '/', isAuthenticated, function ( req, res, next ) {
     res.redirect( '/bolo' );
 });
 
+/*
+ * 404 Handler
+ */
+app.use( function( req, res, next ) {
+    console.error(
+        '404 encountered at %s, request ip = %s', req.originalUrl, req.ip
+    );
+    res.status(404).render( '404' );
+});
 
 /*
  * Error Handling
