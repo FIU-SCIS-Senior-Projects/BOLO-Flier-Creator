@@ -1,6 +1,15 @@
 extends layout
 
+block jumbo
+    .jumbotron
+        .container
+            h1 Dev Error Page
+
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+    h1 #{message}
+    h2 #{error.status}
+    pre #{error.stack}
+
+    p This page should only be displayed in developer mode. If you are seeing
+        | this page then something went wrong. Please contact your system
+        | administrator to get the problem fixed. Thanks.

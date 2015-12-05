@@ -21,6 +21,7 @@ var config = require('./config');
 var routes = require('./routes');
 var auth = require('./lib/auth.js');
 
+var GFERR = config.const.GFERR;
 
 /*
  * Express Initialization
@@ -116,14 +117,14 @@ app.use( function( req, res, next ) {
  */
 if ( isDev ) {
     app.use( function( err, req, res, next ) {
-        res.status( err.status || 500 );
+        console.error( 'Error occurred at %s >>> %s', req.originalUrl, err.message );
         res.render( 'error', { message: err.message, error: err } );
     });
 }
 
 app.use( function( err, req, res, next ) {
-    res.status( err.status || 500 );
-    res.render( 'error', { message: err.message, error: {} } );
+    req.flash( GFERR, 'Internal server error occurred, please try again' );
+    res.redirect( 'back' );
 });
 
 
