@@ -11,6 +11,11 @@
     margin: 3px;
 }
 
+
+.details-image img {
+    max-width: 90%;
+}
+
 table.details {
     margin-bottom: 2rem;
 }
