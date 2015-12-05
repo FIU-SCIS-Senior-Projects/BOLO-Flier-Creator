@@ -9,8 +9,7 @@ block jumbo-desc
 block admin-content
     - var route = "/admin/users/" + user.id;
 
-    h3 Username: #{user.username}
-    br
+    h3 Username: #{user.username} <br>
 
     form(action=route + "/edit-details" enctype="multipart/form-data" method="post")
         +input_mx("fname", "First Name", "", false, user.fname)
@@ -25,6 +24,17 @@ block admin-content
                         - var formattedRole = _.startCase( role.toLowerCase() );
                         - var sel = ( role === user.roleName() );
                         option(value=role, selected=sel) #{formattedRole}
+
+        if ( agencies )
+            .form-group
+                label.control-label( for="agency" ) Agency
+                select.form-control( name="agency" )
+                    each agency in agencies
+                        if ( agency.id === user.agency )
+                            option( value=agency.id selected ) #{agency.name}
+                        else
+                            option( value=agency.id ) #{agency.name}
+
 
         +input_mx("badge", "Badge No.", "", false,  user.badge)
         +input_mx("sectunit", "Section / Unit", "", false, user.sectunit)
