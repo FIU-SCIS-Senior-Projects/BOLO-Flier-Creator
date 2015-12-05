@@ -33,8 +33,8 @@ config.CommonService    = require( path.join( core, 'service/common-service' ) )
 /* Application Config */
 config.appURL           = process.env.APP_URL || 'http://localhost:3000';
 
-var bootswatch_theme    = 'yeti';
-config.bootstrap        = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/' +
+var bootswatch_theme    = 'yeti-custom';
+config.bootstrap        = '/css/vendor/bootswatch/' +
                           bootswatch_theme + '/bootstrap.min.css';
 
 config.const = config.constants = {
