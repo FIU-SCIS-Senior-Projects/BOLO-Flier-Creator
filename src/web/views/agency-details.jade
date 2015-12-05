@@ -1,0 +1,49 @@
+extends ./layout.jade
+
+
+block jumbo
+    .jumbotron
+        .container
+            h1 Agency Directory
+            p Detailed Agency Information
+
+
+block content
+    .row
+        .col-md-12
+            a( href='/agency' ) < Agency Directory
+
+    .row
+        .col-md-12
+            .page-header
+                h1 #{agency.name}
+
+    .row
+        .col-md-4
+            h3 Address
+            p.
+                #{agency.address} <br>
+                #{agency.city}, #{agency.state} #{agency.zip}
+
+        .col-md-4
+            h3 Contact Information
+            p Phone: #{agency.phone}
+
+    .row
+        - var att_route = '/agency/' + agency.id + '/img';
+        .details-image.col-md-4
+            h3 Agency Logo
+            if ( agency.attachments.logo )
+                a( href=att_route + '/logo' )
+                    img( src=att_route + '/logo' alt='agency logo' )
+            else
+                p: i No Logo Image
+
+        .details-image.col-md-4
+            h3 Agency Shield
+            if ( agency.attachments.shield )
+                a( href=att_route + '/shield' )
+                    img( src=att_route + '/shield' alt='agency shield' )
+            else
+                p: i No Shield Image
+

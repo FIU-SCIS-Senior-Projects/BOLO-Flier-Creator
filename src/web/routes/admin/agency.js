@@ -47,7 +47,7 @@ function getAgencyAttachments ( fields ) {
 module.exports.getList = function ( req, res ) {
     agencyService.getAgencies()
     .then(function (agencies) {
-        res.render('agency-list', {
+        res.render('agency-list-admin', {
             agencies: agencies
         });
     });

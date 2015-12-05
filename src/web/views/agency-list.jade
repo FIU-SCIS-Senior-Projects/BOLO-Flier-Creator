@@ -1,30 +1,31 @@
-extends ./admin-layout.jade
+extends ./layout.jade
 
-block jumbo-desc
-    p Agency Directory
 
-block admin-content
+block jumbo
+    .jumbotron
+        .container
+            h1 Agency Directory
+            p Registerd System Agencies
+
+
+block content
+    - var route = '/agency'
+
     table.table.table-striped
         thead
             tr
-                th="Name"
-                th="Address"
-                th="City"
-                th="Zip"
-                th="State"
-                th="Phone"
+                th Name
+                th.hidden-xs Address
+                th City
+                th.hidden-xs Zip
+                th State
+                th.hidden-xs Phone
         tbody
-        for agency in agencies
-           tr
-                td= agency.name
-                td= agency.address
-                td= agency.city
-                td= agency.zip
-                td= agency.state
-                td= agency.phone
-                td
-                    a(href="/admin/agency/edit/"+ agency.id role="button") Edit
-                td
-                    a(href="#" role="button") Delete
-
-    a.btn.btn-default(href="/admin/agency/create") Add New Agency 
+            for agency in agencies
+                tr
+                    td: a( href=route + '/' + agency.id ) #{agency.name}
+                    td.hidden-xs #{agency.address}
+                    td  #{agency.city}
+                    td.hidden-xs #{agency.zip}
+                    td  #{agency.state}
+                    td.hidden-xs #{agency.phone}
