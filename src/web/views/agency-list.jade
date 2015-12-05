@@ -5,6 +5,7 @@ block jumbo
     .jumbotron
         .container
             h1 Agency Directory
+            p Registerd System Agencies
 
 
 block content
@@ -14,17 +15,17 @@ block content
         thead
             tr
                 th Name
-                th Address
+                th.hidden-xs Address
                 th City
-                th Zip
+                th.hidden-xs Zip
                 th State
-                th Phone
+                th.hidden-xs Phone
         tbody
             for agency in agencies
                 tr
                     td: a( href=route + '/' + agency.id ) #{agency.name}
-                    td  #{agency.address}
+                    td.hidden-xs #{agency.address}
                     td  #{agency.city}
-                    td  #{agency.zip}
+                    td.hidden-xs #{agency.zip}
                     td  #{agency.state}
-                    td  #{agency.phone}
+                    td.hidden-xs #{agency.phone}
