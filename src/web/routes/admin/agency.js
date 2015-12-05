@@ -17,6 +17,10 @@ var GFMSG               = config.const.GFMSG;
 var parseFormData       = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
+function isImage ( fileDTO ) {
+    return /image/.test( fileDTO.content_type );
+}
+
 /**
  * Custom handling of agency attachments. Agencies should only have two
  * attachments. One for the logo and one for the shield.
@@ -25,13 +29,13 @@ function getAgencyAttachments ( fields ) {
     var result = [];
     var fileDTO;
 
-    if ( fields.logo_upload ) {
+    if ( fields.logo_upload && isImage( fields.logo_upload  ) ) {
         fileDTO = _.assign( {}, fields.logo_upload );
         fileDTO.name = 'logo';
         result.push( fileDTO );
     }
 
-    if ( fields.shield_upload ) {
+    if ( fields.shield_upload && isImage( fields.shield_upload ) ) {
         fileDTO = _.assign( {}, fields.shield_upload );
         fileDTO.name = 'shield';
         result.push( fileDTO );
@@ -103,8 +107,7 @@ module.exports.postEditForm = function ( req, res, next ) {
         var atts = getAgencyAttachments( formDTO.fields );
         var result = agencyService.updateAgency( agencyDTO, atts );
         return Promise.all([ result, formDTO ]);
-    })
-    .then( function ( pData ) {
+    }).then( function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
         res.redirect( '/admin/agency' );
     }).catch( function ( error ) {

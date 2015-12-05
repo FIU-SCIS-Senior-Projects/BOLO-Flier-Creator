@@ -53,9 +53,9 @@ block admin-content
                 a.details-img( href=logo_url )
                     img( src=logo_url alt="Logo Image" )
 
-        if agency && agency.attachments.logo
+        if agency && agency.attachments.shield
             .col-md-4.details-image
-                - var shield_url = route + "/asset/" + agency.id + "/logo";
+                - var shield_url = route + "/asset/" + agency.id + "/shield";
                 h3 Current Shield
                 a( href=shield_url )
-                    img( src=shield_url alt="Logo Image" )
+                    img( src=shield_url alt="Shield Image" )
