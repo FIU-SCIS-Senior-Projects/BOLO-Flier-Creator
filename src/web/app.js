@@ -123,6 +123,7 @@ if ( isDev ) {
 }
 
 app.use( function( err, req, res, next ) {
+    console.error( 'Error occurred at %s >>> %s', req.originalUrl, err.message );
     req.flash( GFERR, 'Internal server error occurred, please try again' );
     res.redirect( 'back' );
 });
