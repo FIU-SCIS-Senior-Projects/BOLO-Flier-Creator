@@ -2,34 +2,32 @@ extends ./admin-layout.jade
 
 
 block jumbo-desc
-    p Agency Directory
+    p Agency Management Directory
 
 
 block admin-content
     - var route = '/admin/agency'
 
-    table.table.table-striped.table-responsive
+    p.lead Total Agencies: #{agencies.length}
+
+    table.table.table-striped
         thead
             tr
                 th Name
-                th Address
                 th City
-                th Zip
                 th State
-                th Phone
-                th 
+                th Zip
+                th.hidden-xs Phone
                 th 
         tbody
             for agency in agencies
                 tr
                     td  #{agency.name}
-                    td  #{agency.address}
                     td  #{agency.city}
-                    td  #{agency.zip}
                     td  #{agency.state}
-                    td  #{agency.phone}
-                    block tbody
-                    td: a( href=route + "/edit/" + agency.id role="button" ) Edit
-                    td: a.disabled( href="#" role="button" ) Delete
+                    td  #{agency.zip}
+                    td.hidden-xs #{agency.phone}
+                    td: a( href=route + "/edit/" + agency.id role="button" )
+                        span.glyphicon.glyphicon-cog( aria-hidden="true" )
 
     a.btn.btn-default( href=route + "/create") Add New Agency
