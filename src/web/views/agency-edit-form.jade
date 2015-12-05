@@ -33,29 +33,40 @@ block admin-content
         +input_mx( "phone", "Phone Number", "", false, agency.phone )
 
         .form-group
-            label.control-label( for="image_upload" ) Logo Image Upload
-            input( name="logo_upload" type="file" accept="image/*" )
+            label.control-label( for="image_upload" ) Upload New Logo Image
+
+            .row
+                .col-md-4
+                    input( name="logo_upload" type="file" accept="image/*" )
+
+                .col-md-4.push-md-1.details-image
+                    if agency && agency.attachments.logo
+                        - var logo_url = route + "/asset/" + agency.id + "/logo";
+                        label.control-label Current Logo
+                        a.details-img( href=logo_url )
+                            img( src=logo_url alt="Logo Image" )
+                    else
+                        p: i No Logo Image
 
         .form-group
-            label.control-label( for="image_upload" ) Shield Image Upload
-            input( name="shield_upload" type="file" accept="image/*" )
+            label.control-label( for="image_upload" ) Upload New Shield Image
+
+            .row
+                .col-md-4
+                    input( name="shield_upload" type="file" accept="image/*" )
+
+                .col-md-4.push-md-1.details-image
+                    if agency && agency.attachments.shield
+                        - var shield_url = route + "/asset/" + agency.id + "/shield";
+                        label.control-label Current Shield
+                        a( href=shield_url )
+                            img( src=shield_url alt="Shield Image" )
+                    else
+                        p: i No Shield Image
 
         .form-group
             button.btn.btn-primary( type="submit" value="save" ) Submit
 
 
-
     .row
-        if agency && agency.attachments.logo
-            .col-md-4.details-image
-                - var logo_url = route + "/asset/" + agency.id + "/logo";
-                h3 Current Logo
-                a.details-img( href=logo_url )
-                    img( src=logo_url alt="Logo Image" )
 
-        if agency && agency.attachments.shield
-            .col-md-4.details-image
-                - var shield_url = route + "/asset/" + agency.id + "/shield";
-                h3 Current Shield
-                a( href=shield_url )
-                    img( src=shield_url alt="Shield Image" )
