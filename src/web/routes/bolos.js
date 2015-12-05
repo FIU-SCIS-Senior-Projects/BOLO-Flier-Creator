@@ -113,9 +113,7 @@ router.post( '/bolo/create', function ( req, res ) {
         boloDTO.authorUName = req.user.username;
 
         var atts = formDTO.files.filter( function ( file ) {
-            var test = file.content_type && /image/.test( file.content_type );
-            console.log( test, ' -- ', file );
-            return test;
+            return file.content_type && /image/.test( file.content_type );
         });
 
         var result = boloService.createBolo( boloDTO, atts );
