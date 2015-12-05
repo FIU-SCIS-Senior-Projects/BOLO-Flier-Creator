@@ -7,13 +7,23 @@ var Promise     = require('promise');
 
 /**
  * General helper method for parsing form data with attachments.
+ *
+ * @param {HttpRequest} - Http request object containing form data
+ * @param {Function} - a filter function applied to encountered files, return
+ * true to include and false to exclude from the returned results
+ * @returns {Promise|Object} promises an object with a fields property and a
+ * files property; the fields property is an object with form fields as keys
+ * and the files property is an array containing file DTO objects { name,
+ * content_type, path }
  */
-module.exports.parseFormData = function ( req ) {
+module.exports.parseFormData = function ( req, filterFn ) {
     return new Promise( function ( resolve, reject ) {
         var form = new multiparty.Form();
         var files = [];
         var fields = {};
         var result = { 'files': files, 'fields': fields };
+
+        var filter = filterFn || function ( e ) { return true; };
 
         function addFormField ( field, value ) {
             var f = field.slice();
@@ -31,8 +41,11 @@ module.exports.parseFormData = function ( req ) {
                 'content_type': file.headers['content-type'],
                 'path': file.path
             };
-            files.push( dto );
-            addFormField( file.fieldName, dto );
+
+            if ( filter( dto ) ) {
+                files.push( dto );
+                addFormField( file.fieldName, dto );
+            }
         }
 
         form.on( 'field', addFormField );
