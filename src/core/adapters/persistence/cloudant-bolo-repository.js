@@ -229,7 +229,7 @@ CloudantBoloRepository.prototype.delete = function (id) {
 };
 
 
-CloudantBoloRepository.prototype.getBolos = function ( limit, skip) {
+CloudantBoloRepository.prototype.getBolos = function ( limit, skip ) {
     var opts = {
         'include_docs': true,
         'limit': limit,
@@ -245,22 +245,21 @@ CloudantBoloRepository.prototype.getBolos = function ( limit, skip) {
     });
 };
 
-CloudantBoloRepository.prototype.getArchiveBolos = function (pageSize, currentPage) {
-    var limit = pageSize;
-    var skip = pageSize * (currentPage-1);
 
-    return db.view('bolo', 'all_archive', { include_docs: true, limit: limit, skip: skip, descending: true })
-        .then(function (result) {
-            var bolos = result.rows.map(function (item) {
-                return boloFromCloudant(item.doc);
-            });
+CloudantBoloRepository.prototype.getArchiveBolos = function ( limit, skip ) {
+    var opts = {
+        'include_docs': true,
+        'limit': limit,
+        'skip': skip,
+        'descending': true
+    };
 
-            var tPages = Math.floor(result.total_rows/pageSize);
-            var tReminder = result.total_rows%pageSize;
-            var pages = tReminder> 0? tPages + 1 : tPages;
-
-            return Promise.resolve({ bolos: bolos, pages: pages });
+    return db.view( 'bolo', 'all_archive', opts ).then( function ( result ) {
+        var bolos = _.map( result.rows, function ( row ) {
+            return boloFromCloudant( row.doc );
         });
+        return { bolos: bolos, total: result.total_rows };
+    });
 };
 
 

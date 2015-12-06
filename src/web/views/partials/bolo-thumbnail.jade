@@ -1,0 +1,14 @@
+
+div.thumbnail
+
+    if bolo.images.featured
+        img( src="/bolo/asset/" + bolo.id + "/featured" alt=bolo.images.featured style="height:300px" )
+    else
+        img( src="/img/nopic.png" alt="no image" style="height: 300px" )
+
+    div.caption
+        h3 #{bolo.category} 
+            if bolo.status
+                small.text-danger #{bolo.status}
+        p <b>Updated</b> #{bolo.lastUpdatedOn}
+        p <b>Created</b> #{bolo.authorFName} #{bolo.authorLName}

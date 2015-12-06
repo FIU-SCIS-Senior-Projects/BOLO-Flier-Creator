@@ -11,8 +11,8 @@ mixin input_textarea(name, label, placeholder, required, value)
 block jumbo
     .jumbotron
         .container
-            h1 Create a BOLO
-            p Fill out the form and submit to create a new BOLO.
+            h1 Be On the Lookout
+            p Publish a New BOLO
 
 
 block content
@@ -76,6 +76,6 @@ block content
         +input_textarea( "summary", "Summary", "", false, "" )
 
         .form-group
-            button.btn.btn-primary( type="submit" value="save" ) Submit
+            button.btn.btn-primary( type="submit" value="save" ) Publish
             button.btn.btn-default( type="submit" disabled=true value="preview" ) Preview
             button.btn.btn-default( type="submit" disabled=true value="pdf" ) PDF

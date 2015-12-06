@@ -61,6 +61,11 @@ BoloService.prototype.updateBolo = function ( updateDTO, attachments ) {
     });
 };
 
+BoloService.prototype.getBolo = function (id) {
+    var context = this;
+    return context.boloRepository.getBolo(id);
+};
+
 /**
  * Retrieve a collection of bolos
  */
@@ -68,13 +73,8 @@ BoloService.prototype.getBolos = function ( limit, skip ) {
     return this.boloRepository.getBolos( limit, skip );
 };
 
-BoloService.prototype.getBolo = function (id) {
-    var context = this;
-    return context.boloRepository.getBolo(id);
-};
-
-BoloService.prototype.getArchiveBolos = function (pageSize, currentPage ) {
-    return this.boloRepository.getArchiveBolos( pageSize, currentPage );
+BoloService.prototype.getArchiveBolos = function ( limit, skip ) {
+    return this.boloRepository.getArchiveBolos( limit, skip );
 };
 
 BoloService.prototype.activate = function ( id, activate ) {

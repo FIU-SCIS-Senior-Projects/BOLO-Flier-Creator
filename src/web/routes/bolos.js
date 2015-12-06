@@ -74,9 +74,8 @@ function createUUID () {
 
 // list bolos at the root route
 router.get( '/bolo', function ( req, res, next ) {
-    var limit = config.const.BOLOS_PER_PAGE;
     var page = parseInt( req.query.page ) || 1;
-
+    var limit = config.const.BOLOS_PER_PAGE;
     var skip = ( 1 <= page ) ? ( page - 1 ) * limit : 0;
 
     var data = {
@@ -93,20 +92,22 @@ router.get( '/bolo', function ( req, res, next ) {
 });
 
 // list archive bolos
-router.get('/bolo/archive', function (req, res) {
-    var pageSize = config.const.BOLOS_PER_PAGE;
-    var currentPage = req.query.page || 1;
+router.get( '/bolo/archive', function ( req, res, next ) {
+    var page = parseInt( req.query.page ) || 1;
+    var limit = config.const.BOLOS_PER_PAGE;
+    var skip = ( 1 <= page ) ? ( page - 1 ) * limit : 0;
 
-    boloService.getArchiveBolos(pageSize, currentPage)
-        .then(function (result) {
-            res.render('bolo-archive', {
-                bolos: result.bolos,
-                paging: {
-                    pages: result.pages,
-                    currentPage: currentPage
-                }
-            });
-        });
+    var data = {
+        'paging': { 'first': 1, 'current': page }
+    };
+
+    boloService.getArchiveBolos( limit, skip ).then( function ( results ) {
+        data.bolos = results.bolos;
+        data.paging.last = Math.ceil( results.total / limit );
+        res.render( 'bolo-archive', data );
+    }).catch( function ( error ) {
+        next( error );
+    });
 });
 
 // render the bolo create form
