@@ -43,3 +43,7 @@ input[type="file"] {
 .account-details > tbody > tr > td:first-child {
     font-weight: bold;
 }
+
+.table tr.no-border td {
+    border-top: none;
+}

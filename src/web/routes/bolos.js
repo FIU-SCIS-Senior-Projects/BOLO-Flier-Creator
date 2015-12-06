@@ -274,18 +274,22 @@ router.post('/bolo/delete/:id', function (req, res) {
         });
 });
 
+
 // handle requests to view the details of a bolo
-router.get('/bolo/details/:id', function (req, res) {
-    boloService.getBolo(req.params.id)
-        .then(function (bolo) {
-            res.render('bolo-details', {
-                bolo: bolo
-            });
-        })
-        .catch(function (_error) {
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+router.get( '/bolo/details/:id', function ( req, res, next ) {
+    var data = {};
+
+    boloService.getBolo( req.params.id ).then( function ( bolo ) {
+        data.bolo = bolo;
+        return agencyService.getAgency( bolo.agency );
+    }).then( function ( agency ) {
+        data.agency = agency;
+        res.render( 'bolo-details', data );
+    }).catch( function ( error ) {
+        next( error );
+    });
 });
+
 
 // handle requests for bolo attachments
 router.get('/bolo/asset/:boloid/:attname', function (req, res) {
