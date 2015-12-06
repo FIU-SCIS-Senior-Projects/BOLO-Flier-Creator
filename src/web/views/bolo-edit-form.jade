@@ -11,12 +11,23 @@ mixin input_textarea(name, label, placeholder, required, value)
 block jumbo
     .jumbotron
         .container
-            h1 Edit a BOLO
-            p Change bolo details and click submit.
+            h1 Be On the Lookout
+            p Update BOLO Details
 
 
 block content
     include ./partials/global-alerts.jade
+
+    .row
+        .col-md-6
+            .panel.panel-default
+                .panel-heading: h3.panel-title Details
+                .panel-body
+                    p <b>Author:</b> #{bolo.authorFName} #{bolo.authorLName}
+                    p <b>Agency:</b> 
+                        a( href="/agency/" + agency.id target="_blank" ) #{agency.name}
+                    p <b>Created:</b> #{bolo.createdOn}
+                    p <b>Updated:</b> #{bolo.lastUpdatedOn}
 
     -
         var categories = [
@@ -43,10 +54,10 @@ block content
             'New', 'Canceled', 'In Custody', 'Located', 'Recovered'
         ]
 
-    form#create-bolo-form(action="/bolo/edit/" + bolo.id enctype="multipart/form-data" method="post")
+    form( action="/bolo/edit/" + bolo.id enctype="multipart/form-data" method="post" )
         input( type="hidden" name="id" value=bolo.id )
 
-        +select_options("status", "Status", bolo_status, false, bolo.status )
+        +select_options( "status", "Status", bolo_status, false, bolo.status )
         +select_options( "category", "Category", categories, true, bolo.category )
 
         +input_mx( "firstName", "First Name", "", false, bolo.firstName )
@@ -60,13 +71,30 @@ block content
         +select_options( "hairColor", "Hair Color", hair_colors, false, bolo.hairColor )
         +input_textarea( "tattoos", "Tattoos", "", false, bolo.tattoos )
 
-        .form-group
-            label.control-label( for="image_upload" ) Image Attachment
-            div#form-add-img-group
+        .form-group.row
+            .col-md-4
+                label.control-label( for="featured_image" ) Featured Image
+                input( name="featured_image" type="file" accept="image/*" )
+
+            .col-md-4
+                label.control-label( for="image_upload[]" ) Image Upload
                 input( name="image_upload[]" type="file" accept="image/*" )
-            a#form-add-img-btn
-                span.glyphicon.glyphicon-plus
-                | Add Image
+
+            .col-md-4
+                label.control-label( for="image_upload[]" ) Image Upload
+                input( name="image_upload[]" type="file" accept="image/*" )
+
+        .form-group
+            label.control-label Remove Images
+            table.table
+                each name, uuid in bolo.images
+                    - var img = "/bolo/asset/" + bolo.id + "/" + uuid
+                    tr
+                        td: input( type="checkbox" name="image_remove[]" value=uuid )
+                        td: p
+                            a( href=img target="_blank" ) #{name} 
+                            if 'featured' === uuid
+                                i ( Featured Image )
 
         +input_mx( "video_url", "Video Link", "", false, bolo.video_url, "url" )
         +input_textarea( "additional", "Additional Info", "", false, bolo.additional )
@@ -77,10 +105,3 @@ block content
             button.btn.btn-default( type="submit" disabled=true value="preview" ) Preview
             button.btn.btn-default( type="submit" disabled=true value="pdf" ) PDF
 
-    .container
-        h2 Attached Images
-        ul.list-group
-            if bolo && bolo.attachments
-                each val,key in bolo.attachments
-                    li.list-group-item
-                        a(href="/bolo/asset/" + bolo.id + "/" + key) #{key}

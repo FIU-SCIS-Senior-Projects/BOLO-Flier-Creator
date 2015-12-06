@@ -123,8 +123,6 @@ function CloudantBoloRepository() {
  * 'name', 'content_type', and 'path' keys.
  */
 CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
-    var context = this;
-
     var newdoc = boloToCloudant( bolo );
     newdoc._id = createUUID();
 
@@ -150,40 +148,43 @@ CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
  *
  * @param {Bolo} - the bolo to update
  */
-CloudantBoloRepository.prototype.update = function (bolo, attachments) {
-    var newdoc = boloToCloudant(bolo);
-    var atts = [];
+CloudantBoloRepository.prototype.update = function ( bolo, attachments ) {
+    var context = this;
+    var newdoc = boloToCloudant( bolo );
 
-    _.each(attachments, function (att) {
-        if (att.content_type != content_type) {
-            atts.push(att);
+    var atts = _.map( attachments, attachmentsToCloudant );
+    var preWorkPromises = [ db.get( newdoc._id ), Promise.all( atts )];
+
+    return Promise.all( preWorkPromises ).then( function ( prereqs ) {
+        var doc     = prereqs[0],
+            attDTOs = prereqs[1];
+
+        var blacklist = [
+            'isActive', 'Type', '_id', '_attachments', 'createdOn', 'agency',
+            'author', 'authorFname', 'authorLName', 'authorUName', 'images'
+        ];
+
+        _( newdoc ).omit( blacklist ).each( function ( val, key ) {
+            doc[key] = val;
+        }).run();
+
+        if ( newdoc.images_deleted ) {
+            doc._attachments = _.omit( doc._attachments, newdoc.images_deleted );
+            doc.images = _.omit( doc.images, newdoc.images_deleted );
         }
+
+        if ( attDTOs.length ) {
+            _.extend( doc.images, newdoc.images );
+            return db.insertMultipart( doc, attDTOs, newdoc._id );
+        } else {
+            return db.insert( doc );
+        }
+    }).then(function ( response ) {
+        if ( !response.ok ) throw new Error( 'Unable to update BOLO' );
+        return context.getBolo( response.id );
+    }).catch(function ( error ) {
+        throw new Error( 'Unable to update bolo doc: ' + error.message );
     });
-
-    var currentBoloRev = db.get(bolo.data.id);
-    var attsPromise = Promise.all(atts.map(transformAttachment));
-
-    return Promise.all([currentBoloRev, attsPromise])
-        .then(function (data) {
-            var doc = data[0],
-                attDTOs = data[1];
-
-            newdoc._rev = doc._rev;
-            newdoc._attachments = doc._attachments || {};
-
-            if (attDTOs.length) {
-                return db.insertMultipart(newdoc, attDTOs, newdoc._id);
-            } else {
-                return db.insert(newdoc);
-            }
-        })
-        .then(function (response) {
-            if (!response.ok) throw new Error('Unable to update BOLO');
-            return Promise.resolve(boloFromCloudant(newdoc));
-        })
-        .catch(function (error) {
-            return Promise.reject(error);
-        });
 };
 
 

@@ -58,15 +58,18 @@ block content
         +select_options( "hairColor", "Hair Color", hair_colors, false, "" )
         +input_textarea( "tattoos", "Tattoos", "", false, "" )
 
-        .form-group
-            label.control-label( for="featured_image" ) Featured Image
-            input( name="featured_image" type="file" accept="image/*" )
+        .form-group.row
+            .col-md-4
+                label.control-label( for="featured_image" ) Featured Image
+                input( name="featured_image" type="file" accept="image/*" )
 
-            label.control-label( for="image_upload[]" ) Image Upload
-            input( name="image_upload[]" type="file" accept="image/*" )
+            .col-md-4
+                label.control-label( for="featured_image" ) Image Upload
+                input( name="image_upload[]" type="file" accept="image/*" )
 
-            label.control-label( for="image_upload[]" ) Image Upload
-            input( name="image_upload[]" type="file" accept="image/*" )
+            .col-md-4
+                label.control-label( for="featured_image" ) Image Upload
+                input( name="image_upload[]" type="file" accept="image/*" )
 
         +input_mx( "video_url", "Video Link", "", false, "", "url" )
         +input_textarea( "additional", "Additional Info", "", false, "" )

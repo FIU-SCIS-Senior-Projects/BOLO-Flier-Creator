@@ -5,7 +5,7 @@
     margin-bottom: 0;
 }
 .nav-stacked {
-    margin-bottom: 22px;
+    margin-bottom: 2em;
 }
 
 /** Sticky footer with fixed navbar **/
@@ -23,16 +23,23 @@ html, body {
 
 
 /** Custom Styles **/
+#wrap > .container {
+    margin-bottom: 48px;
+}
+
 .details-image img {
     max-width: 90%;
 }
 
-.strong {
-    font-weight: 700;
+input[type="file"] {
+    line-height: 2.5em;
 }
 
-.pagination>li>a, .pagination>li>span
-{
-    border: 1px solid #ffffff;
-    /*background:  #2c3e50;*/   
+
+.account-details > tbody > tr > td {
+    border-top: none;
+}
+
+.account-details > tbody > tr > td:first-child {
+    font-weight: bold;
 }

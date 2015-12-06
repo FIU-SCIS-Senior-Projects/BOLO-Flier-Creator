@@ -12,6 +12,7 @@ var uuid            = require('node-uuid');
 var config          = require('../config');
 var userService     = new config.UserService( new config.UserRepository() );
 var boloService     = new config.BoloService( new config.BoloRepository() );
+var agencyService   = new config.AgencyService( new config.AgencyRepository() );
 var emailService    = config.EmailService;
 
 var formUtil        = require('../lib/form-util');
@@ -140,7 +141,7 @@ router.post( '/bolo/create', function ( req, res, next ) {
         }
 
         if ( formDTO.fields['image_upload[]'] ) {
-            formDTO.fields['image_upload[]'].forEach( function ( imgDTO) {
+            formDTO.fields['image_upload[]'].forEach( function ( imgDTO ) {
                 var id = createUUID();
                 boloDTO.images[id] = imgDTO.name;
                 attDTOs.push( renameFile( imgDTO, id ) );
@@ -161,47 +162,61 @@ router.post( '/bolo/create', function ( req, res, next ) {
 
 
 // render the bolo edit form
-router.get('/bolo/edit/:id', function (req, res) {
+router.get( '/bolo/edit/:id', function ( req, res, next ) {
     var data = {
         'form_errors': req.flash( 'form-errors' )
     };
 
-    /** @todo do we trust that this is really an id? **/
+    /** @todo car we trust that this is really an id? **/
 
     boloService.getBolo( req.params.id ).then( function ( bolo ) {
         data.bolo = bolo;
+        return agencyService.getAgency( bolo.agency );
+    }).then( function ( agency ) {
+        data.agency = agency;
         res.render( 'bolo-edit-form', data );
-    })
-    .catch( function ( error ) {
-        console.error( 'Error at %s >>> %s', req.originalUrl, error.message );
-        req.flash( GFERR, 'Internal server error occurred, please try again.' );
-        res.redirect( 'back' );
+    }).catch( function ( error ) {
+        next( error );
     });
 });
 
 // handle requests to process edits on a specific bolo
-router.post( '/bolo/edit/:id', function ( req, res ) {
-    parseFormData( req ).then( function ( formDTO ) {
+router.post( '/bolo/edit/:id', function ( req, res, next ) {
+    /** @todo confirm that the request id and field id match **/
+
+    parseFormData( req, attachmentFilter ).then( function ( formDTO ) {
         var boloDTO = boloService.formatDTO( formDTO.fields );
+        var attDTOs = [];
+
         boloDTO.lastUpdatedOn = moment().format( config.const.DATE_FORMAT );
 
-        var atts = formDTO.files.filter( function ( file ) {
-            return file.content_type && /image/.test( file.content_type );
-        });
+        if ( formDTO.fields.featured_image ) {
+            var fi = formDTO.fields.featured_image;
+            boloDTO.images.featured = fi.name;
+            attDTOs.push( renameFile( fi, 'featured' ) );
+        }
 
-        var result = boloService.updateBolo( boloDTO, formDTO.files );
+        if ( formDTO.fields['image_upload[]'] ) {
+            formDTO.fields['image_upload[]'].forEach( function ( imgDTO ) {
+                var id = createUUID();
+                boloDTO.images[id] = imgDTO.name;
+                attDTOs.push( renameFile( imgDTO, id ) );
+            });
+        }
+
+        if ( formDTO.fields['image_remove[]'] ) {
+            boloDTO.images_deleted = formDTO.fields['image_remove[]'];
+        }
+
+        var result = boloService.updateBolo( boloDTO, attDTOs );
         return Promise.all( [ result, formDTO ] );
-    })
-    .then( function ( pData ) {
+    }).then( function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
         sendBoloNotificationEmail( pData[0], 'update-bolo-notification' );
         req.flash( GFMSG, 'BOLO successfully updated.' );
         res.redirect( '/bolo' );
-    })
-    .catch(function ( error ) {
-        console.error( 'Error at %s >>> %s', req.originalUrl, error.message );
-        req.flash( GFERR, 'Internal server error occurred, please try again.' );
-        res.redirect( 'back' );
+    }).catch( function ( error ) {
+        next( error );
     });
 });
 

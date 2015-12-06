@@ -53,27 +53,11 @@ BoloService.prototype.createBolo = function ( boloDTO, attachments ) {
  */
 BoloService.prototype.updateBolo = function ( updateDTO, attachments ) {
     var context = this;
+    var bolo = new Bolo( updateDTO );
 
-    return this.boloRepository.getBolo( updateDTO.id )
-    .then( function ( bolo ) {
-        function blacklisted ( key ) {
-            var list = [
-               'authorFName', 'authorLName', 'authorUName', 'attachments'
-            ];
-            return ( -1 !== list.indexOf( key ) );
-        }
-
-        Object.keys( bolo.data ).forEach( function ( key ) {
-            /** @todo review how to deal with array inputs **/
-            if ( updateDTO[key] && ! blacklisted( key ) ) {
-                bolo[key] = updateDTO[key];
-            }
-        });
-
-        return context.boloRepository.update( bolo, attachments );
-    })
+    return this.boloRepository.update( bolo, attachments )
     .catch( function ( error ) {
-        return Promise.reject( { success: false, error: error.message } );
+        throw new Error( 'Unable to update BOLO.' );
     });
 };
 
