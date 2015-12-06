@@ -31,20 +31,17 @@ function BoloService ( boloRepository ) {
  * @param {object} boloData - Data for the new BOLO
  * @param {object} attachments - BOLO Attachments
  */
-BoloService.prototype.createBolo = function ( boloData, attachments ) {
-    var bolo = new Bolo( boloData );
+BoloService.prototype.createBolo = function ( boloDTO, attachments ) {
+    var bolo = new Bolo( boloDTO );
 
     if ( ! bolo.isValid() ) {
-        Promise.reject( new Error( "invalid bolo data" ) );
+        Promise.reject( new Error( "Invalid bolo data" ) );
     }
 
     return this.boloRepository.insert( bolo, attachments )
-        .then( function ( value ) {
-            return value;
-        })
-        .catch( function ( error ) {
-            throw new Error( 'Unable to create BOLO.' );
-        });
+    .catch( function ( error ) {
+        throw new Error( 'Unable to create BOLO.' );
+    });
 };
 
 /**

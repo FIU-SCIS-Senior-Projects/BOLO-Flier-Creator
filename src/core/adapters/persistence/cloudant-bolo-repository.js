@@ -8,7 +8,6 @@ var uuid = require('node-uuid');
 
 var db = require('../../lib/cloudant-promise').db.use('bolo');
 var Bolo = require('../../domain/bolo.js');
-var content_type = "application/octet-stream";
 var DOCTYPE = 'bolo';
 
 /**
@@ -79,23 +78,24 @@ function attachmentsFromCloudant(attachments) {
  * @returns {Promise|Object} - Promise resolving to the transformed DTO
  * @private
  */
-function transformAttachment(original) {
-    var readFile = Promise.denodeify(fs.readFile);
-    var createDTO = function (readBuffer) {
+function attachmentsToCloudant( dto ) {
+    var readFile = Promise.denodeify( fs.readFile );
+
+    if ( ! dto ) return null;
+
+    return readFile( dto.path ).then( function ( buffer ) {
         return {
-            'name': original.name,
-            'content_type': original.content_type,
-            'data': readBuffer
+            'name': dto.name,
+            'content_type': dto.content_type,
+            'data': buffer
         };
-    };
+    }).catch( function ( error ) {
+        throw new Error( 'attachmentsToCloudant: ', error );
+    });
+}
 
-    var errorHandler = function (error) {
-        throw new Error('transformAttachment: ', error);
-    };
-
-    return readFile(original.path)
-        .then(createDTO)
-        .catch(errorHandler);
+function createUUID () {
+    return uuid.v4().replace(/-/g, '');
 }
 
 
@@ -122,37 +122,27 @@ function CloudantBoloRepository() {
  * @param {Array|Object} - Optional array of attachment DTOs containing the
  * 'name', 'content_type', and 'path' keys.
  */
-CloudantBoloRepository.prototype.insert = function (bolo, attachments) {
+CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
     var context = this;
-    var atts = attachments || [];
 
-    var newdoc = boloToCloudant(bolo);
-    newdoc._id = uuid.v4().replace(/-/g, '');
-    newdoc.isActive = true;
+    var newdoc = boloToCloudant( bolo );
+    newdoc._id = createUUID();
 
-    function handleBoloInsert (attDTOs) {
-        if (attDTOs.length) {
+    var atts = _.map( attachments, attachmentsToCloudant );
+
+    return Promise.all( atts ).then( function ( attDTOs ) {
+        if ( attDTOs.length ) {
             return db.insertMultipart(newdoc, attDTOs, newdoc._id);
         } else {
             return db.insert(newdoc, newdoc._id);
         }
-    }
-
-    function handleInsertResponse (response) {
-        if (!response.ok) handleInsertErrorResponse(response.reason);
-        return context.getBolo(response.id);
-    }
-
-    function handleInsertErrorResponse (error) {
-        throw new Error(
-            'Unable to create new document: ' + error.reason
-        );
-    }
-
-    return Promise.all( atts.map( transformAttachment ) )
-        .then( handleBoloInsert )
-        .then( handleInsertResponse )
-        .catch( handleInsertErrorResponse );
+    }).then( function ( response ) {
+        console.log( JSON.stringify( response ) );
+        if ( !response.ok ) throw new Error( response.resaon );
+        return boloFromCloudant( newdoc );
+    }).catch( function ( error ) {
+        throw new Error( 'Unable to create new document: ' + error.message );
+    });
 };
 
 

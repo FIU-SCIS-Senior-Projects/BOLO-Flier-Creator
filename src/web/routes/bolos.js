@@ -3,9 +3,11 @@
 
 var jade            = require('jade');
 var moment          = require('moment');
+var path            = require('path');
 var Promise         = require('promise');
 var router          = require('express').Router();
 var util            = require('util');
+var uuid            = require('node-uuid');
 
 var config          = require('../config');
 var userService     = new config.UserService( new config.UserRepository() );
@@ -56,6 +58,19 @@ function sendBoloNotificationEmail ( bolo, template ) {
     });
 }
 
+function attachmentFilter ( fileDTO ) {
+    return /image/i.test( fileDTO.content_type );
+}
+
+function renameFile ( dto, newname ) {
+    dto.name = newname;
+    return dto;
+}
+
+function createUUID () {
+    return  uuid.v4().replace( /-/g, '' );
+}
+
 // list bolos at the root route
 router.get('/bolo', function (req, res) {
     var pageSize = config.const.BOLOS_PER_PAGE;
@@ -91,46 +106,56 @@ router.get('/bolo/archive', function (req, res) {
 });
 
 // render the bolo create form
-router.get('/bolo/create', function (req, res) {
+router.get( '/bolo/create', function ( req, res ) {
     var data = {
         'form_errors': req.flash( 'form-errors' )
     };
+
     res.render( 'bolo-create-form', data );
 });
 
 // process bolo creation user form input
-router.post( '/bolo/create', function ( req, res ) {
-    parseFormData(req).then(function ( formDTO ) {
+router.post( '/bolo/create', function ( req, res, next ) {
+    parseFormData( req, attachmentFilter ).then(function ( formDTO ) {
         var boloDTO = boloService.formatDTO( formDTO.fields );
+        var attDTOs = [];
 
         boloDTO.createdOn = moment().format( config.const.DATE_FORMAT );
         boloDTO.lastUpdatedOn = boloDTO.createdOn;
-        boloDTO.author = req.user.id;
+
         boloDTO.agency = req.user.agency;
 
+        boloDTO.author = req.user.id;
         boloDTO.authorFName = req.user.fname;
         boloDTO.authorLName = req.user.lname;
         boloDTO.authorUName = req.user.username;
 
-        var atts = formDTO.files.filter( function ( file ) {
-            return file.content_type && /image/.test( file.content_type );
-        });
+        if ( formDTO.fields.featured_image ) {
+            var fi = formDTO.fields.featured_image;
+            boloDTO.images.featured = fi.name;
+            attDTOs.push( renameFile( fi, 'featured' ) );
+        }
 
-        var result = boloService.createBolo( boloDTO, atts );
+        if ( formDTO.fields['image_upload[]'] ) {
+            formDTO.fields['image_upload[]'].forEach( function ( imgDTO) {
+                var id = createUUID();
+                boloDTO.images[id] = imgDTO.name;
+                attDTOs.push( renameFile( imgDTO, id ) );
+            });
+        }
+
+        var result = boloService.createBolo( boloDTO, attDTOs );
         return Promise.all([result, formDTO]);
-    })
-    .then(function ( pData ) {
+    }).then( function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
         sendBoloNotificationEmail( pData[0], 'new-bolo-notification' );
         req.flash( GFMSG, 'BOLO successfully created.' );
         res.redirect( '/bolo' );
-    })
-    .catch(function ( error ) {
-        console.error( 'Error at %s >>> %s', req.originalUrl, error.message );
-        req.flash( GFERR, 'Internal server error occurred, please try again.' );
-        res.redirect( 'back' );
+    }).catch( function ( error ) {
+        next( error );
     });
 });
+
 
 // render the bolo edit form
 router.get('/bolo/edit/:id', function (req, res) {
