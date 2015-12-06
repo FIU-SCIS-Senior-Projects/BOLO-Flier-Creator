@@ -25,12 +25,12 @@ block admin-content
     form( action=( route + form_action ) enctype="multipart/form-data" method="post" )
         input( name="id" type="hidden" value=agency.id )
 
-        +input_mx( "name", "Agency Name", "", false, agency.name)
-        +input_mx( "address", "Address", "", false, agency.address )
-        +input_mx( "city", "City", "", false, agency.city )
+        +input_text( "name", "Agency Name", "", false, agency.name)
+        +input_text( "address", "Address", "", false, agency.address )
+        +input_text( "city", "City", "", false, agency.city )
         +select_options( "state", "State", states, false, agency.state )
-        +input_mx( "zip", "Zip Code", "", false,  agency.zip )
-        +input_mx( "phone", "Phone Number", "", false, agency.phone )
+        +input_text( "zip", "Zip Code", "", false,  agency.zip )
+        +input_text( "phone", "Phone Number", "", false, agency.phone )
 
         .form-group
             label.control-label( for="image_upload" ) Upload New Logo Image

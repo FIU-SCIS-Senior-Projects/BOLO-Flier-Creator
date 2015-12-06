@@ -1,11 +1,5 @@
-include ./includes/mixins.jade
 extends ./layout.jade
-
-
-mixin input_textarea(name, label, placeholder, required, value)
-    .form-group
-        label.control-label( for=name ) #{label}
-        textarea.form-control( name=name type="text" placeholder=placeholder ) #{value}
+include ./includes/mixins.jade
 
 
 block jumbo
@@ -60,14 +54,14 @@ block content
         +select_options( "status", "Status", bolo_status, false, bolo.status )
         +select_options( "category", "Category", categories, true, bolo.category )
 
-        +input_mx( "firstName", "First Name", "", false, bolo.firstName )
-        +input_mx( "lastName", "Last Name", "", false,  bolo.lastName )
-        +input_mx( "dob", "Date of Birth (DD/MM/YYYY )", "DD/MM/YYYY", false, bolo.dob )
-        +input_mx( "dlNumber", "Drivers License Number", "", false, bolo.dlNumber )
+        +input_text( "firstName", "First Name", "", false, bolo.firstName )
+        +input_text( "lastName", "Last Name", "", false,  bolo.lastName )
+        +input_text( "dob", "Date of Birth (DD/MM/YYYY )", "DD/MM/YYYY", false, bolo.dob )
+        +input_text( "dlNumber", "Drivers License Number", "", false, bolo.dlNumber )
         +select_options( "race", "Race", races, false, bolo.race )
         +select_options( "sex", "Sex", ["Male", "Female"], false, bolo.sex )
-        +input_mx( "height", "Height - Feet-Inches (e.g. 05-09)", "e.g. 05-09", false, bolo.height )
-        +input_mx( "weight", "Weight - Pounds", "", false, bolo.weight )
+        +input_text( "height", "Height - Feet-Inches (e.g. 05-09)", "e.g. 05-09", false, bolo.height )
+        +input_text( "weight", "Weight - Pounds", "", false, bolo.weight )
         +select_options( "hairColor", "Hair Color", hair_colors, false, bolo.hairColor )
         +input_textarea( "tattoos", "Tattoos", "", false, bolo.tattoos )
 
@@ -96,7 +90,7 @@ block content
                             if 'featured' === uuid
                                 i ( Featured Image )
 
-        +input_mx( "video_url", "Video Link", "", false, bolo.video_url, "url" )
+        +input_text( "video_url", "Video Link", "", false, bolo.video_url, "url" )
         +input_textarea( "additional", "Additional Info", "", false, bolo.additional )
         +input_textarea( "summary", "Summary", "", false, bolo.summary )
 
@@ -104,4 +98,3 @@ block content
             button.btn.btn-primary( type="submit" value="save" ) Submit
             button.btn.btn-default( type="submit" disabled=true value="preview" ) Preview
             button.btn.btn-default( type="submit" disabled=true value="pdf" ) PDF
-
