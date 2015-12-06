@@ -12,6 +12,8 @@ block jumbo
 block content
     include ./partials/global-alerts.jade
 
+    include ./partials/bolo-options.jade
+
     .row
         .col-md-6
             .panel.panel-default
@@ -22,31 +24,6 @@ block content
                         a( href="/agency/" + agency.id target="_blank" ) #{agency.name}
                     p <b>Created:</b> #{bolo.createdOn}
                     p <b>Updated:</b> #{bolo.lastUpdatedOn}
-
-    -
-        var categories = [
-            'ARSON', 'BURGLARY', 'DOMESTIC SECURITY', 'ESCAPE', 'FRAUD',
-            'HOME INVASION', 'HOMICIDE', 'MISSING JUVENILE', 'MISSING PERSON',
-            'NARCOTICS', 'NEED TO IDENTIFY', 'OFFICER SAFETY', 'PC TO ARREST',
-            'ROBBERY', 'RUNAWAY', 'SEX OFFENSE', 'SITUATIONAL AWARENESS',
-            'THEFT - AUTO', 'THEFT - BOAT', 'THEFT - GRAND', 'THEFT - PETIT',
-            'WANTED', 'FIELD INTERVIEW', 'INFORMATION'
-        ]
-
-        var races = [
-            'Hispanic', 'White', 'Asian', 'Black or African American',
-            'American Indian or Alaska Native',
-            'Native Hawaiian or Other Pacific Islander'
-        ]
-
-        var hair_colors = [
-            'Black', 'Blonde', 'Red', 'Brown', 'Gray', 'White', 'Sandy',
-            'Bald (No hair)'
-        ]
-
-        var bolo_status = [
-            'New', 'Canceled', 'In Custody', 'Located', 'Recovered'
-        ]
 
     form( action="/bolo/edit/" + bolo.id enctype="multipart/form-data" method="post" )
         input( type="hidden" name="id" value=bolo.id )
@@ -95,6 +72,6 @@ block content
         +input_textarea( "summary", "Summary", "", false, bolo.summary )
 
         .form-group
-            button.btn.btn-primary( type="submit" value="save" ) Submit
+            button.btn.btn-primary( type="submit" value="save" ) Publish
             button.btn.btn-default( type="submit" disabled=true value="preview" ) Preview
             button.btn.btn-default( type="submit" disabled=true value="pdf" ) PDF

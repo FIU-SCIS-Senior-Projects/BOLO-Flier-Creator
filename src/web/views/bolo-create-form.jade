@@ -12,30 +12,7 @@ block jumbo
 block content
     include ./partials/global-alerts.jade
 
-    -
-        var categories = [
-            'ARSON', 'BURGLARY', 'DOMESTIC SECURITY', 'ESCAPE', 'FRAUD',
-            'HOME INVASION', 'HOMICIDE', 'MISSING JUVENILE', 'MISSING PERSON',
-            'NARCOTICS', 'NEED TO IDENTIFY', 'OFFICER SAFETY', 'PC TO ARREST',
-            'ROBBERY', 'RUNAWAY', 'SEX OFFENSE', 'SITUATIONAL AWARENESS',
-            'THEFT - AUTO', 'THEFT - BOAT', 'THEFT - GRAND', 'THEFT - PETIT',
-            'WANTED', 'FIELD INTERVIEW', 'INFORMATION'
-        ]
-
-        var races = [
-            'Hispanic', 'White', 'Asian', 'Black or African American',
-            'American Indian or Alaska Native',
-            'Native Hawaiian or Other Pacific Islander'
-        ]
-
-        var hair_colors = [
-            'Black', 'Blonde', 'Red', 'Brown', 'Gray', 'White', 'Sandy',
-            'Bald (No hair)'
-        ]
-
-        var bolo_status = [
-            'New', 'Canceled', 'In Custody', 'Located', 'Recovered'
-        ]
+    include ./partials/bolo-options.jade
 
     form#create-bolo-form(action="/bolo/create" enctype="multipart/form-data" method="post")
         input( type="hidden" name="status" value="New" )
