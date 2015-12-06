@@ -80,9 +80,8 @@ BoloService.prototype.updateBolo = function ( updateDTO, attachments ) {
 /**
  * Retrieve a collection of bolos
  */
-BoloService.prototype.getBolos = function (pageSize, currentPage) {
-    var context = this;
-    return context.boloRepository.getBolos(pageSize, currentPage);
+BoloService.prototype.getBolos = function ( limit, skip ) {
+    return this.boloRepository.getBolos( limit, skip );
 };
 
 BoloService.prototype.getBolo = function (id) {

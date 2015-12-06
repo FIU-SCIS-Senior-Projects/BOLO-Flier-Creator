@@ -72,20 +72,23 @@ function createUUID () {
 }
 
 // list bolos at the root route
-router.get('/bolo', function (req, res) {
-    var pageSize = config.const.BOLOS_PER_PAGE;
-    var currentPage = req.query.page || 1;
+router.get( '/bolo', function ( req, res, next ) {
+    var limit = config.const.BOLOS_PER_PAGE;
+    var page = parseInt( req.query.page ) || 1;
 
-    boloService.getBolos(pageSize, currentPage)
-        .then(function (result) {
-            res.render('bolo-list', {
-                bolos: result.bolos,
-                paging: {
-                    pages: result.pages,
-                    currentPage: currentPage
-                }
-            });
-        });
+    var skip = ( 1 <= page ) ? ( page - 1 ) * limit : 0;
+
+    var data = {
+        'paging': { 'first': 1, 'current': page }
+    };
+
+    boloService.getBolos( limit, skip ).then( function ( results ) {
+        data.bolos = results.bolos;
+        data.paging.last = Math.ceil( results.total / limit );
+        res.render( 'bolo-list', data );
+    }).catch( function ( error ) {
+        next( error );
+    });
 });
 
 // list archive bolos
