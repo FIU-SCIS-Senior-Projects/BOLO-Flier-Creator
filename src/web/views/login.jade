@@ -1,11 +1,11 @@
-include includes/mixins
-extends layout
+extends ./layout.jade
+include ./includes/mixins.jade
 
 block jumbo
     .jumbotron
         .container
-            h1 BOLO Version 3.0
-            p Please log in to use the system.
+            h1 Login
+            p Bolo Flier Creator Version 3.0
 
 block content
     include ./partials/global-alerts.jade

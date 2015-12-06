@@ -1,43 +1,128 @@
-include includes/mixins
-extends layout
+extends ./layout.jade
+
 
 block jumbo
-  .jumbotron
-    .container
-          h1 BOLO Details
-          p Detailed BOLO information.
+    .jumbotron
+        .container
+            h1 Be On the Lookout
+            p Detailed BOLO Information
+
 
 block content
-    include ./partials/global-alerts.jade
 
-    h1=bolo.data.category
-    div.container-fluid
-        div.row
-            div.col-xs-12.col-md-7
-                form.form-horizontal
-                +form_labels_row("Bolo ID", bolo.data.id )
-                +form_labels_row("Author", bolo.data.authorFName + " " +  bolo.data.authorLName )
-                +form_labels_row("Name", bolo.data.firstName + " " +  bolo.data.lastName)
-                +form_labels_row("Race", bolo.data.race, bolo.data.race?"":"hidden")
-                +form_labels_row("Height", bolo.data.height)
-                +form_labels_row("Weight", bolo.data.weight + "lbs")
-                +form_labels_row("Address", bolo.data.address, bolo.data.address?"":"hidden")
-                +form_labels_row("DOB", bolo.data.dob, bolo.data.dob?"":"hidden")
-                +form_labels_row("Sex", bolo.data.sex, bolo.data.sex?"":"hidden")
-                +form_labels_row("Hair Color", bolo.data.hairColor, bolo.data.hairColor?"":"hidden")
-                +form_labels_row("Tattoos/Scars", bolo.data.tattoos, bolo.data.tattoos?"":"hidden")
-                +form_labels_row("License #", bolo.data.dlNumber, bolo.data.dlNumber?"":"hidden")
-                +form_labels_row("Height", bolo.data.height, bolo.data.height?"":"hidden")
-                +form_labels_row("Weight", bolo.data.weight + "lbs", bolo.data.weight?"":"hidden")
-                +form_labels_row("Address", bolo.data.address, bolo.data.address?"":"hidden")
-                +form_labels_row("Sex", bolo.data.sex, bolo.data.sex?"":"hidden")
-                +form_labels_row("Hair Color", bolo.data.hairColor, bolo.data.hairColor?"":"hidden")
-                +form_labels_row("Tattoos/Scars", bolo.data.tattoos,bolo.data.tattoos?"":"hidden")
-                +form_labels_row("License #", bolo.data.dlNumber, bolo.data.dlNumber?"":"hidden")
-                +form_labels_row("Created on", bolo.data.createdOn, bolo.data.createdOn?"":"hidden")
-                +form_labels_row("Aditional Info", bolo.data.additional, bolo.data.additional?"":"hidden")
-                +form_labels_row("Summary", bolo.data.summary, bolo.data.summary?"":"hidden")
-            div.col-xs-12.col-md-5
-                if bolo.data.attachments
-                - var keys = Object.keys( bolo.data.attachments )
-                img(src="/bolo/asset/" + bolo.data.id + "/" + keys[0] alt="", width=300)
+    - var img_src = '/bolo/asset' + bolo.id
+
+    .row
+        include ./partials/global-alerts.jade
+
+    .row
+        .col-md-7
+            h3 #{bolo.category} 
+                if bolo.status
+                    small.text-danger #{bolo.status}
+
+            table.table
+                tr: td( colspan="2" ): h4 Suspect
+
+                tr.no-border
+                    td First Name
+                    td #{bolo.lastName || "N/A"}
+
+                tr.no-border
+                    td Last Name
+                    td #{bolo.lastName || "N/A"}
+
+                tr.no-border
+                    td Sex
+                    td #{bolo.sex || "N/A"}
+
+                tr.no-border
+                    td Race
+                    td #{bolo.race || "N/A"}
+
+                tr.no-border
+                    td Height
+                    td #{bolo.height || "N/A"}
+
+                tr.no-border
+                    td Weight
+                    td #{bolo.weight || "N/A"}
+
+                tr.no-border
+                    td Hair Color
+                    td #{bolo.hairColor || "N/A"}
+
+                tr.no-border
+                    td Address
+                    td #{bolo.address || "N/A"}
+
+                tr.no-border
+                    td Tattoos
+                    td #{bolo.tattoos || "N/A"}
+
+                tr.no-border
+                    td Drivers License
+                    td #{bolo.dlNumber || "N/A"}
+
+                tr.no-border
+                    td Date Of Birth
+                    td #{bolo.dob || "N/A"}
+
+
+            table.table
+                tr: td( colspan="2"): h4 Summary
+                tr.no-border: td( colspan="2" ) #{bolo.summary || "N/A"}
+
+
+            table.table
+                tr: td( colspan="2"): h4 Additional Information
+                tr.no-border: td( colspan="2" ) #{bolo.additional || "N/A"}
+
+
+            table.table
+                tr: td( colspan="2"): h4 Media
+
+                tr.no-border
+                    td Video URL
+                    td #{bolo.video_url || "N/A"}
+
+                tr.no-border
+                    td Images
+                    td
+                        each name, uuid in bolo.images
+                            a( href="/bolo/asset/" + bolo.id + "/" + uuid target="_blank" ) #{name}
+                            br
+
+        .col-md-5
+            h3 General
+            table.table
+                tr
+                    td Agency
+                    td: a( href="/agency/" + agency.id ) #{agency.name}
+
+                tr.no-border
+                    td Author
+                    td #{bolo.authorFName} #{bolo.authorLName}
+                tr.no-border
+                    td Created
+                    td #{bolo.createdOn}
+
+                tr.no-border
+                    td Updated
+                    td #{bolo.lastUpdatedOn}
+
+                tr.no-border
+                    td UUID
+                    td #{bolo.id}
+
+                tr
+                    td
+                    td
+
+
+            if ( bolo.images.featured )
+                - var f_src = "/bolo/asset/" + bolo.id + "/featured";
+                h3 FEATURE IMAGE
+                .details-image
+                    a( href=f_src target="_blank" )
+                        img( src=f_src alt=bolo.images.featured )

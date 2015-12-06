@@ -1,0 +1,36 @@
+
+mixin option( value, selected )
+    if selected
+        option( value=value, selected ) #{value}
+    else
+        option( value=value ) #{value}
+
+
+mixin input_text( name, label, placeholder, required, value, type )
+    .form-group
+        label.control-label( for=name ) #{label}
+        input.form-control( name=name type=type?type:'text' placeholder=placeholder value=value )
+
+
+mixin input_textarea( name, label, placeholder, required, value )
+    .form-group
+        label.control-label( for=name ) #{label}
+        textarea.form-control( name=name type="text" placeholder=placeholder ) #{value}
+
+
+mixin select_options( name, label, options, required, selectedValue )
+    .form-group
+        label.control-label( for=name ) #{label}
+        select.form-control( name=name )
+            each val in options
+                if selectedValue == val
+                    +option( val,true )
+                else
+                    +option( val,false )
+
+
+mixin form_labels_row( label,value, css )
+    div.form-group(class=css)
+        label.col-sm-3.control-label #{label} :
+        div.col-sm-9
+        p #{value}

@@ -1,0 +1,29 @@
+
+mixin alert_info(msg)
+    .alert.alert-info.alert-dismissable(role="alert")
+        button.close(type="button" data-dismiss="alert" aria-label="Close")
+            span(aria-hidden="true") &times;
+        = msg
+
+mixin alert_warning(msg)
+    .alert.alert-warning.alert-dismissable(role="alert")
+        button.close(type="button" data-dismiss="alert" aria-label="Close")
+            span(aria-hidden="true") &times;
+        = msg
+mixin alert_error(msg)
+    .alert.alert-danger.alert-dismissable(role="alert")
+        button.close(type="button" data-dismiss="alert" aria-label="Close")
+            span(aria-hidden="true") &times;
+        = msg
+
+mixin alert_message_array ( messages )
+    each m in messages
+        if m.length
+            +alert_info( m )
+
+mixin alert_error_array ( errors )
+    each e in errors
+        if e.message
+            +alert_error( e.message )
+        else if e.length
+            +alert_error( e )

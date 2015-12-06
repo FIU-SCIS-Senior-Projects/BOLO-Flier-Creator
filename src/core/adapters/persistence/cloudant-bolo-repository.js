@@ -8,7 +8,6 @@ var uuid = require('node-uuid');
 
 var db = require('../../lib/cloudant-promise').db.use('bolo');
 var Bolo = require('../../domain/bolo.js');
-var content_type = "application/octet-stream";
 var DOCTYPE = 'bolo';
 
 /**
@@ -79,23 +78,24 @@ function attachmentsFromCloudant(attachments) {
  * @returns {Promise|Object} - Promise resolving to the transformed DTO
  * @private
  */
-function transformAttachment(original) {
-    var readFile = Promise.denodeify(fs.readFile);
-    var createDTO = function (readBuffer) {
+function attachmentsToCloudant( dto ) {
+    var readFile = Promise.denodeify( fs.readFile );
+
+    if ( ! dto ) return null;
+
+    return readFile( dto.path ).then( function ( buffer ) {
         return {
-            'name': original.name,
-            'content_type': original.content_type,
-            'data': readBuffer
+            'name': dto.name,
+            'content_type': dto.content_type,
+            'data': buffer
         };
-    };
+    }).catch( function ( error ) {
+        throw new Error( 'attachmentsToCloudant: ', error );
+    });
+}
 
-    var errorHandler = function (error) {
-        throw new Error('transformAttachment: ', error);
-    };
-
-    return readFile(original.path)
-        .then(createDTO)
-        .catch(errorHandler);
+function createUUID () {
+    return uuid.v4().replace(/-/g, '');
 }
 
 
@@ -122,37 +122,24 @@ function CloudantBoloRepository() {
  * @param {Array|Object} - Optional array of attachment DTOs containing the
  * 'name', 'content_type', and 'path' keys.
  */
-CloudantBoloRepository.prototype.insert = function (bolo, attachments) {
-    var context = this;
-    var atts = attachments || [];
+CloudantBoloRepository.prototype.insert = function ( bolo, attachments ) {
+    var newdoc = boloToCloudant( bolo );
+    newdoc._id = createUUID();
 
-    var newdoc = boloToCloudant(bolo);
-    newdoc._id = uuid.v4().replace(/-/g, '');
-    newdoc.isActive = true;
+    var atts = _.map( attachments, attachmentsToCloudant );
 
-    function handleBoloInsert (attDTOs) {
-        if (attDTOs.length) {
+    return Promise.all( atts ).then( function ( attDTOs ) {
+        if ( attDTOs.length ) {
             return db.insertMultipart(newdoc, attDTOs, newdoc._id);
         } else {
             return db.insert(newdoc, newdoc._id);
         }
-    }
-
-    function handleInsertResponse (response) {
-        if (!response.ok) handleInsertErrorResponse(response.reason);
-        return context.getBolo(response.id);
-    }
-
-    function handleInsertErrorResponse (error) {
-        throw new Error(
-            'Unable to create new document: ' + error.reason
-        );
-    }
-
-    return Promise.all( atts.map( transformAttachment ) )
-        .then( handleBoloInsert )
-        .then( handleInsertResponse )
-        .catch( handleInsertErrorResponse );
+    }).then( function ( response ) {
+        if ( !response.ok ) throw new Error( response.resaon );
+        return boloFromCloudant( newdoc );
+    }).catch( function ( error ) {
+        throw new Error( 'Unable to create new document: ' + error.message );
+    });
 };
 
 
@@ -161,40 +148,43 @@ CloudantBoloRepository.prototype.insert = function (bolo, attachments) {
  *
  * @param {Bolo} - the bolo to update
  */
-CloudantBoloRepository.prototype.update = function (bolo, attachments) {
-    var newdoc = boloToCloudant(bolo);
-    var atts = [];
+CloudantBoloRepository.prototype.update = function ( bolo, attachments ) {
+    var context = this;
+    var newdoc = boloToCloudant( bolo );
 
-    _.each(attachments, function (att) {
-        if (att.content_type != content_type) {
-            atts.push(att);
+    var atts = _.map( attachments, attachmentsToCloudant );
+    var preWorkPromises = [ db.get( newdoc._id ), Promise.all( atts )];
+
+    return Promise.all( preWorkPromises ).then( function ( prereqs ) {
+        var doc     = prereqs[0],
+            attDTOs = prereqs[1];
+
+        var blacklist = [
+            'isActive', 'Type', '_id', '_attachments', 'createdOn', 'agency',
+            'author', 'authorFname', 'authorLName', 'authorUName', 'images'
+        ];
+
+        _( newdoc ).omit( blacklist ).each( function ( val, key ) {
+            doc[key] = val;
+        }).run();
+
+        if ( newdoc.images_deleted ) {
+            doc._attachments = _.omit( doc._attachments, newdoc.images_deleted );
+            doc.images = _.omit( doc.images, newdoc.images_deleted );
         }
+
+        if ( attDTOs.length ) {
+            _.extend( doc.images, newdoc.images );
+            return db.insertMultipart( doc, attDTOs, newdoc._id );
+        } else {
+            return db.insert( doc );
+        }
+    }).then(function ( response ) {
+        if ( !response.ok ) throw new Error( 'Unable to update BOLO' );
+        return context.getBolo( response.id );
+    }).catch(function ( error ) {
+        throw new Error( 'Unable to update bolo doc: ' + error.message );
     });
-
-    var currentBoloRev = db.get(bolo.data.id);
-    var attsPromise = Promise.all(atts.map(transformAttachment));
-
-    return Promise.all([currentBoloRev, attsPromise])
-        .then(function (data) {
-            var doc = data[0],
-                attDTOs = data[1];
-
-            newdoc._rev = doc._rev;
-            newdoc._attachments = doc._attachments || {};
-
-            if (attDTOs.length) {
-                return db.insertMultipart(newdoc, attDTOs, newdoc._id);
-            } else {
-                return db.insert(newdoc);
-            }
-        })
-        .then(function (response) {
-            if (!response.ok) throw new Error('Unable to update BOLO');
-            return Promise.resolve(boloFromCloudant(newdoc));
-        })
-        .catch(function (error) {
-            return Promise.reject(error);
-        });
 };
 
 
@@ -239,38 +229,37 @@ CloudantBoloRepository.prototype.delete = function (id) {
 };
 
 
-CloudantBoloRepository.prototype.getBolos = function (pageSize, currentPage) {
-    var limit = pageSize;
-    var skip = pageSize * (currentPage-1);
-    return db.view('bolo', 'all_active', { include_docs: true, limit: limit, skip: skip, descending: true })
-        .then(function (result) {
-            var bolos = result.rows.map(function (item) {
-                return boloFromCloudant(item.doc);
-            });
-            var tPages = Math.floor(result.total_rows/pageSize);
-            var tReminder = result.total_rows%pageSize;
-            var pages = tReminder> 0? tPages + 1 : tPages;
+CloudantBoloRepository.prototype.getBolos = function ( limit, skip ) {
+    var opts = {
+        'include_docs': true,
+        'limit': limit,
+        'skip': skip,
+        'descending': true
+    };
 
-            return Promise.resolve({ bolos: bolos, pages: pages });
+    return db.view( 'bolo', 'all_active', opts ).then( function ( result ) {
+        var bolos = _.map( result.rows, function ( row ) {
+            return boloFromCloudant( row.doc );
         });
+        return { 'bolos': bolos, total: result.total_rows };
+    });
 };
 
-CloudantBoloRepository.prototype.getArchiveBolos = function (pageSize, currentPage) {
-    var limit = pageSize;
-    var skip = pageSize * (currentPage-1);
 
-    return db.view('bolo', 'all_archive', { include_docs: true, limit: limit, skip: skip, descending: true })
-        .then(function (result) {
-            var bolos = result.rows.map(function (item) {
-                return boloFromCloudant(item.doc);
-            });
+CloudantBoloRepository.prototype.getArchiveBolos = function ( limit, skip ) {
+    var opts = {
+        'include_docs': true,
+        'limit': limit,
+        'skip': skip,
+        'descending': true
+    };
 
-            var tPages = Math.floor(result.total_rows/pageSize);
-            var tReminder = result.total_rows%pageSize;
-            var pages = tReminder> 0? tPages + 1 : tPages;
-
-            return Promise.resolve({ bolos: bolos, pages: pages });
+    return db.view( 'bolo', 'all_archive', opts ).then( function ( result ) {
+        var bolos = _.map( result.rows, function ( row ) {
+            return boloFromCloudant( row.doc );
         });
+        return { bolos: bolos, total: result.total_rows };
+    });
 };
 
 

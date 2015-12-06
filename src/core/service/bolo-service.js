@@ -31,20 +31,17 @@ function BoloService ( boloRepository ) {
  * @param {object} boloData - Data for the new BOLO
  * @param {object} attachments - BOLO Attachments
  */
-BoloService.prototype.createBolo = function ( boloData, attachments ) {
-    var bolo = new Bolo( boloData );
+BoloService.prototype.createBolo = function ( boloDTO, attachments ) {
+    var bolo = new Bolo( boloDTO );
 
     if ( ! bolo.isValid() ) {
-        Promise.reject( new Error( "invalid bolo data" ) );
+        Promise.reject( new Error( "Invalid bolo data" ) );
     }
 
     return this.boloRepository.insert( bolo, attachments )
-        .then( function ( value ) {
-            return value;
-        })
-        .catch( function ( error ) {
-            throw new Error( 'Unable to create BOLO.' );
-        });
+    .catch( function ( error ) {
+        throw new Error( 'Unable to create BOLO.' );
+    });
 };
 
 /**
@@ -56,36 +53,12 @@ BoloService.prototype.createBolo = function ( boloData, attachments ) {
  */
 BoloService.prototype.updateBolo = function ( updateDTO, attachments ) {
     var context = this;
+    var bolo = new Bolo( updateDTO );
 
-    return this.boloRepository.getBolo( updateDTO.id )
-    .then( function ( bolo ) {
-        function blacklisted ( key ) {
-            var list = [
-               'authorFName', 'authorLName', 'authorUName', 'attachments'
-            ];
-            return ( -1 !== list.indexOf( key ) );
-        }
-
-        Object.keys( bolo.data ).forEach( function ( key ) {
-            /** @todo review how to deal with array inputs **/
-            if ( updateDTO[key] && ! blacklisted( key ) ) {
-                bolo[key] = updateDTO[key];
-            }
-        });
-
-        return context.boloRepository.update( bolo, attachments );
-    })
+    return this.boloRepository.update( bolo, attachments )
     .catch( function ( error ) {
-        return Promise.reject( { success: false, error: error.message } );
+        throw new Error( 'Unable to update BOLO.' );
     });
-};
-
-/**
- * Retrieve a collection of bolos
- */
-BoloService.prototype.getBolos = function (pageSize, currentPage) {
-    var context = this;
-    return context.boloRepository.getBolos(pageSize, currentPage);
 };
 
 BoloService.prototype.getBolo = function (id) {
@@ -93,8 +66,15 @@ BoloService.prototype.getBolo = function (id) {
     return context.boloRepository.getBolo(id);
 };
 
-BoloService.prototype.getArchiveBolos = function (pageSize, currentPage ) {
-    return this.boloRepository.getArchiveBolos( pageSize, currentPage );
+/**
+ * Retrieve a collection of bolos
+ */
+BoloService.prototype.getBolos = function ( limit, skip ) {
+    return this.boloRepository.getBolos( limit, skip );
+};
+
+BoloService.prototype.getArchiveBolos = function ( limit, skip ) {
+    return this.boloRepository.getArchiveBolos( limit, skip );
 };
 
 BoloService.prototype.activate = function ( id, activate ) {

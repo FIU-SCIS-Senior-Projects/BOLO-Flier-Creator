@@ -41,8 +41,9 @@ var defaults = {
     summary         : '',
     attachments     : {},
     video_url       : '',
-    isActive        : '',
-    status          : ''
+    isActive        : true,
+    status          : '',
+    images          : {}
 };
 
 /** @module core/domain */
@@ -79,39 +80,6 @@ Bolo.prototype.isValid = function () {
     });
 
     return ( result.length === required.length );
-};
-
-/**
- * Attach an image file reference to the bolo data. Reference should be
- * usable by a Media Adapter.
- *
- * @param {Object} - Meta data object containing a UUID and filename
- */
-Bolo.prototype.attachImage = function (meta) {
-    this.data.image = this.data.image || [];
-    this.data.image = this.data.image.concat(meta);
-};
-
-/**
- * Attach a video file reference to the bolo data. Reference should be
- * usable by a Media Adapter.
- *
- * @param {Object} - Meta data object containing a UUID and filename
- */
-Bolo.prototype.attachVideo = function (meta) {
-    this.data.video = this.data.video || [];
-    this.data.video = this.data.video.concat(meta);
-};
-
-/**
- * Attach an audio file reference to the bolo data. Reference should be
- * usable by a Media Adapter.
- *
- * @param {Object} - Meta data object containing a UUID and filename
- */
-Bolo.prototype.attachAudio = function (meta) {
-    this.data.audio = this.data.audio || [];
-    this.data.audio = this.data.audio.concat(meta);
 };
 
 /**
