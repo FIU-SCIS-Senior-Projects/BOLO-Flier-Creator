@@ -11,6 +11,7 @@ The current application stack consists of:
 - [Express](http://expressjs.com)
 - [IBM Bluemix PaaS](http://www.ibm.com/cloud-computing/bluemix)
 - [Cloudant](http://cloudant.com)
+- [SendGrid](https://sendgrid.com/)
 
 
 ## How to use
@@ -34,6 +35,8 @@ push` command.
 2. Create a `manifest.yml` file using the included manifest.yml.sample file in
    the project.
     * Make sure to remove the `.sample` extension from the filename.
+    * Using the sample with IBM Bluemix, the only keys that should need to be
+      changed are `sevices`, `host`, and `name`.
 3. Connect your CloudFoundry CLI to the Bluemix API.
     * Reference the [Bluemix CF CLI
       docs](https://www.ng.bluemix.net/docs/starters/install_cli.html) for
@@ -70,12 +73,12 @@ Coverage reports are stored in `./coverage` directory.
 
 To run individual tests:  
 `mocha test/unit` -or- `npm run unit-test`  
-`mocha test/functional`
+`mocha test/integration`
 
 The --watch flag can be used to watch for any changes to tests during
 development:  
 `mocha --watch test/unit`  
-`mocha --watch test/functional`
+`mocha --watch test/integration`
 
 Note that acceptance tests have not been implemented yet. The project plans
 to use WebDriver for accpetance tests against user story scenarios. Changes
@@ -91,3 +94,16 @@ The project requires all source code to be documented using
 Generating the documentation is easy! Make sure that JSDoc is installed by
 using the `npm install` command. Then type `npm run docs` and that's it.
 Open jsdoc/index.html file in your browser to read. Enjoy.
+
+
+## References
+
+### Bluemix Guides and References
+
+[Design, manage, and test multi-instance Bluemix
+applications](http://www.ibm.com/developerworks/cloud/library/cl-develop-scalable-bluemix-app/)
+- The application's session handling strategy needs to be refactored. Currently
+  is is storing sessions in-memory which can cause a Bluemix instance to crash
+  when too many sessions are stored. This guide talks about session handling via
+  key-value stores like Redis and CouchDB (Cloudant) in the context of
+  multi-instance applications.
