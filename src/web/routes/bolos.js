@@ -14,6 +14,7 @@ var userService     = new config.UserService( new config.UserRepository() );
 var boloService     = new config.BoloService( new config.BoloRepository() );
 var agencyService   = new config.AgencyService( new config.AgencyRepository() );
 var emailService    = config.EmailService;
+var BoloAuthorize   = require('../lib/authorization.js').BoloAuthorize;
 
 var formUtil        = require('../lib/form-util');
 
@@ -172,10 +173,28 @@ router.get( '/bolo/edit/:id', function ( req, res, next ) {
 
     boloService.getBolo( req.params.id ).then( function ( bolo ) {
         data.bolo = bolo;
-        return agencyService.getAgency( bolo.agency );
-    }).then( function ( agency ) {
-        data.agency = agency;
-        res.render( 'bolo-edit-form', data );
+        return Promise.all([
+            agencyService.getAgency( bolo.agency ),
+            userService.getUser( bolo.author )
+        ]);
+    }).then( function ( responses ) {
+        data.agency = responses[0];
+        data.author = responses[1];
+
+        var auth = new BoloAuthorize( data.bolo, data.author, req.user );
+
+        if ( auth.authorizedToEdit() ) {
+            res.render( 'bolo-edit-form', data );
+        }
+    }).catch( function ( error ) {
+        if ( ! /unauthorized/i.test( error.message ) ) throw error;
+
+        req.flash( GFERR,
+            'You do not have permissions to edit this BOLO. Please ' +
+            'contact your agency\'s supervisor or administrator ' +
+            'for access.'
+        );
+        res.redirect( 'back' );
     }).catch( function ( error ) {
         next( error );
     });
@@ -269,7 +288,7 @@ router.post('/bolo/delete/:id', function (req, res) {
             res.redirect('/bolo');
         })
         .catch(function (_error) {
-            // @todo redirect and send flash message with error 
+            // @todo redirect and send flash message with error
             res.status(500).send('something wrong happened...', _error.stack);
         });
 });
