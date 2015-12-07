@@ -38,16 +38,6 @@ $('.archive-bolo').click(function (bolo) {
     });
 });
 
-$('.delete-bolo').click(function (bolo) {
-    var id = $(this).attr('id');
-    $.ajax({
-        url: "/bolo/delete/" + id,
-        method:"POST"
-    }).done(function () {
-        window.location.assign( window.location.href );
-    });
-});
-
 $('.restore-bolo').click(function (bolo) {
     var id = $(this).attr('id');
     $.ajax({

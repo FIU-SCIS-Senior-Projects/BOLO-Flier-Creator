@@ -279,18 +279,38 @@ router.post('/bolo/restore/:id', function (req, res) {
 /**
  * Process a request delete a bolo with the provided id
  */
-router.post('/bolo/delete/:id', function (req, res) {
-    boloService.removeBolo(req.params.id)
-        .then(function (success) {
-            if (!success) {
-                throw new Error("Bolo not deleted. Please try again.");
-            }
-            res.redirect('/bolo');
-        })
-        .catch(function (_error) {
-            // @todo redirect and send flash message with error
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+router.get( '/bolo/delete/:id', function ( req, res, next ) {
+    var data = {};
+
+    boloService.getBolo( req.params.id ).then( function ( bolo ) {
+        data.bolo = bolo;
+
+        return Promise.all([
+            agencyService.getAgency( bolo.agency ),
+            userService.getUser( bolo.author )
+        ]);
+    }).then( function ( responses ) {
+        data.agency = responses[0];
+        data.author = responses[1];
+        var auth = new BoloAuthorize( data.bolo, data.author, req.user );
+        if ( auth.authorizedToDelete() ) {
+            return boloService.removeBolo( req.params.id );
+        }
+    }).then( function ( response ) {
+        req.flash( GFMSG, 'Successfully deleted BOLO.' );
+        res.redirect( 'back' );
+    }).catch( function ( error ) {
+        if ( ! /unauthorized/i.test( error.message ) ) throw error;
+
+        req.flash( GFERR,
+            'You do not have permissions to edit this BOLO. Please ' +
+            'contact your agency\'s supervisor or administrator ' +
+            'for access.'
+        );
+        res.redirect( 'back' );
+    }).catch(function ( error ) {
+        next( error );
+    });
 });
 
 

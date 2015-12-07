@@ -41,5 +41,11 @@ BoloAuthorize.prototype.authorizedToEdit = function () {
     throw new Error( 'Unauthorized request to edit bolo: ' + this.bolo.id );
 };
 
+BoloAuthorize.prototype.authorizedToDelete  = function () {
+    if ( this.isAdmin() ) return true;
+    if ( this.canSupervise() && this.sameAgency() ) return true;
+
+    throw new Error( 'Unauthorized request to delete bolo: ' + this.bolo.id );
+};
 
 module.exports.BoloAuthorize = BoloAuthorize;
