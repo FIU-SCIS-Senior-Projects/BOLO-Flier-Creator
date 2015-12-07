@@ -7,6 +7,7 @@ block jumbo
             h1 Be On the Lookout
             p Browse Archived BOLOs
 
+
 block content
     include ./partials/global-alerts.jade
 
@@ -18,8 +19,8 @@ block content
             div.col-sm-6.col-md-4
                 include ./partials/bolo-thumbnail.jade
                     .action
-                        a.btn.btn-default(role="button" type="submit" class="restore-bolo" id=bolo.id) Restore
-                        a.btn.btn-danger(role="button" type="submit" class="delete-bolo", id=bolo.id) Delete
+                        a.btn.btn-default( href="/bolo/restore/" + bolo.id role="button" type="submit" ) Restore
+                        a.btn.btn-danger( href="/bolo/delete/" + bolo.id role="button" type="submit" ) Delete
 
     .row.text-center
         - var route = '/bolo/archive'

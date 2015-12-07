@@ -83,7 +83,10 @@ var isAuthenticated = function ( req, res, next ) {
 app.use( express.static( path.join( __dirname, 'public' ) ) );
 
 app.use( function ( req, res, next ) {
-    if ( req.user ) res.locals.userLoggedIn = true;
+    if ( req.user ) {
+        res.locals.userLoggedIn = true;
+        res.locals.username = req.user.username;
+    }
     next();
 });
 

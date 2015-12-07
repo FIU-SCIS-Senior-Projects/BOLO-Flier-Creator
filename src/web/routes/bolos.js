@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var _               = require('lodash');
 var jade            = require('jade');
 var moment          = require('moment');
 var path            = require('path');
@@ -14,6 +15,7 @@ var userService     = new config.UserService( new config.UserRepository() );
 var boloService     = new config.BoloService( new config.BoloRepository() );
 var agencyService   = new config.AgencyService( new config.AgencyRepository() );
 var emailService    = config.EmailService;
+var BoloAuthorize   = require('../lib/authorization.js').BoloAuthorize;
 
 var formUtil        = require('../lib/form-util');
 
@@ -58,6 +60,29 @@ function sendBoloNotificationEmail ( bolo, template ) {
         );
     });
 }
+
+/**
+ * @todo an optimization could probably be made here by creating a view for
+ * this type of data in Cloudant (if its still being used).
+ */
+function getAllBoloData ( id ) {
+    var data = {};
+
+    return boloService.getBolo( id ).then( function ( bolo ) {
+        data.bolo = bolo;
+
+        return Promise.all([
+            agencyService.getAgency( bolo.agency ),
+            userService.getUser( bolo.author )
+        ]);
+    }).then( function ( responses ) {
+        data.agency = responses[0];
+        data.author = responses[1];
+
+        return data;
+    });
+}
+
 
 function attachmentFilter ( fileDTO ) {
     return /image/i.test( fileDTO.content_type );
@@ -170,12 +195,22 @@ router.get( '/bolo/edit/:id', function ( req, res, next ) {
 
     /** @todo car we trust that this is really an id? **/
 
-    boloService.getBolo( req.params.id ).then( function ( bolo ) {
-        data.bolo = bolo;
-        return agencyService.getAgency( bolo.agency );
-    }).then( function ( agency ) {
-        data.agency = agency;
-        res.render( 'bolo-edit-form', data );
+    getAllBoloData( req.params.id ).then( function ( _data ) {
+        _.extend( data, _data );
+        var auth = new BoloAuthorize( data.bolo, data.author, req.user );
+
+        if ( auth.authorizedToEdit() ) {
+            res.render( 'bolo-edit-form', data );
+        }
+    }).catch( function ( error ) {
+        if ( ! /unauthorized/i.test( error.message ) ) throw error;
+
+        req.flash( GFERR,
+            'You do not have permissions to edit this BOLO. Please ' +
+            'contact your agency\'s supervisor or administrator ' +
+            'for access.'
+        );
+        res.redirect( 'back' );
     }).catch( function ( error ) {
         next( error );
     });
@@ -221,57 +256,90 @@ router.post( '/bolo/edit/:id', function ( req, res, next ) {
     });
 });
 
-// handle requests to inactivate a specific bolo
-router.post('/bolo/archive/:id', function (req, res) {
-    var activate = false;
 
-    boloService.activate(req.params.id, activate)
-        .then(function (success) {
-            if (!success) {
-                throw new Error("Bolo not inactivated. Please try again.");
-            }
-            res.redirect('/bolo');
-        })
-        .catch(function (_error) {
-            /** @todo redirect and send flash message with error */
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+// handle requests to inactivate a specific bolo
+router.get( '/bolo/archive/:id', function ( req, res, next ) {
+    var data = {};
+
+    getAllBoloData( req.params.id ).then( function ( _data ) {
+        _.extend( data, _data );
+        var auth = new BoloAuthorize( data.bolo, data.author, req.user );
+        if ( auth.authorizedToArchive() ) {
+            boloService.activate( data.bolo.id, false );
+        }
+    }).then( function ( response ) {
+        req.flash( GFMSG, 'Successfully archived BOLO.' );
+        res.redirect( '/bolo/archive' );
+    }).catch( function ( error ) {
+        if ( ! /unauthorized/i.test( error.message ) ) throw error;
+
+        req.flash( GFERR,
+            'You do not have permissions to archive this BOLO. Please ' +
+            'contact your agency\'s supervisor or administrator ' +
+            'for access.'
+        );
+        res.redirect( 'back' );
+    }).catch(function ( error ) {
+        next( error );
+    });
 });
+
 
 /**
  * Process a request to restore a bolo from the archive.
  */
-router.post('/bolo/restore/:id', function (req, res) {
-    var activate = true;
+router.get( '/bolo/restore/:id', function ( req, res, next ) {
+    var data = {};
 
-    boloService.activate(req.params.id, activate)
-        .then(function (success) {
-            if (!success) {
-                throw new Error("Bolo not activated. Please try again.");
-            }
-            res.redirect('/bolo/archive');
-        })
-        .catch(function (_error) {
-            /** @todo redirect and send flash message with error */
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+    getAllBoloData( req.params.id ).then( function ( _data ) {
+        _.extend( data, _data );
+        var auth = new BoloAuthorize( data.bolo, data.author, req.user );
+        if ( auth.authorizedToArchive() ) {
+            boloService.activate( data.bolo.id, true );
+        }
+    }).then( function ( response ) {
+        req.flash( GFMSG, 'Successfully restored BOLO.' );
+        res.redirect( '/bolo' );
+    }).catch( function ( error ) {
+        if ( ! /unauthorized/i.test( error.message ) ) throw error;
+
+        req.flash( GFERR,
+            'You do not have permissions to restore this BOLO. Please ' +
+            'contact your agency\'s supervisor or administrator ' +
+            'for access.'
+        );
+        res.redirect( 'back' );
+    }).catch(function ( error ) {
+        next( error );
+    });
 });
+
 
 /**
  * Process a request delete a bolo with the provided id
  */
-router.post('/bolo/delete/:id', function (req, res) {
-    boloService.removeBolo(req.params.id)
-        .then(function (success) {
-            if (!success) {
-                throw new Error("Bolo not deleted. Please try again.");
-            }
-            res.redirect('/bolo');
-        })
-        .catch(function (_error) {
-            // @todo redirect and send flash message with error 
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+router.get( '/bolo/delete/:id', function ( req, res, next ) {
+
+    getAllBoloData( req.params.id ).then( function ( data ) {
+        var auth = new BoloAuthorize( data.bolo, data.author, req.user );
+        if ( auth.authorizedToDelete() ) {
+            return boloService.removeBolo( req.params.id );
+        }
+    }).then( function ( response ) {
+        req.flash( GFMSG, 'Successfully deleted BOLO.' );
+        res.redirect( 'back' );
+    }).catch( function ( error ) {
+        if ( ! /unauthorized/i.test( error.message ) ) throw error;
+
+        req.flash( GFERR,
+            'You do not have permissions to delete this BOLO. Please ' +
+            'contact your agency\'s supervisor or administrator ' +
+            'for access.'
+        );
+        res.redirect( 'back' );
+    }).catch(function ( error ) {
+        next( error );
+    });
 });
 
 
