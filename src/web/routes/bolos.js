@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var _               = require('lodash');
 var jade            = require('jade');
 var moment          = require('moment');
 var path            = require('path');
@@ -59,6 +60,29 @@ function sendBoloNotificationEmail ( bolo, template ) {
         );
     });
 }
+
+/**
+ * @todo an optimization could probably be made here by creating a view for
+ * this type of data in Cloudant (if its still being used).
+ */
+function getAllBoloData ( id ) {
+    var data = {};
+
+    return boloService.getBolo( id ).then( function ( bolo ) {
+        data.bolo = bolo;
+
+        return Promise.all([
+            agencyService.getAgency( bolo.agency ),
+            userService.getUser( bolo.author )
+        ]);
+    }).then( function ( responses ) {
+        data.agency = responses[0];
+        data.author = responses[1];
+
+        return data;
+    });
+}
+
 
 function attachmentFilter ( fileDTO ) {
     return /image/i.test( fileDTO.content_type );
@@ -171,16 +195,8 @@ router.get( '/bolo/edit/:id', function ( req, res, next ) {
 
     /** @todo car we trust that this is really an id? **/
 
-    boloService.getBolo( req.params.id ).then( function ( bolo ) {
-        data.bolo = bolo;
-        return Promise.all([
-            agencyService.getAgency( bolo.agency ),
-            userService.getUser( bolo.author )
-        ]);
-    }).then( function ( responses ) {
-        data.agency = responses[0];
-        data.author = responses[1];
-
+    getAllBoloData( req.params.id ).then( function ( _data ) {
+        _.extend( data, _data );
         var auth = new BoloAuthorize( data.bolo, data.author, req.user );
 
         if ( auth.authorizedToEdit() ) {
@@ -276,22 +292,13 @@ router.post('/bolo/restore/:id', function (req, res) {
         });
 });
 
+
 /**
  * Process a request delete a bolo with the provided id
  */
 router.get( '/bolo/delete/:id', function ( req, res, next ) {
-    var data = {};
 
-    boloService.getBolo( req.params.id ).then( function ( bolo ) {
-        data.bolo = bolo;
-
-        return Promise.all([
-            agencyService.getAgency( bolo.agency ),
-            userService.getUser( bolo.author )
-        ]);
-    }).then( function ( responses ) {
-        data.agency = responses[0];
-        data.author = responses[1];
+    getAllBoloData( req.params.id ).then( function ( data ) {
         var auth = new BoloAuthorize( data.bolo, data.author, req.user );
         if ( auth.authorizedToDelete() ) {
             return boloService.removeBolo( req.params.id );
