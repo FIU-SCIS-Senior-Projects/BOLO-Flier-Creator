@@ -48,4 +48,11 @@ BoloAuthorize.prototype.authorizedToDelete  = function () {
     throw new Error( 'Unauthorized request to delete bolo: ' + this.bolo.id );
 };
 
+BoloAuthorize.prototype.authorizedToArchive = function () {
+    if ( this.isAdmin() ) return true;
+    if ( this.canSupervise() && this.sameAgency() ) return true;
+
+    throw new Error( 'Unauthorized request to archive bolo: ' + this.bolo.id );
+};
+
 module.exports.BoloAuthorize = BoloAuthorize;

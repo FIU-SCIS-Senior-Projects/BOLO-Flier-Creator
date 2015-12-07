@@ -256,40 +256,62 @@ router.post( '/bolo/edit/:id', function ( req, res, next ) {
     });
 });
 
-// handle requests to inactivate a specific bolo
-router.post('/bolo/archive/:id', function (req, res) {
-    var activate = false;
 
-    boloService.activate(req.params.id, activate)
-        .then(function (success) {
-            if (!success) {
-                throw new Error("Bolo not inactivated. Please try again.");
-            }
-            res.redirect('/bolo');
-        })
-        .catch(function (_error) {
-            /** @todo redirect and send flash message with error */
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+// handle requests to inactivate a specific bolo
+router.get( '/bolo/archive/:id', function ( req, res, next ) {
+    var data = {};
+
+    getAllBoloData( req.params.id ).then( function ( _data ) {
+        _.extend( data, _data );
+        var auth = new BoloAuthorize( data.bolo, data.author, req.user );
+        if ( auth.authorizedToArchive() ) {
+            boloService.activate( data.bolo.id, false );
+        }
+    }).then( function ( response ) {
+        req.flash( GFMSG, 'Successfully archived BOLO.' );
+        res.redirect( '/bolo/archive' );
+    }).catch( function ( error ) {
+        if ( ! /unauthorized/i.test( error.message ) ) throw error;
+
+        req.flash( GFERR,
+            'You do not have permissions to archive this BOLO. Please ' +
+            'contact your agency\'s supervisor or administrator ' +
+            'for access.'
+        );
+        res.redirect( 'back' );
+    }).catch(function ( error ) {
+        next( error );
+    });
 });
+
 
 /**
  * Process a request to restore a bolo from the archive.
  */
-router.post('/bolo/restore/:id', function (req, res) {
-    var activate = true;
+router.get( '/bolo/restore/:id', function ( req, res, next ) {
+    var data = {};
 
-    boloService.activate(req.params.id, activate)
-        .then(function (success) {
-            if (!success) {
-                throw new Error("Bolo not activated. Please try again.");
-            }
-            res.redirect('/bolo/archive');
-        })
-        .catch(function (_error) {
-            /** @todo redirect and send flash message with error */
-            res.status(500).send('something wrong happened...', _error.stack);
-        });
+    getAllBoloData( req.params.id ).then( function ( _data ) {
+        _.extend( data, _data );
+        var auth = new BoloAuthorize( data.bolo, data.author, req.user );
+        if ( auth.authorizedToArchive() ) {
+            boloService.activate( data.bolo.id, true );
+        }
+    }).then( function ( response ) {
+        req.flash( GFMSG, 'Successfully restored BOLO.' );
+        res.redirect( '/bolo' );
+    }).catch( function ( error ) {
+        if ( ! /unauthorized/i.test( error.message ) ) throw error;
+
+        req.flash( GFERR,
+            'You do not have permissions to restore this BOLO. Please ' +
+            'contact your agency\'s supervisor or administrator ' +
+            'for access.'
+        );
+        res.redirect( 'back' );
+    }).catch(function ( error ) {
+        next( error );
+    });
 });
 
 
@@ -310,7 +332,7 @@ router.get( '/bolo/delete/:id', function ( req, res, next ) {
         if ( ! /unauthorized/i.test( error.message ) ) throw error;
 
         req.flash( GFERR,
-            'You do not have permissions to edit this BOLO. Please ' +
+            'You do not have permissions to delete this BOLO. Please ' +
             'contact your agency\'s supervisor or administrator ' +
             'for access.'
         );

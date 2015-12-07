@@ -12,38 +12,11 @@ bolo.cacheElements = function () {
     bolo.cache.addImageButton = document.querySelector('#form-add-img-btn');
 };
 
-/*bolo.registerEvents = function () {
-    bolo.cache.addImageButton.addEventListener('click', function (event) {
-        var orig = bolo.cache.addImageGroup.querySelector('input[type="file"]');
-        bolo.cache.addImageGroup.appendChild(orig.cloneNode());
-    });
-};*/
 
 bolo.init = function () {
     bolo.cacheElements();
-    //bolo.registerEvents();
 };
 
 window.addEventListener("load", function (event) {
     bolo.init();
-});
-
-$('.archive-bolo').click(function (bolo) {
-    var id = $(this).data('bid');
-    $.ajax({
-        url: "/bolo/archive/" + id,
-        method: "POST"
-    }).done(function () {
-        window.location.assign("/bolo");
-    });
-});
-
-$('.restore-bolo').click(function (bolo) {
-    var id = $(this).attr('id');
-    $.ajax({
-        url: "/bolo/restore/" + id,
-        method:"POST"
-    }).done(function () {
-        window.location.assign( "/bolo/archive" );
-    });
 });

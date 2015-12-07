@@ -19,9 +19,9 @@ block content
             div.col-sm-6.col-md-4
                 include ./partials/bolo-thumbnail.jade
                     .actions
-                        a.btn.btn-default(href="/bolo/edit/" + bolo.id, role="button") Edit
-                        a.btn.btn-default(href="/bolo/details/" + bolo.id, role="button") Details
-                        a.btn.btn-danger(role="button" type="submit" class="archive-bolo", data-bid=bolo.id) Archive
+                        a.btn.btn-default( href="/bolo/edit/" + bolo.id, role="button" ) Edit
+                        a.btn.btn-default( href="/bolo/details/" + bolo.id role="button" ) Details
+                        a.btn.btn-warning( href="/bolo/archive/" + bolo.id role="button" ) Archive
 
     .row.text-center
         - var route = '/bolo'
