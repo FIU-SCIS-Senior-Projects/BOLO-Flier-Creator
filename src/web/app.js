@@ -28,16 +28,10 @@ var GFERR = config.const.GFERR;
  * Express Initialization
  */
 var app = express();
-
-
-/*
- * Express Settings
- */
 app.set( 'port', process.env.PORT || 3000 );
 app.set( 'views', path.join( __dirname, 'views' ) );
 app.set( 'view engine', 'jade' );
-app.locals._ = _;
-app.locals.config_bootstrap = config.bootstrap;
+app.disable( 'x-powered-by' ); /** https://www.youtube.com/watch?v=W-8XeQ-D1RI **/
 
 var isDev = ( 'development' == app.get('env') );
 var secretKey = new Buffer( process.env.SESSION_SECRET || 'pw0rd' ).toString();
@@ -73,6 +67,13 @@ app.use( auth.passport.session() );
 
 
 /*
+ * Application Locals
+ */
+app.locals._ = _;
+app.locals.config_bootstrap = config.bootstrap;
+
+
+/*
  * Routes
  */
 var isAuthenticated = function ( req, res, next ) {
@@ -97,6 +98,12 @@ app.use( function ( req, res, next ) {
 app.use( function ( req, res, next ) {
     res.locals.g_err = req.flash( config.const.GFERR );
     res.locals.g_msg = req.flash( config.const.GFMSG );
+    next();
+});
+
+/** https://www.youtube.com/watch?v=W-8XeQ-D1RI **/
+app.use( function ( req, res, next ) {
+    res.setHeader( 'X-Frame-Options', 'sameorigin' );
     next();
 });
 
