@@ -13,6 +13,7 @@ var _ = require('lodash');
 var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var expressSession = require('express-session');
+var favicon = require('serve-favicon');
 var flash = require('connect-flash');
 var logger = require('morgan');
 var methodOverride = require('method-override');
@@ -49,6 +50,9 @@ if ( isDev ) {
     app.use( logger('dev') );
     app.use( errorHandler() );
 }
+
+app.use( favicon( __dirname + '/public/favicon.ico' ) );
+
 app.use( methodOverride() );
 app.use( cookieParser( secretKey) );
 app.use( expressSession({
