@@ -19,32 +19,6 @@ var required = Object.keys(schema).filter(function (key) {
     return schema[key].required;
 });
 
-var defaults = {
-    id              : null,
-    createdOn       : '',
-    lastUpdatedOn   : '',
-    agency          : '',
-    author          : '',
-    category        : '',
-    firstName       : '',
-    lastName        : '',
-    dob             : '',
-    dlNumber        : '',
-    race            : '',
-    sex             : '',
-    height          : '',
-    weight          : '',
-    hairColor       : '',
-    tattoos         : '',
-    address         : '',
-    additional      : '',
-    summary         : '',
-    attachments     : {},
-    video_url       : '',
-    isActive        : true,
-    status          : '',
-    images          : {}
-};
 
 /** @module core/domain */
 module.exports = Bolo;
@@ -59,7 +33,34 @@ module.exports = Bolo;
  * @param {Object} data - Object containing Bolo Data properties
  */
 function Bolo( data ) {
-    this.data = _.extend( {}, defaults, data );
+    var defaults = {
+        id              : null,
+        createdOn       : '',
+        lastUpdatedOn   : '',
+        agency          : '',
+        author          : '',
+        category        : '',
+        firstName       : '',
+        lastName        : '',
+        dob             : '',
+        dlNumber        : '',
+        race            : '',
+        sex             : '',
+        height          : '',
+        weight          : '',
+        hairColor       : '',
+        tattoos         : '',
+        address         : '',
+        additional      : '',
+        summary         : '',
+        attachments     : {},
+        video_url       : '',
+        isActive        : true,
+        status          : '',
+        images          : {}
+    };
+
+    this.data = _.defaults( {}, data, defaults );
     Entity.setDataAccessors( this.data, this );
 }
 

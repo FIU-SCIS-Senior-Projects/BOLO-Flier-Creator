@@ -34,21 +34,6 @@ var schema = {
     }
 };
 
-var defaults = {
-    'id'            : null,
-    'username'      : null,
-    'email'         : null,
-    'fname'         : '',
-    'lname'         : '',
-    'password'      : null,
-    'tier'          : 1,
-    'agency'        : null,
-    'badge'         : '',
-    'sectunit'      : '',
-    'ranktitle'     : '',
-    'notifications' : []
-};
-
 var required = Object.keys( schema ).filter( function ( key ) {
     return schema[key].required;
 });
@@ -84,6 +69,21 @@ module.exports = User;
  * @param {Object} - Object containing User Data properties.
  */
 function User ( data ) {
+    var defaults = {
+        'id'            : null,
+        'username'      : null,
+        'email'         : null,
+        'fname'         : '',
+        'lname'         : '',
+        'password'      : null,
+        'tier'          : 1,
+        'agency'        : null,
+        'badge'         : '',
+        'sectunit'      : '',
+        'ranktitle'     : '',
+        'notifications' : []
+    };
+
     this.data = _.extend( {}, defaults, data );
     Entity.setDataAccessors( this.data, this );
 }
