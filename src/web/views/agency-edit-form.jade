@@ -42,11 +42,8 @@ block admin-content
                 .col-md-4.push-md-1.details-image
                     if agency && agency.attachments.logo
                         - var logo_url = route + "/asset/" + agency.id + "/logo";
-                        label.control-label Current Logo
                         a.details-img( href=logo_url )
                             img( src=logo_url alt="Logo Image" )
-                    else
-                        p: i No Logo Image
 
         .form-group
             label.control-label( for="image_upload" ) Upload New Shield Image
@@ -58,11 +55,8 @@ block admin-content
                 .col-md-4.push-md-1.details-image
                     if agency && agency.attachments.shield
                         - var shield_url = route + "/asset/" + agency.id + "/shield";
-                        label.control-label Current Shield
                         a( href=shield_url )
                             img( src=shield_url alt="Shield Image" )
-                    else
-                        p: i No Shield Image
 
         .form-group
             button.btn.btn-primary( type="submit" value="save" ) Submit
