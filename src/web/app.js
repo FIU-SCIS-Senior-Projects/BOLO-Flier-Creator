@@ -112,6 +112,7 @@ app.get( '/', isAuthenticated, function ( req, res, next ) {
 });
 
 app.use( auth.router );
+app.get( '/bolo/asset/:boloid/:attname', routes.bolos.getAttachment );
 app.use( isAuthenticated, routes.bolos );
 app.use( isAuthenticated, routes.account );
 app.use( isAuthenticated, routes.agency );

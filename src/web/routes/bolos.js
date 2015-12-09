@@ -146,7 +146,7 @@ router.get( '/bolo/create', function ( req, res ) {
 
 // process bolo creation user form input
 router.post( '/bolo/create', function ( req, res, next ) {
-    parseFormData( req, attachmentFilter ).then(function ( formDTO ) {
+    parseFormData( req, attachmentFilter ).then( function ( formDTO ) {
         var boloDTO = boloService.formatDTO( formDTO.fields );
         var attDTOs = [];
 
@@ -360,12 +360,14 @@ router.get( '/bolo/details/:id', function ( req, res, next ) {
 
 
 // handle requests for bolo attachments
-router.get('/bolo/asset/:boloid/:attname', function (req, res) {
+function getAttachment ( req, res ) {
     boloService.getAttachment(req.params.boloid, req.params.attname)
         .then(function (attDTO) {
             res.type(attDTO.content_type);
             res.send(attDTO.data);
         });
-});
+}
+router.get( '/bolo/asset/:boloid/:attname', getAttachment );
+router.getAttachment = getAttachment;
 
 module.exports = router;
