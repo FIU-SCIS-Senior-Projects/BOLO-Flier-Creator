@@ -3,6 +3,7 @@
 
 var expect = require('chai').expect;
 
+var _ = require('lodash');
 var path = require('path');
 var Promise = require('promise');
 
@@ -124,17 +125,17 @@ describe( 'BOLO Repository Storage Adapter', function () {
             /* act */
             var promise = boloWithAttachment
                 .then( function ( original ) {
-                    original.data.summary = 'some new summary';
+                    original.summary = 'some new summary';
                     return boloRepository.update( original );
                 });
 
             /* assert */
             return promise
                 .then( function ( updated ) {
-                    var original = cache[updated.data.id];
+                    var original = cache[updated.id];
                     expect( updated.diff( bolo ) ).to.contain( 'summary' );
-                    expect( updated.data.attachments )
-                        .to.deep.equal( original.data.attachments );
+                    expect( updated.attachments ).to.have.all
+                        .keys( _.keys( original.attachments ) );
                 });
         });
 

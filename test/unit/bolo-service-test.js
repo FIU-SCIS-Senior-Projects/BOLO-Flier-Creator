@@ -32,9 +32,9 @@ describe('bolo service module', function () {
                 return Promise.resolve( rec );
             },
             update : function ( bolo, attachments ) {
-                this.record = bolo;
+                _.extend( this.record, bolo );
                 if ( attachments ) {
-                    _.extend( this.record.data.attachments, attachments );
+                    _.extend( this.record.attachments, attachments );
                 }
                 return Promise.resolve( this.record );
             }
@@ -97,7 +97,7 @@ describe('bolo service module', function () {
 
         beforeEach( function () {
             originalBolo = BoloFixture.create();
-            originalBolo.data.id = 'abc123';
+            originalBolo.id = 'abc123';
             stubBoloRepository.record = originalBolo;
 
             updatedBolo = BoloFixture.copy( originalBolo.data );
@@ -118,7 +118,7 @@ describe('bolo service module', function () {
 
         it( 'adds new attachments to existing attachments', function () {
             /* arrange */
-            originalBolo.data.attachments = {
+            originalBolo.attachments = {
                 'some-image.jpg' : { 'content_type': 'image/jpeg' }
             };
 
@@ -128,7 +128,7 @@ describe('bolo service module', function () {
             /* assert */
             return promise
             .then( function ( response ) {
-                expect( response.data.attachments ).to.include.all.keys(
+                expect( response.attachments ).to.include.all.keys(
                     ['some-image.jpg', 'an-image.jpg', 'an-audio.mp3']
                 );
             });

@@ -10,7 +10,7 @@ require('dotenv').config({ 'path': path.resolve( __dirname, '../.env' ) });
 var cloudant = require('./cloudant-connection.js');
 
 
-var BOLO_DB = 'bolo-test';
+var BOLO_DB = 'bolo';
 
 var BOLO_DESIGN_DOC = {
     "views": {
@@ -21,7 +21,7 @@ var BOLO_DESIGN_DOC = {
             "map": "function (doc) { if ( 'bolo' === doc.Type && false === doc.isActive ) emit( doc.lastUpdatedOn, 1 ); }"
         },
         "all": {
-            "map": "function (doc) { if ( 'bolo' === doc.Type ) emit( doc._id, 1 ); }"
+            "map": "function (doc) { if ( 'bolo' === doc.Type ) emit( doc.createdOn, 1 ); }"
         },
         "revs": {
             "map": "function (doc) { if ( 'bolo' === doc.Type ) emit( null, doc._rev ); }"
@@ -52,7 +52,7 @@ var AGENCY_DESIGN_DOC = {
             "map": "function ( doc ) { if ( 'agency' === doc.Type ) emit( doc.name, null ); }"
         },
         "all_active": {
-            "map": "function ( doc ) { if ( 'agency' === doc.Type ) emit( doc._id, null ); }"
+            "map": "function ( doc ) { if ( 'agency' === doc.Type ) emit( doc.name, null ); }"
         },
         "revs": {
             "map": "function ( doc ) { if ( 'agency' === doc.Type ) emit( null, doc._rev ); }"

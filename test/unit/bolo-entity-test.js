@@ -55,39 +55,4 @@ describe('bolo domain entity', function () {
         /* assert */
         expect( diff ).to.contain( 'id' );
     });
-
-    it( '#attachImage file references', function () {
-        /* arrange */
-        var meta = { uuid: 'some-generated-uuid', filename: 'image.jpg' };
-
-        /* act */
-        bolo.attachImage( meta );
-
-        /* assert */
-        expect( bolo.data ).to.deep.contain.property( 'image[0]', meta );
-    });
-
-    it( '#attachVideo file references', function () {
-        /* arrange */
-        var meta = { uuid: 'some-generated-uuid', filename: 'video.mp4' };
-
-        /* act */
-        bolo.attachVideo( meta );
-
-        /* assert */
-        expect( bolo.data ).to.deep.contain.property( 'video[0]', meta );
-    });
-
-    it( '#attachAudio file references', function () {
-        /* arrange */
-        var meta  = { uuid: 'some-generated-uuid', filename: 'audio.mp3' };
-
-        /* act */
-        bolo.attachAudio( meta );
-
-        /* assert */
-        expect( bolo.data ).to.deep.contain.property( 'audio[0]', meta );
-    });
-
 });
-

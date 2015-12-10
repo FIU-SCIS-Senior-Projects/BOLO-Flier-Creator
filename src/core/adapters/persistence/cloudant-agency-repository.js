@@ -190,11 +190,15 @@ CloudantAgencyRepository.prototype.getAgency = function (id) {
  * Retrieve a collection of agencies from the cloudant database
  */
 CloudantAgencyRepository.prototype.getAgencies = function ( ids ) {
-    var opts = { 'include_docs': true, };
+    var opts = { 'include_docs': true };
+    var view = 'by_agency';
 
-    if ( _.isArray( ids ) ) opts.keys = ids;
+    if ( _.isArray( ids ) ) {
+        view = 'all_active';
+        opts.keys = ids;
+    }
 
-    return db.view( 'agency', 'all_active', opts ).then( function ( result ) {
+    return db.view( 'agency', view, opts ).then( function ( result ) {
         var agencies = result.rows.map( function ( row ) {
             return agencyFromCloudant( row.doc );
         });

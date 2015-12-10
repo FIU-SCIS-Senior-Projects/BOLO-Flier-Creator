@@ -33,10 +33,17 @@ config.CommonService    = require( path.join( core, 'service/common-service' ) )
 /* Application Config */
 config.appURL           = process.env.APP_URL || 'http://localhost:3000';
 
+var bootswatch_theme    = 'yeti-custom';
+config.bootstrap        = '/css/vendor/bootswatch/' +
+                          bootswatch_theme + '/bootstrap.min.css';
+
 config.const = config.constants = {
     /* Flash Message Subjects */
     'GFERR'             : 'Flash Subject - Global Error',
     'GFMSG'             : 'Flash Subject - Global Message',
+
+    /* BOLO Page Settings */
+    'BOLOS_PER_PAGE'    : 6,
 
     /* http://momentjs.com/docs/#/displaying/ */
     'DATE_FORMAT'       : 'MM-DD-YY HH:mm:ss'

@@ -4,17 +4,6 @@
 var _ = require('lodash');
 var Entity = require('./entity');
 
-var agencyTemplate = {
-    'id'            : '',
-    'name'          : '',
-    'address'       : '',
-    'city'          : '',
-    'state'         : '',
-    'zip'           : '',
-    'phone'         : '',
-    'isActive'      : true,
-    'attachments'   : {}
-};
 
 /** @module core/domain */
 module.exports = Agency;
@@ -28,6 +17,18 @@ module.exports = Agency;
  * @param {Object} data - Object containing Agency Data properties
  */
 function Agency(data) {
+    var agencyTemplate = {
+        'id'            : '',
+        'name'          : '',
+        'address'       : '',
+        'city'          : '',
+        'state'         : '',
+        'zip'           : '',
+        'phone'         : '',
+        'isActive'      : true,
+        'attachments'   : {}
+    };
+
     this.data = _.extend({}, agencyTemplate, data);
     Entity.setDataAccessors( this.data, this );
 }

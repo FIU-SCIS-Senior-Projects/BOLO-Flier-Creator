@@ -3,4 +3,4 @@ jsdoc
 coverage
 
 .env
-.env.sample
+.env.example

@@ -1,0 +1,29 @@
+include ../includes/mixins.jade
+
+mixin dropdown_menu ( label )
+    -
+        var atts = {
+            'href'          : '#',
+            'data-toggle'   : 'dropdown',
+            'role'          : 'button',
+            'aria-haspopup' : 'true',
+            'aria-expanded' : 'false'
+        };
+    li.dropdown
+        a( class="dropdown_toggle" )&attributes( atts ) #{label}
+            span.caret
+        ul.dropdown-menu
+            block
+
++nav( "BOLO Version 3.0", "bolo-nav" )
+    if userLoggedIn
+        ul.nav.navbar-nav
+            +dropdown_menu( 'BOLO Menu' )
+                li: a( href="/bolo/create" ) New BOLO
+                li: a( href="/bolo" ) Active BOLOs
+                li: a( href="/bolo/archive" ) Archived BOLOs
+            li: a( href="/agency" ) Agency Directory
+
+        ul.nav.navbar-nav.navbar-right
+            li: a( href="/account" ) Logged in as <b>#{username}</b>
+            li: a( href="/logout" ) Logout

@@ -1,0 +1,64 @@
+h2 #{bolo.category}
+
+table
+    tr: td( colspan="2" ): b Suspect
+
+    tr
+        td First Name:
+        td #{bolo.firstName || "N/A"}
+    tr
+        td Last Name:
+        td #{bolo.lastName || "N/A"}
+    tr
+        td Sex:
+        td #{bolo.sex || "N/A"}
+    tr
+        td Race:
+        td #{bolo.race || "N/A"}
+    tr
+        td Height:
+        td #{bolo.height || "N/A"}
+    tr
+        td Weight:
+        td #{bolo.weight || "N/A"}
+    tr
+        td Hair Color:
+        td #{bolo.hairColor || "N/A"}
+    tr
+        td Address:
+        td #{bolo.address || "N/A"}
+    tr
+        td Tattoos:
+        td #{bolo.tattoos || "N/A"}
+    tr
+        td Drivers License:
+        td #{bolo.dlNumber || "N/A"}
+    tr
+        td Date Of Birth:
+        td #{bolo.dob || "N/A"}
+
+table
+    tr: td( colspan="2"): b Summary
+    tr.no-border: td( colspan="2" ) #{bolo.summary || "N/A"}
+
+
+table
+    tr: td( colspan="2" ): b Additional Information
+    tr: td( colspan="2" ) #{bolo.additional || "N/A"}
+
+
+table
+    tr: td( colspan="2"): b Media
+
+    tr
+        td Video URL:
+        if bolo.video_url.length > 0
+            td: a( href=bolo.video_url ) Link
+        else
+            td N/A
+
+    tr: td( colspan="2" ) Images:
+    tr: td( colspan="2" )
+            each name, uuid in bolo.images
+                a( href=app_url + "/bolo/asset/" + bolo.id + "/" + uuid target="_blank" ) #{name}
+                br

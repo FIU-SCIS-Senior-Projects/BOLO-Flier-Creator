@@ -1,0 +1,30 @@
+
+if ( paging && paging.first && paging.current && paging.last )
+
+    ul.pagination.pagination-lg
+        if ( paging.first === paging.current )
+            li.disabled: a( href="#" aria-label="Previous" )
+                span.glyphicon.glyphhicon-menu-left( aria-hidden="true" )
+        else
+            li: a( href=route + "?page=" + ( paging.current - 1 ) aria-label="Previous" )
+                span.glyphicon.glyphicon-menu-left( aria-hidden="true" )
+
+        - var page = paging.first;
+        while page <= paging.last
+            if page === paging.current
+                li.active: a( href="#" ) #{page}
+                    span.sr-only (current)
+            else
+                li: a( href=route + "?page=" + page) #{page}
+
+            - page = page + 1
+
+        if ( paging.last === paging.current )
+            li.disabled: a( href="#" aria-label="Next" )
+                span.glyphicon.glyphhicon-menu-right( aria-hidden="true" )
+        else
+            li: a( href=route + "?page=" + ( paging.current + 1 ) aria-label="Previous" )
+                span.glyphicon.glyphicon-menu-right( aria-hidden="true" )
+
+else
+    p.text-small No Paging Available

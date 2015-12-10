@@ -1,0 +1,33 @@
+extends ./admin-layout.jade
+
+
+block jumbo-desc
+    p Agency Management Directory
+
+
+block admin-content
+    - var route = '/admin/agency'
+
+    p.lead Total Agencies: #{agencies.length}
+
+    table.table.table-striped
+        thead
+            tr
+                th Name
+                th City
+                th State
+                th Zip
+                th.hidden-xs Phone
+                th 
+        tbody
+            for agency in agencies
+                tr
+                    td  #{agency.name}
+                    td  #{agency.city}
+                    td  #{agency.state}
+                    td  #{agency.zip}
+                    td.hidden-xs #{agency.phone}
+                    td: a( href=route + "/edit/" + agency.id role="button" )
+                        span.glyphicon.glyphicon-cog( aria-hidden="true" )
+
+    a.btn.btn-default( href=route + "/create") Add New Agency

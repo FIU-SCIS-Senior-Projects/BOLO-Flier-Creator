@@ -1,0 +1,66 @@
+extends ./admin-layout.jade
+include ./includes/mixins.jade
+
+
+block jumbo-desc
+    p Agency Update
+
+
+block admin-content
+    -
+        var states = [
+            "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FM", "FL",
+            "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+            "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM",
+            "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", "RI", "SC",
+            "SD", "TN", "TX", "UT", "VT", "VI", "VA", "WA", "WV", "WI", "WY"
+        ]
+
+    - var route = '/admin/agency';
+    - var form_action = '/edit/' + agency.id;
+
+    h3 #{agency.name}
+    p Fill out the form and submit to update the agency.
+
+    form( action=( route + form_action ) enctype="multipart/form-data" method="post" )
+        input( name="id" type="hidden" value=agency.id )
+
+        +input_text( "name", "Agency Name", "", false, agency.name)
+        +input_text( "address", "Address", "", false, agency.address )
+        +input_text( "city", "City", "", false, agency.city )
+        +select_options( "state", "State", states, false, agency.state )
+        +input_text( "zip", "Zip Code", "", false,  agency.zip )
+        +input_text( "phone", "Phone Number", "", false, agency.phone )
+
+        .form-group
+            label.control-label( for="image_upload" ) Upload New Logo Image
+
+            .row
+                .col-md-4
+                    input( name="logo_upload" type="file" accept="image/*" )
+
+                .col-md-4.push-md-1.details-image
+                    if agency && agency.attachments.logo
+                        - var logo_url = route + "/asset/" + agency.id + "/logo";
+                        a.details-img( href=logo_url )
+                            img( src=logo_url alt="Logo Image" )
+
+        .form-group
+            label.control-label( for="image_upload" ) Upload New Shield Image
+
+            .row
+                .col-md-4
+                    input( name="shield_upload" type="file" accept="image/*" )
+
+                .col-md-4.push-md-1.details-image
+                    if agency && agency.attachments.shield
+                        - var shield_url = route + "/asset/" + agency.id + "/shield";
+                        a( href=shield_url )
+                            img( src=shield_url alt="Shield Image" )
+
+        .form-group
+            button.btn.btn-primary( type="submit" value="save" ) Submit
+
+
+    .row
+

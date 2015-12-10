@@ -9,13 +9,12 @@ block jumbo-desc
 block admin-content
     - var route = "/admin/users/" + user.id;
 
-    h3 Username: #{user.username}
-    br
+    h3 Username: #{user.username} <br>
 
     form(action=route + "/edit-details" enctype="multipart/form-data" method="post")
-        +input_mx("fname", "First Name", "", false, user.fname)
-        +input_mx("lname", "Last Name", "", false,  user.lname)
-        +input_mx("email", "Email (required)", "", true, user.email)
+        +input_text("fname", "First Name", "", false, user.fname)
+        +input_text("lname", "Last Name", "", false,  user.lname)
+        +input_text("email", "Email (required)", "", true, user.email)
 
         if ( roles )
             .form-group
@@ -26,9 +25,20 @@ block admin-content
                         - var sel = ( role === user.roleName() );
                         option(value=role, selected=sel) #{formattedRole}
 
-        +input_mx("badge", "Badge No.", "", false,  user.badge)
-        +input_mx("sectunit", "Section / Unit", "", false, user.sectunit)
-        +input_mx("ranktitle", "Rank / Title", "", false, user.ranktitle)
+        if ( agencies )
+            .form-group
+                label.control-label( for="agency" ) Agency
+                select.form-control( name="agency" )
+                    each agency in agencies
+                        if ( agency.id === user.agency )
+                            option( value=agency.id selected ) #{agency.name}
+                        else
+                            option( value=agency.id ) #{agency.name}
+
+
+        +input_text("badge", "Badge No.", "", false,  user.badge)
+        +input_text("sectunit", "Section / Unit", "", false, user.sectunit)
+        +input_text("ranktitle", "Rank / Title", "", false, user.ranktitle)
 
         .form-group
             button.btn.btn-primary(type="submit" value="save") Submit

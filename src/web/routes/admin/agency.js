@@ -17,6 +17,10 @@ var GFMSG               = config.const.GFMSG;
 var parseFormData       = formUtil.parseFormData;
 var cleanTemporaryFiles = formUtil.cleanTempFiles;
 
+function isImage ( fileDTO ) {
+    return /image/.test( fileDTO.content_type );
+}
+
 /**
  * Custom handling of agency attachments. Agencies should only have two
  * attachments. One for the logo and one for the shield.
@@ -25,13 +29,13 @@ function getAgencyAttachments ( fields ) {
     var result = [];
     var fileDTO;
 
-    if ( fields.logo_upload ) {
+    if ( fields.logo_upload && isImage( fields.logo_upload  ) ) {
         fileDTO = _.assign( {}, fields.logo_upload );
         fileDTO.name = 'logo';
         result.push( fileDTO );
     }
 
-    if ( fields.shield_upload ) {
+    if ( fields.shield_upload && isImage( fields.shield_upload ) ) {
         fileDTO = _.assign( {}, fields.shield_upload );
         fileDTO.name = 'shield';
         result.push( fileDTO );
@@ -47,7 +51,7 @@ function getAgencyAttachments ( fields ) {
 module.exports.getList = function ( req, res ) {
     agencyService.getAgencies()
     .then(function (agencies) {
-        res.render('agency-list', {
+        res.render('agency-list-admin', {
             agencies: agencies
         });
     });
@@ -65,7 +69,7 @@ module.exports.getCreateForm = function (req, res) {
 /**
  * Process a form to create an agency.
  */
-module.exports.postCreateForm = function ( req, res ) {
+module.exports.postCreateForm = function ( req, res, next ) {
     parseFormData( req ).then( function ( formDTO ) {
         var agencyDTO = agencyService.formatDTO( formDTO.fields );
         var atts = getAgencyAttachments( formDTO.fields );
@@ -74,12 +78,10 @@ module.exports.postCreateForm = function ( req, res ) {
     })
     .then(function (pData) {
         if (pData[1].files.length) cleanTemporaryFiles(pData[1].files);
+        req.flash( GFMSG, 'Agency registration successful.' );
         res.redirect('/admin/agency');
-    })
-    .catch( function ( error ) {
-        console.error( 'Error occurred at %s >>> %s', req.originalUrl, error.message );
-        req.flash( GFERR, 'Internal server occurred while processing your request, please try again.' );
-        res.redirect( 'back' );
+    }).catch( function ( error ) {
+        next( error );
     });
 };
 
@@ -87,16 +89,11 @@ module.exports.postCreateForm = function ( req, res ) {
 /**
  * Respond with a form to edit agency details
  */
-module.exports.getEditForm = function ( req, res ) {
-    agencyService.getAgency(req.params.id)
-    .then(function (agency) {
-        res.render('agency-create-form', {
-            agency: agency
-        });
-    })
-    .catch(function (error) {
-        console.error( error );
-        res.redirect( 'back' );
+module.exports.getEditForm = function ( req, res, next ) {
+    agencyService.getAgency( req.params.id ).then( function ( agency ) {
+        res.render( 'agency-edit-form', { agency: agency } );
+    }).catch( function ( error ) {
+        next( error );
     });
 };
 
@@ -104,21 +101,18 @@ module.exports.getEditForm = function ( req, res ) {
 /**
  * Process a form to edit/update agency details.
  */
-module.exports.postEditForm = function ( req, res ) {
+module.exports.postEditForm = function ( req, res, next ) {
     parseFormData( req ).then( function ( formDTO ) {
         var agencyDTO = agencyService.formatDTO( formDTO.fields );
         var atts = getAgencyAttachments( formDTO.fields );
         var result = agencyService.updateAgency( agencyDTO, atts );
         return Promise.all([ result, formDTO ]);
-    })
-    .then( function ( pData ) {
+    }).then( function ( pData ) {
         if ( pData[1].files.length ) cleanTemporaryFiles( pData[1].files );
+        req.flash( GFMSG, 'Agency details update successful.' );
         res.redirect( '/admin/agency' );
-    })
-    .catch( function ( err ) {
-        console.error( 'Error occurred at %s >>> %s', req.originalUrl, err.message );
-        req.flash( GFERR, 'Internal server occurred while processing your request, please try again.' );
-        res.redirect( 'back' );
+    }).catch( function ( error ) {
+        next( error );
     });
 };
 

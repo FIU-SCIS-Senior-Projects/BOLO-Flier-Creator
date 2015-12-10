@@ -5,8 +5,8 @@ var _               = require('lodash');
 var Promise         = require('promise');
 
 var config          = require('../../config');
-var userRepository  = new config.UserRepository();
-var userService     = new config.UserService( userRepository );
+var userService     = new config.UserService( new config.UserRepository() );
+var agencyService   = new config.AgencyService( new config.AgencyRepository() );
 
 var formUtil        = require('../../lib/form-util');
 var passwordUtil    = require('../../lib/password-util');
@@ -22,12 +22,17 @@ var FormError = formUtil.FormError;
 /**
  * Responds with a form to create a new user.
  */
-module.exports.getCreateForm = function ( req, res ) {
+module.exports.getCreateForm = function ( req, res, next ) {
     var data = {
         'roles': userService.getRoleNames(),
         'form_errors': req.flash( 'form-errors' )
     };
-    res.render( 'user-create-form', data );
+
+    agencyService.getAgencies().then( function ( agencies ) {
+        data.agencies = agencies;
+        data.user = req.user;
+        res.render( 'user-create-form', data );
+    }).catch( next );
 };
 
 
@@ -52,9 +57,10 @@ module.exports.postCreateForm = function ( req, res ) {
         }
 
         formDTO.fields.tier = formDTO.fields.role;
-        formDTO.fields.agency = req.user.agency;
-        formDTO.fields.notifications = [ req.user.agency ];
+        formDTO.fields.agency = formDTO.fields.agency || req.user.agency;
+        formDTO.fields.notifications = [ formDTO.fields.agency ];
         var userDTO = userService.formatDTO( formDTO.fields );
+
         return userService.registerUser( userDTO );
     }, function ( error ) {
         console.error( 'Error at /users/create >>> ', error.message );
@@ -68,6 +74,11 @@ module.exports.postCreateForm = function ( req, res ) {
     .catch( function ( error ) {
         if ( 'FormError' !== error.name ) throw error;
         res.redirect( 'back' );
+    })
+    .catch( function ( error ) {
+        if ( ! /already registered/i.test( error.message ) ) throw error;
+            req.flash( FERR, 'User already registered.' );
+            res.redirect( 'back' );
     })
     .catch( function ( error ) {
         /** @todo inform of duplicate registration errors */
@@ -102,17 +113,18 @@ module.exports.getList = function ( req, res ) {
 /**
  * Responds with account information for a specified user.
  */
-module.exports.getDetails = function ( req, res ) {
+module.exports.getDetails = function ( req, res, next ) {
     var data = {};
 
     userService.getUser( req.params.id ).then( function ( user ) {
         data.user = user;
+        return agencyService.getAgency( user.agency );
+    }).then( function ( agency ) {
+        data.agency = agency;
         res.render( 'user-details', data );
-    })
-    .catch( function ( error ) {
-        console.error( 'Error at /users/:id >>> ', error.message );
+    }).catch( function ( error ) {
         req.flash( FERR, 'Unable to get user information, please try again.' );
-        res.redirect( 'back' );
+        next( error );
     });
 };
 
@@ -172,16 +184,18 @@ module.exports.postPasswordReset = function ( req, res ) {
  */
 module.exports.getEditDetails = function ( req, res ) {
     var data = {
-        'roles': userService.getRoleNames(),
+        'roles': userService.getRoleNames()
     };
 
-    /** @todo Fix this temporary thing **/
-    data.roles = data.roles.map( function ( role ) {
-        return _.snakeCase( role ).toUpperCase();
-    });
+    var promises = Promise.all([
+        userService.getUser( req.params.id ),
+        agencyService.getAgencies()
+    ]);
 
-    userService.getUser( req.params.id ).then( function ( user ) {
-        data.user = user;
+    promises.then( function ( _data ) {
+        data.user = _data[0];
+        data.agencies = _data[1];
+        console.log( 'roles', JSON.stringify( data, null, 4 ) );
         res.render( 'user-edit-details', data );
     })
     .catch( function ( error ) {
