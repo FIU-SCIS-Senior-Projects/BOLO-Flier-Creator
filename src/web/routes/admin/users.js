@@ -76,6 +76,11 @@ module.exports.postCreateForm = function ( req, res ) {
         res.redirect( 'back' );
     })
     .catch( function ( error ) {
+        if ( ! /already registered/i.test( error.message ) ) throw error;
+            req.flash( FERR, 'User already registered.' );
+            res.redirect( 'back' );
+    })
+    .catch( function ( error ) {
         /** @todo inform of duplicate registration errors */
         console.error( 'Error at /users/create >>> ', error.message );
         req.flash( FERR, 'Error saving new user, please try again.' );
@@ -179,22 +184,18 @@ module.exports.postPasswordReset = function ( req, res ) {
  */
 module.exports.getEditDetails = function ( req, res ) {
     var data = {
-        'roles': userService.getRoleNames(),
+        'roles': userService.getRoleNames()
     };
-
-    /** @todo Fix this temporary thing **/
-    data.roles = data.roles.map( function ( role ) {
-        return _.snakeCase( role ).toUpperCase();
-    });
 
     var promises = Promise.all([
         userService.getUser( req.params.id ),
         agencyService.getAgencies()
     ]);
 
-    promises.then( function ( data ) {
-        data.user = data[0];
-        data.agencies = data[1];
+    promises.then( function ( _data ) {
+        data.user = _data[0];
+        data.agencies = _data[1];
+        console.log( 'roles', JSON.stringify( data, null, 4 ) );
         res.render( 'user-edit-details', data );
     })
     .catch( function ( error ) {
